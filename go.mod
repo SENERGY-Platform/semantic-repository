@@ -16,6 +16,7 @@ require (
 	github.com/ory/dockertest v3.3.4+incompatible // indirect
 	github.com/pkg/errors v0.8.1 // indirect
 	github.com/samuel/go-zookeeper v0.0.0-20180130194729-c4fab1ac1bec // indirect
+	github.com/satori/go.uuid v1.2.0 // indirect
 	github.com/segmentio/kafka-go v0.2.5
 	github.com/sirupsen/logrus v1.4.2 // indirect
 	github.com/wvanbergen/kazoo-go v0.0.0-20180202103751-f72d8611297a

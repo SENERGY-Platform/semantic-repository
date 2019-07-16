@@ -39,34 +39,7 @@ type Service struct {
 	Description string     `json:"description"`
 	Aspects     []Aspect   `json:"aspects"`
 	ProtocolId  string     `json:"protocol_id"`
+	Inputs      []Content  `json:"inputs"`
+	Outputs     []Content  `json:"outputs"`
 	Functions   []Function `json:"functions"`
-}
-
-
-type VariableType string
-
-const (
-	String  VariableType = "http://www.w3.org/2001/XMLSchema#string"
-	Integer VariableType = "http://www.w3.org/2001/XMLSchema#integer"
-	Float   VariableType = "http://www.w3.org/2001/XMLSchema#decimal"
-	Boolean VariableType = "http://www.w3.org/2001/XMLSchema#boolean"
-
-	Collection VariableType = "http://www.w3.org/1999/02/22-rdf-syntax-ns#List"
-)
-
-type Variable struct {
-	Id           string       `json:"id"`
-	Name         string       `json:"name"`
-	Type         VariableType `json:"type"`
-	SubVariables []Variable   `json:"sub_variables"`
-	Property     Property     `json:"property"`
-}
-
-
-type Property struct {
-	Id       string      `json:"id"`
-	Unit     string      `json:"unit"`
-	Value    interface{} `json:"value"`
-	MinValue float64     `json:"min_value"`
-	MaxValue float64     `json:"max_value"`
 }

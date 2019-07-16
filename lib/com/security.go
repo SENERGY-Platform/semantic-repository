@@ -93,7 +93,7 @@ func (this *Security) CheckBool(jwt jwt_http_router.Jwt, kind string, id string,
 		buf.ReadFrom(resp.Body)
 		return false, errors.New(buf.String())
 	}
-	err = json.NewDecoder(resp.Body).Decode(allowed)
+	err = json.NewDecoder(resp.Body).Decode(&allowed)
 	if err != nil {
 		debug.PrintStack()
 		return false, err

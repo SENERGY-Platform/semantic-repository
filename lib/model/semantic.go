@@ -22,15 +22,29 @@ type DeviceClass struct {
 }
 
 type Function struct {
-	Id     string   `json:"id"`
-	Name   string   `json:"name"`
-	Type   string   `json:"type"`
-	Input  Variable `json:"input"`
-	Output Variable `json:"output"`
+	Id         string   `json:"id"`
+	Name       string   `json:"name"`
+	ConceptIds []string `json:"concept_ids"`
+	Type       string   `json:"type"`
 }
-
 
 type Aspect struct {
 	Id   string `json:"id"`
 	Name string `json:"name"`
+}
+
+type Concept struct {
+	Id              string           `json:"id"`
+	Name            string           `json:"name"`
+	Characteristics []Characteristic `json:"characteristics"`
+}
+
+type Characteristic struct {
+	Id                 string           `json:"id"`
+	Name               string           `json:"name"`
+	Type               VariableType     `json:"type"`
+	MinValue           float64          `json:"min_value"`
+	MaxValue           float64          `json:"max_value"`
+	Value              interface{}      `json:"value"`
+	SubCharacteristics []Characteristic `json:"sub_characteristics"`
 }
