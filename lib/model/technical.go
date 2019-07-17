@@ -24,12 +24,13 @@ type Content struct {
 type VariableType string
 
 const (
-	String  VariableType = "string"
-	Integer VariableType = "int"
-	Float   VariableType = "float"
-	Boolean VariableType = "bool"
+	String  VariableType = "xsd:string"
+	Integer VariableType = "xsd:integer"
+	Float   VariableType = "xsd:double"
+	Boolean VariableType = "xsd:boolean"
 
-	Collection VariableType = "http://www.w3.org/1999/02/22-rdf-syntax-ns#List"
+	List      VariableType = "list"
+	Structure VariableType = "structure"
 )
 
 type ContentVariable struct {
