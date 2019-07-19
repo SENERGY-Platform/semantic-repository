@@ -9,5 +9,6 @@
     "permissions_url": "http://permissionsearch:8080",
     "zookeeper_url": "zk:2181",
     "group_id": "semantic-repository",
+    "rya_url": "http://0.0.0.0:8080",
     "debug": true
 }
