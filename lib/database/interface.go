@@ -31,4 +31,6 @@ type Database interface {
 	GetDeviceType(ctx context.Context, id string) (deviceType model.DeviceType, exists bool, err error)
 	SetDeviceType(ctx context.Context, deviceType model.DeviceType) error
 	RemoveDeviceType(ctx context.Context, id string) error
+	InsertData(triples string) (success bool, err error)
+	ReadData() (body []byte, err error)
 }

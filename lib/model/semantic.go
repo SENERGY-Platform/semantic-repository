@@ -28,6 +28,10 @@ type Function struct {
 	Type       string   `json:"type"`
 }
 
+type Context struct {
+	context map[string]interface{}    `json:"@context"`
+}
+
 type Aspect struct {
 	Id   string `json:"id"`
 	Name string `json:"name"`
