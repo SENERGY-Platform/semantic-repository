@@ -77,7 +77,7 @@ func (*Database)  ReadData() (body []byte, err error){
 		return nil, err
 	}
 	query := url.QueryEscape("construct { ?s ?p ?o.} where { ?s ?p ?o. }")
-	resp, err := http.Get(conf.RyaUrl + "/web.rya/queryrdf?query.infer=&query.auth=&conf.cv=&query.resultformat=json&query=" + query)
+	resp, err := http.Get(conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
 	if err != nil {
 		log.Println("ERROR:", err)
 		return nil, err
