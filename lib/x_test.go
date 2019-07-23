@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"github.com/SENERGY-Platform/semantic-repository/lib/config"
 	"github.com/SENERGY-Platform/semantic-repository/lib/database"
+	"github.com/SENERGY-Platform/semantic-repository/lib/database/sparql/rdf"
 	"github.com/SENERGY-Platform/semantic-repository/lib/model"
 	"github.com/piprate/json-gold/ld"
 	"log"
 	"os"
+	"strings"
 	"testing"
 )
 
@@ -18,7 +20,8 @@ func TestInsertSparql(t *testing.T) {
 		t.Fatal(err)
 	}
 	db, err := database.New(conf)
-	success, err := db.InsertData("<urn:infai:ses:category:1> <https://senergy.infai.org/ontology/hasCharacteristic> <urn:infai:ses:characteristic:345> .")
+	success, err := db.InsertData(`<urn:infai:ses:function:1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://senergy.infai.org/ontology/Function> .
+<urn:infai:ses:function:1> <http://www.w3.org/2000/01/rdf-schema#label> "colorFunction" .`)
 	t.Log(success)
 }
 
@@ -95,6 +98,67 @@ func TestFromRDF(t *testing.T) {
 <urn:infai:ses:function:1> <http://www.w3.org/2000/01/rdf-schema#label> "colorFunction" .
 `
 	doc, _ := proc.FromRDF(triples, options)
+	t.Log(doc)
+
+	context := map[string]interface{}{
+		"@context": map[string]interface{}{
+			"rdfs":   "http://www.w3.org/2000/01/rdf-schema#",
+			"xsd":    "http://www.w3.org/2001/XMLSchema#",
+			"schema": "http://schema.org/",
+			"name":   "rdfs:label",
+			"id":     "@id",
+			"type":   "@type",
+		},
+	}
+
+	framedDoc, err := proc.Frame(doc, context, options)
+	if err != nil {
+		log.Println("Errorrrrr", err)
+	}
+	b, err := json.Marshal(framedDoc["@graph"])
+	var function []model.Function
+
+	err = json.Unmarshal(b, &function)
+	if err != nil {
+		fmt.Println("error:", err)
+	}
+	t.Log(function)
+
+}
+
+func TestFromXmlToStruct(t *testing.T) {
+	xml := `<?xml version="1.0" encoding="UTF-8"?>
+        <rdf:RDF
+        	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+        	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+        	xmlns:sesame="http://www.openrdf.org/schema/sesame#"
+        	xmlns:owl="http://www.w3.org/2002/07/owl#"
+        	xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+        	xmlns:fn="http://www.w3.org/2005/xpath-functions#">
+        
+        <rdf:Description rdf:about="urn:infai:ses:function:1">
+        	<rdf:type rdf:resource="https://senergy.infai.org/ontology/Function"/>
+        	<rdfs:label>lambda</rdfs:label>
+        </rdf:Description>
+        
+        </rdf:RDF>`
+
+	triples, err := rdf.NewTripleDecoder(strings.NewReader(xml), rdf.RDFXML).DecodeAll()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	turtle := []string{}
+	for _, trible := range triples {
+		turtle = append(turtle, trible.Serialize(rdf.Turtle))
+	}
+
+	proc := ld.NewJsonLdProcessor()
+	options := ld.NewJsonLdOptions("")
+	// add the processing mode explicitly if you need JSON-LD 1.1 features
+	options.ProcessingMode = ld.JsonLd_1_1
+
+	doc, _ := proc.FromRDF(strings.Join(turtle, ""), options)
 	t.Log(doc)
 
 	context := map[string]interface{}{
