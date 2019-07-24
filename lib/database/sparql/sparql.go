@@ -91,6 +91,22 @@ func (*Database)  ReadData() (body []byte, err error){
 	return body, nil
 }
 
+func (this *Database)  GetConstruct(s string, p string, o string) (body []byte, err error){
+	query := this.getConstructQuery(s, p, o)
+	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
+	if err != nil {
+		log.Println("ERROR: GetFunctions", err)
+		return nil, err
+	}
+	defer resp.Body.Close()
+	body, err = ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Println("ERROR:", err)
+		return nil, err
+	}
+	return body, nil
+}
+
 func getTimeoutContext() (context.Context, context.CancelFunc) {
 	return context.WithTimeout(context.Background(), 10*time.Second)
 }

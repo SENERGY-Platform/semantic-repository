@@ -34,6 +34,10 @@ var devicetype1name = uuid.NewV4().String()
 var devicetype2id = uuid.NewV4().String()
 var devicetype2name = uuid.NewV4().String()
 
+func Test(t *testing.T) {
+	//createTestEnv()
+}
+
 func TestDeviceTypeQuery(t *testing.T) {
 	closer, conf, err := createTestEnv()
 	if err != nil {

@@ -36,13 +36,6 @@ func (this *Controller) ReadDevice(id string, jwt jwt_http_router.Jwt) (result m
 	if !exists {
 		return result, errors.New("not found"), http.StatusNotFound
 	}
-	ok, err := this.security.CheckBool(jwt, this.config.DeviceTopic, id, model.READ)
-	if err != nil {
-		return result, err, http.StatusInternalServerError
-	}
-	if !ok {
-		return result, errors.New("access denied"), http.StatusForbidden
-	}
 	return device, nil, http.StatusOK
 }
 

@@ -18,7 +18,6 @@ package lib
 
 import (
 	"github.com/SENERGY-Platform/semantic-repository/lib/api"
-	"github.com/SENERGY-Platform/semantic-repository/lib/com"
 	"github.com/SENERGY-Platform/semantic-repository/lib/config"
 	"github.com/SENERGY-Platform/semantic-repository/lib/controller"
 	"github.com/SENERGY-Platform/semantic-repository/lib/database"
@@ -34,19 +33,13 @@ func Start(conf config.Config) (stop func(), err error) {
 		return stop, err
 	}
 
-	perm, err := com.NewSecurity(conf)
-	if err != nil {
-		log.Println("ERROR: unable to create permission handler", err)
-		return stop, err
-	}
-
 	p, err := producer.New(conf)
 	if err != nil {
 		log.Println("ERROR: unable to create producer", err)
 		return stop, err
 	}
 
-	ctrl, err := controller.New(conf, db, perm, p)
+	ctrl, err := controller.New(conf, db, p)
 	if err != nil {
 		db.Disconnect()
 		log.Println("ERROR: unable to start control", err)

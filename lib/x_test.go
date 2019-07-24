@@ -20,8 +20,8 @@ func TestInsertSparql(t *testing.T) {
 		t.Fatal(err)
 	}
 	db, err := database.New(conf)
-	success, err := db.InsertData(`<urn:infai:ses:function:1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://senergy.infai.org/ontology/Function> .
-<urn:infai:ses:function:1> <http://www.w3.org/2000/01/rdf-schema#label> "colorFunction" .`)
+	success, err := db.InsertData(`<urn:infai:ses:measuringfunction:444> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://senergy.infai.org/ontology/MeasuringFunction> .
+<urn:infai:ses:measuringfunction:444> <http://www.w3.org/2000/01/rdf-schema#label> "humidityFunction" .`)
 	t.Log(success)
 }
 
@@ -32,16 +32,8 @@ func TestConstructSparql(t *testing.T) {
 	}
 
 	db, err := database.New(conf)
-	body, err := db.ReadData()
+	body, err := db.GetConstruct("","", "")
 	t.Log(string(body))
-	//proc := ld.NewJsonLdProcessor()
-	//options := ld.NewJsonLdOptions("")
-	//// add the processing mode explicitly if you need JSON-LD 1.1 features
-	//options.ProcessingMode = ld.JsonLd_1_1
-	//options.Format = "application/nquads"
-	//doc, err := proc.FromRDF(body, options)
-	t.Log(ld.ParseNQuads(string(body)))
-	//t.Log(doc, err)
 }
 
 func TestJsonLd(t *testing.T) {
@@ -74,7 +66,6 @@ func TestJsonLd(t *testing.T) {
 	doc["type"] = function.Type
 	doc["concept_ids"] = function.ConceptIds
 
-	log.Println(doc)
 	triples, err := proc.ToRDF(doc, options)
 	if err != nil {
 		log.Println("Error when transforming JSON-LD document to RDF:", err)
@@ -127,21 +118,19 @@ func TestFromRDF(t *testing.T) {
 }
 
 func TestFromXmlToStruct(t *testing.T) {
-	xml := `<?xml version="1.0" encoding="UTF-8"?>
-        <rdf:RDF
-        	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-        	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
-        	xmlns:sesame="http://www.openrdf.org/schema/sesame#"
-        	xmlns:owl="http://www.w3.org/2002/07/owl#"
-        	xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
-        	xmlns:fn="http://www.w3.org/2005/xpath-functions#">
-        
-        <rdf:Description rdf:about="urn:infai:ses:function:1">
-        	<rdf:type rdf:resource="https://senergy.infai.org/ontology/Function"/>
-        	<rdfs:label>lambda</rdfs:label>
-        </rdf:Description>
-        
-        </rdf:RDF>`
+	xml := `<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:sesame="http://www.openrdf.org/schema/sesame#" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:xsd="http://www.w3.org/2001/XMLSchema#" xmlns:fn="http://www.w3.org/2005/xpath-functions#">
+<rdf:Description rdf:about="urn:infai:ses:function:1">
+<rdf:type rdf:resource="https://senergy.infai.org/ontology/Function"/>
+<rdfs:label>colorFunction</rdfs:label>
+</rdf:Description>
+<rdf:Description rdf:about="urn:infai:ses:function:2">
+<rdf:type rdf:resource="https://senergy.infai.org/ontology/Function"/>
+<rdfs:label>tempFunction</rdfs:label>
+</rdf:Description>
+<rdf:Description rdf:about="urn:org.apache.rya/2012/05#rts">
+<version xmlns="urn:org.apache.rya/2012/05#">3.0.0</version>
+</rdf:Description>
+</rdf:RDF>`
 
 	triples, err := rdf.NewTripleDecoder(strings.NewReader(xml), rdf.RDFXML).DecodeAll()
 	if err != nil {

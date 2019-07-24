@@ -33,4 +33,5 @@ type Database interface {
 	RemoveDeviceType(ctx context.Context, id string) error
 	InsertData(triples string) (success bool, err error)
 	ReadData() (body []byte, err error)
+	GetConstruct(s string, p string, o string) (body []byte, err error)
 }

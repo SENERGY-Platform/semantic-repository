@@ -37,7 +37,6 @@ type Config struct {
 	GroupId                   string `json:"group_id"`
 	DeviceTopic               string `json:"device_topic"`
 	DeviceTypeTopic           string `json:"device_type_topic"`
-	PermissionsUrl            string `json:"permissions_url"`
 	Debug                     bool   `json:"debug"`
 	RyaUrl                    string `json:"rya_url"`
 }

@@ -1,5 +1,5 @@
 {
-    "server_port": "8080",
+    "server_port": "8090",
     "jwt_pub_rsa": "",
     "force_auth": true,
     "force_user": true,
@@ -7,7 +7,7 @@
     "device_topic": "devices",
     "device_type_topic": "device-types",
     "permissions_url": "http://permissionsearch:8080",
-    "zookeeper_url": "zk:2181",
+    "zookeeper_url": "localhost:2181",
     "group_id": "semantic-repository",
     "rya_url": "http://0.0.0.0:8080",
     "debug": true

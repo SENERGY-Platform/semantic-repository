@@ -128,44 +128,12 @@ func NewDockerEnv(startConfig config.Config) (config config.Config, shutdown fun
 		}
 	}
 
-	//mongo
-	wait.Add(1)
-	go func() {
-		defer wait.Done()
-		closer, _, ip, err := SparqlTestServer(pool)
-		listMux.Lock()
-		closerList = append(closerList, closer)
-		listMux.Unlock()
-		if err != nil {
-			log.Println(ip)
-			globalError = err
-			return
-		}
-		//TODO: use ip to set your config: config.MongoUrl = "mongodb://" + ip + ":27017"
-	}()
 
 	wait.Add(1)
 	go func() {
 		defer wait.Done()
 
 		var wait2 sync.WaitGroup
-
-		var elasticIp string
-
-		wait2.Add(1)
-		go func() {
-			defer wait2.Done()
-			//elasticsearch
-			closeElastic, _, ip, err := Elasticsearch(pool)
-			elasticIp = ip
-			listMux.Lock()
-			closerList = append(closerList, closeElastic)
-			listMux.Unlock()
-			if err != nil {
-				globalError = err
-				return
-			}
-		}()
 
 		wait2.Wait()
 
@@ -192,18 +160,6 @@ func NewDockerEnv(startConfig config.Config) (config config.Config, shutdown fun
 			globalError = err
 			return
 		}
-
-		//permsearch
-		closePerm, _, permIp, err := PermSearch(pool, config.ZookeeperUrl, elasticIp)
-		listMux.Lock()
-		closerList = append(closerList, closePerm)
-		listMux.Unlock()
-		if err != nil {
-			globalError = err
-			return
-		}
-
-		config.PermissionsUrl = "http://" + permIp + ":8080"
 	}()
 
 	wait.Wait()
@@ -215,60 +171,6 @@ func NewDockerEnv(startConfig config.Config) (config config.Config, shutdown fun
 	return config, func() { close(closerList) }, nil
 }
 
-func SparqlTestServer(pool *dockertest.Pool) (closer func(), hostPort string, ipAddress string, err error) {
-	log.Println("start sparql server")
-	repo, err := pool.Run("mongo", "4.1.11", []string{}) //TODO: replace with sparql image
-	if err != nil {
-		return func() {}, "", "", err
-	}
-	hostPort = repo.GetPort("27017/tcp")
-	err = pool.Retry(func() error {
-		log.Println("try sparql connection...")
-		//client, err := mongo.Connect(context.Background(), options.Client().ApplyURI("mongodb://localhost:"+hostPort)) //TODO: replace with sparql ping
-		//err = client.Ping(context.Background(), readpref.Primary())
-		return err
-	})
-	return func() { repo.Close() }, hostPort, repo.Container.NetworkSettings.IPAddress, err
-}
-
-func PermSearch(pool *dockertest.Pool, zk string, elasticIp string) (closer func(), hostPort string, ipAddress string, err error) {
-	log.Println("start permsearch")
-	repo, err := pool.Run("fgseitsrancher.wifa.intern.uni-leipzig.de:5000/permissionsearch", "test", []string{
-		"ZOOKEEPER_URL=" + zk,
-		"ELASTIC_URL=" + "http://" + elasticIp + ":9200",
-	})
-	if err != nil {
-		return func() {}, "", "", err
-	}
-	hostPort = repo.GetPort("8080/tcp")
-	err = pool.Retry(func() error {
-		log.Println("try permsearch connection...")
-		_, err := http.Get("http://" + repo.Container.NetworkSettings.IPAddress + ":8080/jwt/check/deviceinstance/foo/r/bool")
-		if err != nil {
-			log.Println(err)
-		}
-		return err
-	})
-	return func() { repo.Close() }, hostPort, repo.Container.NetworkSettings.IPAddress, err
-}
-
-func Elasticsearch(pool *dockertest.Pool) (closer func(), hostPort string, ipAddress string, err error) {
-	log.Println("start elasticsearch")
-	repo, err := pool.Run("docker.elastic.co/elasticsearch/elasticsearch", "6.4.3", []string{"discovery.type=single-node"})
-	if err != nil {
-		return func() {}, "", "", err
-	}
-	hostPort = repo.GetPort("9200/tcp")
-	err = pool.Retry(func() error {
-		log.Println("try elastic connection...")
-		_, err := http.Get("http://" + repo.Container.NetworkSettings.IPAddress + ":9200/_cluster/health")
-		return err
-	})
-	if err != nil {
-		log.Println(err)
-	}
-	return func() { repo.Close() }, hostPort, repo.Container.NetworkSettings.IPAddress, err
-}
 
 func Kafka(pool *dockertest.Pool, zookeeperUrl string) (closer func(), err error) {
 	kafkaport, err := getFreePort()
