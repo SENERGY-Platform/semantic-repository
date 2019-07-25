@@ -16,22 +16,10 @@
 
 package database
 
-import (
-	"context"
-	"github.com/SENERGY-Platform/semantic-repository/lib/model"
-)
-
 type Database interface {
 	Disconnect()
 
-	GetDevice(ctx context.Context, id string) (device model.Device, exists bool, err error)
-	SetDevice(ctx context.Context, device model.Device) error
-	RemoveDevice(ctx context.Context, id string) error
-
-	GetDeviceType(ctx context.Context, id string) (deviceType model.DeviceType, exists bool, err error)
-	SetDeviceType(ctx context.Context, deviceType model.DeviceType) error
-	RemoveDeviceType(ctx context.Context, id string) error
 	InsertData(triples string) (success bool, err error)
 	ReadData() (body []byte, err error)
-	GetConstruct(s string, p string, o string) (body []byte, err error)
+	GetConstruct(s string, p string, o string) (rdfxml string, err error)
 }

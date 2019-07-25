@@ -32,9 +32,9 @@ func (this *Controller) GetFunctions(funcType string) (result []model.Function, 
 		return result, err, http.StatusInternalServerError
 	}
 
-	err = this.ByteToModel(functions, &result)
+	err = this.RdfXmlToModel(functions, &result)
 	if err != nil {
-		log.Println("GetFunctions ERROR: ByteToModel", err)
+		log.Println("GetFunctions ERROR: RdfXmlToModel", err)
 		return result, err, http.StatusInternalServerError
 	}
 
@@ -42,8 +42,6 @@ func (this *Controller) GetFunctions(funcType string) (result []model.Function, 
 
 }
 
-
 /////////////////////////
 //		source
 /////////////////////////
-

@@ -33,9 +33,9 @@ func (this *Controller) GetAspects() (result []model.Aspect, err error, errCode 
 		return result, err, http.StatusInternalServerError
 	}
 
-	err = this.ByteToModel(deviceClasses, &result)
+	err = this.RdfXmlToModel(deviceClasses, &result)
 	if err != nil {
-		log.Println("GetAspects ERROR: ByteToModel", err)
+		log.Println("GetAspects ERROR: RdfXmlToModel", err)
 		return result, err, http.StatusInternalServerError
 	}
 
@@ -45,4 +45,3 @@ func (this *Controller) GetAspects() (result []model.Aspect, err error, errCode 
 /////////////////////////
 //		source
 /////////////////////////
-

@@ -16,15 +16,6 @@
 
 package controller
 
-import (
-	"github.com/SENERGY-Platform/semantic-repository/lib/model"
-	"github.com/SmartEnergyPlatform/jwt-http-router"
-)
-
-type Security interface {
-	CheckBool(jwt jwt_http_router.Jwt, kind string, id string, action model.AuthAction) (allowed bool, err error)
-}
-
 type Producer interface {
 	PublishDeviceDelete(id string, owner string) error
 }

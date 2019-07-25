@@ -33,9 +33,9 @@ func (this *Controller) GetDeviceClasses() (result []model.DeviceClass, err erro
 		return result, err, http.StatusInternalServerError
 	}
 
-	err = this.ByteToModel(deviceClasses, &result)
+	err = this.RdfXmlToModel(deviceClasses, &result)
 	if err != nil {
-		log.Println("GetDeviceClasses ERROR: ByteToModel", err)
+		log.Println("GetDeviceClasses ERROR: RdfXmlToModel", err)
 		return result, err, http.StatusInternalServerError
 	}
 
@@ -45,4 +45,3 @@ func (this *Controller) GetDeviceClasses() (result []model.DeviceClass, err erro
 /////////////////////////
 //		source
 /////////////////////////
-

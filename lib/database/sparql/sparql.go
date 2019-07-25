@@ -52,7 +52,7 @@ func (*Database) RemoveDeviceType(ctx context.Context, id string) error {
 func (this *Database) InsertData(triples string) (success bool, err error) {
 	requestBody := []byte(triples)
 	log.Println(string(requestBody))
-	resp, err := http.Post(this.conf.RyaUrl + "/web.rya/loadrdf?format=N-Triples","text/plain", bytes.NewBuffer(requestBody))
+	resp, err := http.Post(this.conf.RyaUrl+"/web.rya/loadrdf?format=N-Triples", "text/plain", bytes.NewBuffer(requestBody))
 	if err != nil {
 		log.Println("ERROR: ", err)
 		return false, err
@@ -61,11 +61,11 @@ func (this *Database) InsertData(triples string) (success bool, err error) {
 	if resp.StatusCode == 200 {
 		return true, nil
 	} else {
-		return false, errors.New("ERROR: Statuscode "  + string(resp.StatusCode))
+		return false, errors.New("ERROR: Statuscode " + string(resp.StatusCode))
 	}
 }
 
-func (*Database)  ReadData() (body []byte, err error){
+func (*Database) ReadData() (body []byte, err error) {
 	conf, err := config.Load("../config.json")
 	if err != nil {
 		log.Println("ERROR: unable to load to config", err)
@@ -86,20 +86,20 @@ func (*Database)  ReadData() (body []byte, err error){
 	return body, nil
 }
 
-func (this *Database)  GetConstruct(s string, p string, o string) (body []byte, err error){
+func (this *Database) GetConstruct(s string, p string, o string) (rdfxml string, err error) {
 	query := this.getConstructQuery(s, p, o)
 	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
 	if err != nil {
 		log.Println("ERROR: GetFunctions", err)
-		return nil, err
+		return "", err
 	}
 	defer resp.Body.Close()
-	body, err = ioutil.ReadAll(resp.Body)
+	byteArray, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Println("ERROR:", err)
-		return nil, err
+		return "", err
 	}
-	return body, nil
+	return string(byteArray), nil
 }
 
 func getTimeoutContext() (context.Context, context.CancelFunc) {

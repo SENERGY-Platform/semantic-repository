@@ -28,15 +28,19 @@ import (
 /////////////////////////
 
 func (this *Controller) ReadDevice(id string, jwt jwt_http_router.Jwt) (result model.Device, err error, errCode int) {
-	ctx, _ := getTimeoutContext()
-	device, exists, err := this.db.GetDevice(ctx, id)
-	if err != nil {
-		return result, err, http.StatusInternalServerError
-	}
-	if !exists {
-		return result, errors.New("not found"), http.StatusNotFound
-	}
-	return device, nil, http.StatusOK
+	panic("not implemented")
+	/*
+		ctx, _ := getTimeoutContext()
+		device, exists, err := this.db.GetDevice(ctx, id)
+		if err != nil {
+			return result, err, http.StatusInternalServerError
+		}
+		if !exists {
+			return result, errors.New("not found"), http.StatusNotFound
+		}
+		return device, nil, http.StatusOK
+
+	*/
 }
 
 func (this *Controller) ValidateDevice(device model.Device) (err error, code int) {
@@ -61,37 +65,44 @@ func (this *Controller) ValidateDevice(device model.Device) (err error, code int
 
 func (this *Controller) SetDevice(device model.Device, owner string) (err error) {
 	//do some validation stuff and rollback event if fail
-	if false {
-		//fail
+	panic("not implemented")
+	/*
+		if false {
+			//fail
 
-		device.LocalId = ""
-		ctx, _ := getTimeoutContext()
-		err = this.db.SetDevice(ctx, device) //save temporarily
-		if err != nil {
-			return err
+			device.LocalId = ""
+			ctx, _ := getTimeoutContext()
+			err = this.db.SetDevice(ctx, device) //save temporarily
+			if err != nil {
+				return err
+			}
+			return this.PublishDeviceDelete(device.Id, owner) //roll back
+
+		} else {
+
+			//save device
+			ctx, _ := getTimeoutContext()
+			return this.db.SetDevice(ctx, device)
 		}
-		return this.PublishDeviceDelete(device.Id, owner) //roll back
-
-	} else {
-
-		//save device
-		ctx, _ := getTimeoutContext()
-		return this.db.SetDevice(ctx, device)
-	}
+	*/
 
 }
 
 func (this *Controller) DeleteDevice(id string) error {
-	ctx, _ := getTimeoutContext()
-	_, exists, err := this.db.GetDevice(ctx, id)
-	if err != nil {
-		return err
-	}
-	if exists {
+	panic("not implemented")
+	/*
 		ctx, _ := getTimeoutContext()
-		return this.db.RemoveDevice(ctx, id)
-	}
-	return nil
+		_, exists, err := this.db.GetDevice(ctx, id)
+		if err != nil {
+			return err
+		}
+		if exists {
+			ctx, _ := getTimeoutContext()
+			return this.db.RemoveDevice(ctx, id)
+		}
+		return nil
+
+	*/
 }
 
 func (this *Controller) PublishDeviceDelete(id string, owner string) error {

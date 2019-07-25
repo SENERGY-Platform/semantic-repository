@@ -28,15 +28,19 @@ import (
 /////////////////////////
 
 func (this *Controller) ReadDeviceType(id string, jwt jwt_http_router.Jwt) (result model.DeviceType, err error, errCode int) {
-	ctx, _ := getTimeoutContext()
-	deviceType, exists, err := this.db.GetDeviceType(ctx, id)
-	if err != nil {
-		return result, err, http.StatusInternalServerError
-	}
-	if !exists {
-		return result, errors.New("not found"), http.StatusNotFound
-	}
-	return deviceType, nil, http.StatusOK
+	panic("not implemented")
+	/*
+		ctx, _ := getTimeoutContext()
+		deviceType, exists, err := this.db.GetDeviceType(ctx, id)
+		if err != nil {
+			return result, err, http.StatusInternalServerError
+		}
+		if !exists {
+			return result, errors.New("not found"), http.StatusNotFound
+		}
+		return deviceType, nil, http.StatusOK
+
+	*/
 }
 
 func (this *Controller) ValidateDeviceType(dt model.DeviceType) (err error, code int) {
@@ -63,11 +67,17 @@ func (this *Controller) ValidateDeviceType(dt model.DeviceType) (err error, code
 /////////////////////////
 
 func (this *Controller) SetDeviceType(deviceType model.DeviceType, owner string) (err error) {
-	ctx, _ := getTimeoutContext()
-	return this.db.SetDeviceType(ctx, deviceType)
+	panic("not implemented")
+	/*
+		ctx, _ := getTimeoutContext()
+		return this.db.SetDeviceType(ctx, deviceType)
+	*/
 }
 
 func (this *Controller) DeleteDeviceType(id string) error {
-	ctx, _ := getTimeoutContext()
-	return this.db.RemoveDeviceType(ctx, id)
+	panic("not implemented")
+	/*
+		ctx, _ := getTimeoutContext()
+		return this.db.RemoveDeviceType(ctx, id)
+	*/
 }
