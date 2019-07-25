@@ -14,21 +14,35 @@
  * limitations under the License.
  */
 
-package api
+package controller
 
 import (
 	"github.com/SENERGY-Platform/semantic-repository/lib/model"
-	"github.com/SmartEnergyPlatform/jwt-http-router"
+	"log"
+	"net/http"
 )
 
-type Controller interface {
-	ReadDevice(id string, jwt jwt_http_router.Jwt) (result model.Device, err error, errCode int)
-	ValidateDevice(device model.Device) (err error, code int)
+/////////////////////////
+//		api
+/////////////////////////
 
-	ReadDeviceType(id string, jwt jwt_http_router.Jwt) (result model.DeviceType, err error, errCode int)
-	ValidateDeviceType(deviceType model.DeviceType) (err error, code int)
+func (this *Controller) GetAspects() (result []model.Aspect, err error, errCode int) {
+	deviceClasses, err := this.db.GetConstruct("", model.RDF_TYPE, model.SES_ONTOLOGY_ASPECT)
+	if err != nil {
+		log.Println("GetAspects ERROR: GetConstruct", err)
+		return result, err, http.StatusInternalServerError
+	}
 
-	GetFunctions(funcType string) (result []model.Function, err error, errCode int)
-	GetDeviceClasses() (result []model.DeviceClass, err error, errCode int)
-	GetAspects() (result []model.Aspect, err error, errCode int)
+	err = this.ByteToModel(deviceClasses, &result)
+	if err != nil {
+		log.Println("GetAspects ERROR: ByteToModel", err)
+		return result, err, http.StatusInternalServerError
+	}
+
+	return result, nil, http.StatusOK
 }
+
+/////////////////////////
+//		source
+/////////////////////////
+
