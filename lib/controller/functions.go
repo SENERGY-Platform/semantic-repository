@@ -17,12 +17,9 @@
 package controller
 
 import (
-	"encoding/json"
-	"github.com/SENERGY-Platform/semantic-repository/lib/database/sparql/rdf"
 	"github.com/SENERGY-Platform/semantic-repository/lib/model"
-	"github.com/piprate/json-gold/ld"
+	"log"
 	"net/http"
-	"strings"
 )
 
 /////////////////////////
@@ -35,45 +32,14 @@ func (this *Controller) GetFunctions(funcType string) (result []model.Function, 
 		return result, err, http.StatusInternalServerError
 	}
 
-	triples, err := rdf.NewTripleDecoder(strings.NewReader(string(functions)), rdf.RDFXML).DecodeAll()
+	err = this.ByteToModel(functions, &result)
 	if err != nil {
+		log.Println("GetFunctions ERROR: ByteToModel", err)
 		return result, err, http.StatusInternalServerError
 	}
 
-	turtle := []string{}
-	for _, triple := range triples {
-		turtle = append(turtle, triple.Serialize(rdf.Turtle))
-	}
+	return result, nil, http.StatusOK
 
-	proc := ld.NewJsonLdProcessor()
-	options := ld.NewJsonLdOptions("")
-	options.ProcessingMode = ld.JsonLd_1_1
-
-	doc, _ := proc.FromRDF(strings.Join(turtle, ""), options)
-
-	context := map[string]interface{}{
-		"@context": map[string]interface{}{
-			"rdfs":   "http://www.w3.org/2000/01/rdf-schema#",
-			"xsd":    "http://www.w3.org/2001/XMLSchema#",
-			"schema": "http://schema.org/",
-			"name":   "rdfs:label",
-			"id":     "@id",
-			"type":   "@type",
-		},
-	}
-
-	framedDoc, err := proc.Frame(doc, context, options)
-	if err != nil {
-		return result, err, http.StatusInternalServerError
-	}
-	b, err := json.Marshal(framedDoc["@graph"])
-	var function []model.Function
-	err = json.Unmarshal(b, &function)
-	if err != nil {
-		return result, err, http.StatusInternalServerError
-	}
-
-	return function, nil, http.StatusOK
 }
 
 
