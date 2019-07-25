@@ -29,4 +29,5 @@ type Controller interface {
 	ValidateDeviceType(deviceType model.DeviceType) (err error, code int)
 
 	GetFunctions(funcType string) (result []model.Function, err error, errCode int)
+	GetDeviceClasses() (result []model.DeviceClass, err error, errCode int)
 }

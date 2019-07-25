@@ -49,15 +49,10 @@ func (*Database) RemoveDeviceType(ctx context.Context, id string) error {
 	panic("implement me")
 }
 
-func (*Database) InsertData(triples string) (success bool, err error) {
-	conf, err := config.Load("../config.json")
-	if err != nil {
-		log.Println("ERROR: unable to load to config", err)
-		return false, err
-	}
+func (this *Database) InsertData(triples string) (success bool, err error) {
 	requestBody := []byte(triples)
 	log.Println(string(requestBody))
-	resp, err := http.Post(conf.RyaUrl + "/web.rya/loadrdf?format=N-Triples","text/plain", bytes.NewBuffer(requestBody))
+	resp, err := http.Post(this.conf.RyaUrl + "/web.rya/loadrdf?format=N-Triples","text/plain", bytes.NewBuffer(requestBody))
 	if err != nil {
 		log.Println("ERROR: ", err)
 		return false, err
