@@ -20,8 +20,8 @@ func TestInsertSparql(t *testing.T) {
 		t.Fatal(err)
 	}
 	db, err := database.New(conf)
-	success, err := db.InsertData(`<urn:infai:ses:concept:6666> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://senergy.infai.org/ontology/Concept> .
-<urn:infai:ses:concept:6666> <http://www.w3.org/2000/01/rdf-schema#label> "color" .`)
+	success, err := db.InsertData(`<urn:infai:ses:concept:7777> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://senergy.infai.org/ontology/Concept> .
+<urn:infai:ses:concept:7777> <http://www.w3.org/2000/01/rdf-schema#label> "temperature" .`)
 	t.Log(success)
 }
 
@@ -32,7 +32,7 @@ func TestConstructSparql(t *testing.T) {
 	}
 
 	db, err := database.New(conf)
-	body, err := db.GetConstruct("","", "")
+	body, err := db.GetConstruct("", "", "")
 	t.Log(string(body))
 }
 
@@ -49,16 +49,16 @@ func TestJsonLd(t *testing.T) {
 
 	// this JSON-LD document was taken from http://json-ld.org/test-suite/tests/toRdf-0028-in.jsonld
 	doc := map[string]interface{}{
-		"id": "@id",
-		"type": "@type",
-		"name": model.RDFS_LABEL,
+		"id":           "@id",
+		"type":         "@type",
+		"name":         model.RDFS_LABEL,
 		"device_class": model.SES_ONTOLOGY_HAS_DEVICE_CLASS,
-		"services": model.SES_ONTOLOGY_HAS_SERVICE,
-		"aspects": model.SES_ONTOLOGY_REFERS_TO,
-		"functions": model.SES_ONTOLOGY_EXPOSES_FUNCTION,
+		"services":     model.SES_ONTOLOGY_HAS_SERVICE,
+		"aspects":      model.SES_ONTOLOGY_REFERS_TO,
+		"functions":    model.SES_ONTOLOGY_EXPOSES_FUNCTION,
 		"concept_ids": map[string]interface{}{
-			"@id": model.SES_ONTOLOGY_HAS_CONCEPT,
-			"@type": "@id",
+			"@id":        model.SES_ONTOLOGY_HAS_CONCEPT,
+			"@type":      "@id",
 			"@container": "@set",
 		},
 	}
@@ -206,4 +206,50 @@ func TestCompact(t *testing.T) {
 
 	compactedDoc, _ := proc.Compact(doc, context, options)
 	log.Println(compactedDoc)
+}
+
+func TestY(t *testing.T) {
+	proc := ld.NewJsonLdProcessor()
+	options := ld.NewJsonLdOptions("")
+	options.ProcessingMode = ld.JsonLd_1_1
+
+	doc := map[string]interface{}{
+		"@context": map[string]interface{}{
+			"id": "@id",
+			"type": "@type",
+			"rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+			"name": "rdfs:label",
+			"concept_ids": "https://senergy.infai.org/ontology/hasConcept",
+		},
+		"@graph": []interface{}{
+			map[string]interface{}{
+				"@id":   "urn:infai:ses:function:5555",
+				"@type": []interface{}{"https://senergy.infai.org/ontology/ControllingFunction"},
+				"http://www.w3.org/2000/01/rdf-schema#label": map[string]interface{}{
+					"@value": "brightnessAdjustment"},
+				"https://senergy.infai.org/ontology/hasConcept" :[]interface{}{
+					map[string]interface{}{"@id": "urn:infai:ses:concept:6666"},
+					map[string]interface{}{"@id": "urn:infai:ses:concept:7777"},
+				},
+			},
+		},
+	}
+
+	frame := map[string]interface{}{
+		"@context": map[string]interface{}{
+			"id": "@id",
+			"type": "@type",
+			"rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+			"name": "rdfs:label",
+			"concept_ids": "https://senergy.infai.org/ontology/hasConcept",
+		},
+	}
+
+	framedDoc, err := proc.Flatten(doc, frame, options)
+	if err != nil {
+		log.Println("Error when framing JSON-LD document:", err)
+		return
+	}
+
+	ld.PrintDocument("JSON-LD framed doc", framedDoc)
 }

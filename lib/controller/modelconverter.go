@@ -6,6 +6,7 @@ import (
 	"github.com/SENERGY-Platform/semantic-repository/lib/model"
 	"github.com/piprate/json-gold/ld"
 	"log"
+	"reflect"
 	"runtime/debug"
 	"strings"
 )
@@ -36,31 +37,49 @@ func (*Controller) RdfXmlToModel(deviceClasses string, result interface{}) (err 
 		return err
 	}
 	log.Println("doc:", doc)
-	context := map[string]interface{}{
-		"@context": map[string]interface{}{
+	log.Println(reflect.TypeOf(doc))
+	contextDoc := map[string]interface{}{
+
 			"rdfs": "http://www.w3.org/2000/01/rdf-schema#",
 			"id": "@id",
 			"type": "@type",
 			"name": "rdfs:label",
-			//"device_class": model.SES_ONTOLOGY_HAS_DEVICE_CLASS,
-			//"services": model.SES_ONTOLOGY_HAS_SERVICE,
-			//"aspects": model.SES_ONTOLOGY_REFERS_TO,
 			"functions": model.SES_ONTOLOGY_EXPOSES_FUNCTION,
-			"concept_ids": map[string]interface{}{
-				"@id": model.SES_ONTOLOGY_HAS_CONCEPT,
-				"@type": "@id",
-				"@container": "@set",
-			},
-		},
+		    "concept_ids": model.SES_ONTOLOGY_HAS_CONCEPT,
 	}
-	framedDoc, err := proc.Frame(doc, context, options)
+
+	contextFrame := map[string]interface{}{
+
+		"rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+		"id": "@id",
+		"type": "@type",
+		"name": "rdfs:label",
+		"functions": model.SES_ONTOLOGY_EXPOSES_FUNCTION,
+		"concept_ids": model.SES_ONTOLOGY_HAS_CONCEPT,
+	}
+
+	graph := map[string]interface{} {
+	}
+	graph["@context"] = contextDoc
+	graph["@graph"] = doc
+
+	cont := map[string]interface{} {}
+	cont["@context"] = contextFrame
+
+	log.Println("graph:", graph)
+	framedDoc, err := proc.Flatten(graph, cont, options)
 	if err != nil {
 		debug.PrintStack()
 		log.Println("Error: Frame()", err)
 		return err
 	}
 	log.Println("framedDoc:", framedDoc)
-	b, err := json.Marshal(framedDoc["@graph"])
+	frameDocM, _ := json.Marshal(framedDoc)
+	log.Println("graphNew:", string(frameDocM))
+	xxx, _ := framedDoc.(map[string]interface{})
+	gr := xxx["@graph"].([]interface{})
+	log.Println("gr:", gr)
+	b, err := json.Marshal(gr)
 	log.Println("b:", string(b))
 	err = json.Unmarshal(b, &result)
 	if err != nil {
