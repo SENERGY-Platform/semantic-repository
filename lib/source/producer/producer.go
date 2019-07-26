@@ -29,6 +29,7 @@ import (
 type Producer struct {
 	config  config.Config
 	devices *kafka.Writer
+	devicetypes *kafka.Writer
 }
 
 func New(conf config.Config) (*Producer, error) {
@@ -43,7 +44,12 @@ func New(conf config.Config) (*Producer, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Producer{config: conf, devices: devices}, nil
+
+	devicetypes, err := getProducer(broker, conf.DeviceTypeTopic, conf.LogLevel == "DEBUG")
+	if err != nil {
+		return nil, err
+	}
+	return &Producer{config: conf, devices: devices, devicetypes: devicetypes}, nil
 }
 
 func getProducer(broker []string, topic string, debug bool) (writer *kafka.Writer, err error) {

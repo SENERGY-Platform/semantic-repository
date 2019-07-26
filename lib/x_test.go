@@ -20,8 +20,8 @@ func TestInsertSparql(t *testing.T) {
 		t.Fatal(err)
 	}
 	db, err := database.New(conf)
-	success, err := db.InsertData(`<urn:infai:ses:measuringfunction:444> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://senergy.infai.org/ontology/MeasuringFunction> .
-<urn:infai:ses:measuringfunction:444> <http://www.w3.org/2000/01/rdf-schema#label> "humidityFunction" .`)
+	success, err := db.InsertData(`<urn:infai:ses:concept:6666> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://senergy.infai.org/ontology/Concept> .
+<urn:infai:ses:concept:6666> <http://www.w3.org/2000/01/rdf-schema#label> "color" .`)
 	t.Log(success)
 }
 
@@ -49,13 +49,17 @@ func TestJsonLd(t *testing.T) {
 
 	// this JSON-LD document was taken from http://json-ld.org/test-suite/tests/toRdf-0028-in.jsonld
 	doc := map[string]interface{}{
-		"@context": map[string]interface{}{
-			"rdfs":   "http://www.w3.org/2000/01/rdf-schema#",
-			"xsd":    "http://www.w3.org/2001/XMLSchema#",
-			"schema": "http://schema.org/",
-			"name":   "rdfs:label",
-			"id":     "@id",
-			"type":   "@type",
+		"id": "@id",
+		"type": "@type",
+		"name": model.RDFS_LABEL,
+		"device_class": model.SES_ONTOLOGY_HAS_DEVICE_CLASS,
+		"services": model.SES_ONTOLOGY_HAS_SERVICE,
+		"aspects": model.SES_ONTOLOGY_REFERS_TO,
+		"functions": model.SES_ONTOLOGY_EXPOSES_FUNCTION,
+		"concept_ids": map[string]interface{}{
+			"@id": model.SES_ONTOLOGY_HAS_CONCEPT,
+			"@type": "@id",
+			"@container": "@set",
 		},
 	}
 
@@ -174,4 +178,32 @@ func TestFromXmlToStruct(t *testing.T) {
 	}
 	t.Log(function)
 
+}
+
+func TestCompact(t *testing.T) {
+	proc := ld.NewJsonLdProcessor()
+	options := ld.NewJsonLdOptions("")
+	// add the processing mode explicitly if you need JSON-LD 1.1 features
+	options.ProcessingMode = ld.JsonLd_1_1
+
+	doc := map[string]interface{}{
+		"@id": "http://example.org/test#book",
+		"http://example.org/vocab#contains": map[string]interface{}{
+			"@id": "http://example.org/test#chapter",
+		},
+		"http://purl.org/dc/elements/1.1/title": "Title",
+	}
+
+	context := map[string]interface{}{
+		"@context": map[string]interface{}{
+			"dc": "http://purl.org/dc/elements/1.1/",
+			"ex": "http://example.org/vocab#",
+			"ex:contains": map[string]interface{}{
+				"@type": "@id",
+			},
+		},
+	}
+
+	compactedDoc, _ := proc.Compact(doc, context, options)
+	log.Println(compactedDoc)
 }

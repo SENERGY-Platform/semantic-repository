@@ -19,6 +19,7 @@ package model
 type DeviceClass struct {
 	Id   string `json:"id"`
 	Name string `json:"name"`
+	Type string `json:"type"`
 }
 
 type Function struct {
@@ -35,6 +36,7 @@ type Context struct {
 type Aspect struct {
 	Id   string `json:"id"`
 	Name string `json:"name"`
+	Type string `json:"type"`
 }
 
 type Concept struct {
