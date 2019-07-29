@@ -17,6 +17,7 @@
 package controller
 
 import (
+	"errors"
 	"github.com/SENERGY-Platform/semantic-repository/lib/model"
 	"log"
 	"net/http"
@@ -40,6 +41,21 @@ func (this *Controller) GetDeviceClasses() (result []model.DeviceClass, err erro
 	}
 
 	return result, nil, http.StatusOK
+}
+
+func (this *Controller) ValidateDeviceClass(deviceClass model.DeviceClass) (error, int) {
+
+		if deviceClass.Id == "" {
+			return errors.New("missing device class id"), http.StatusBadRequest
+		}
+		if deviceClass.Name == "" {
+			return errors.New("missing device class name"), http.StatusBadRequest
+		}
+		if deviceClass.Type != model.SES_ONTOLOGY_DEVICE_CLASS {
+			return errors.New("wrong device class type"), http.StatusBadRequest
+		}
+
+	return nil, http.StatusOK
 }
 
 /////////////////////////

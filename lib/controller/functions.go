@@ -43,20 +43,30 @@ func (this *Controller) GetFunctions(funcType string) (result []model.Function, 
 
 }
 
-func (this *Controller) ValidateFunctions(aspects []model.Function) (error, int) {
-	if (len(aspects)) == 0 {
+func (this *Controller) ValidateFunctions(functions []model.Function) (error, int) {
+	if (len(functions)) == 0 {
 		return errors.New("expect at least one function"), http.StatusBadRequest
 	}
 
-	for _, aspect := range aspects {
-		if aspect.Id == "" {
+	for _, function := range functions {
+		if function.Id == "" {
 			return errors.New("missing function id"), http.StatusBadRequest
 		}
-		if aspect.Name == "" {
+		if function.Name == "" {
 			return errors.New("missing function name"), http.StatusBadRequest
 		}
-		if !(aspect.Type == model.SES_ONTOLOGY_CONTROLLING_FUNCTION || aspect.Type == model.SES_ONTOLOGY_MEASURING_FUNCTION) {
-			return errors.New("wrong aspect type"), http.StatusBadRequest
+		if !(function.Type == model.SES_ONTOLOGY_CONTROLLING_FUNCTION || function.Type == model.SES_ONTOLOGY_MEASURING_FUNCTION) {
+			return errors.New("wrong function type"), http.StatusBadRequest
+		}
+
+		if len(function.ConceptIds) == 0 {
+			return errors.New("expect at least one concept id"), http.StatusBadRequest
+		}
+
+		for _, conceptId := range function.ConceptIds {
+			if conceptId.Id == "" {
+				return errors.New("missing concept id"), http.StatusBadRequest
+			}
 		}
 	}
 

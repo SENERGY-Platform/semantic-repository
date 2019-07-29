@@ -63,6 +63,11 @@ func (this *Controller) ValidateDeviceType(dt model.DeviceType) (err error, code
 		return err, code
 	}
 
+	err, code = this.ValidateDeviceClass(dt.DeviceClass)
+	if err != nil {
+		return err, code
+	}
+
 	return nil, http.StatusOK
 }
 

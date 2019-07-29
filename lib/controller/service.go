@@ -51,7 +51,7 @@ func (this *Controller) ValidateService(services []model.Service) (error, int) {
 			return err, code
 		}
 
-		err, code = this.ValidateAspects(service.Aspects)
+		err, code = this.ValidateFunctions(service.Functions)
 		if err != nil {
 			return err, code
 		}

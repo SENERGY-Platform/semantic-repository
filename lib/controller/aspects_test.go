@@ -5,6 +5,20 @@ import (
 	"net/http"
 	"testing"
 )
+
+func TestValidAspect (t *testing.T) {
+	aspects := []model.Aspect{}
+	aspects = append(aspects, model.Aspect{Id: "urn:infai:ses:aspect:122", Name: "Air", Type: model.SES_ONTOLOGY_ASPECT})
+
+	controller := Controller{}
+	err, code := controller.ValidateAspects(aspects)
+	if err == nil && code == http.StatusOK {
+		t.Log(err)
+	} else {
+		t.Fatal(err, code)
+	}
+}
+
 func TestAspectNoData (t *testing.T) {
 	aspects := []model.Aspect{}
 
