@@ -143,7 +143,8 @@ func (this *Controller) SetDeviceType(deviceType model.DeviceType, owner string)
 }
 
 func (this *Controller) DeleteDeviceType(id string) error {
-	panic("not implemented")
+	return nil
+	// todo
 	/*
 		ctx, _ := getTimeoutContext()
 		return this.db.RemoveDeviceType(ctx, id)
