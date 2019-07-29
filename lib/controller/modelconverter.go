@@ -18,6 +18,11 @@ func (*Controller) RdfXmlToModel(deviceClasses string, result interface{}) (err 
 		return err
 	}
 
+	if len(triples) == 0 {
+		log.Println("No triples found")
+		return nil
+	}
+
 	turtle := []string{}
 	for _, triple := range triples {
 		turtle = append(turtle, triple.Serialize(rdf.Turtle))
