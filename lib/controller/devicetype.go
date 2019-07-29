@@ -53,15 +53,16 @@ func (this *Controller) ValidateDeviceType(dt model.DeviceType) (err error, code
 	if dt.Name == "" {
 		return errors.New("missing device-type name"), http.StatusBadRequest
 	}
-	if len(dt.Services) == 0 {
-		return errors.New("expect at least one service"), http.StatusBadRequest
+
+	if dt.Type != model.SES_ONTOLOGY_DEVICE_TYPE {
+		return errors.New("wrong device type"), http.StatusBadRequest
 	}
-	for _, service := range dt.Services {
-		err, code = this.ValidateService(service)
-		if err != nil {
-			return err, code
-		}
+
+	err, code = this.ValidateService(dt.Services)
+	if err != nil {
+		return err, code
 	}
+
 	return nil, http.StatusOK
 }
 
@@ -83,25 +84,28 @@ func (this *Controller) SetDeviceType(deviceType model.DeviceType, owner string)
 		}
 	}
 
-
+	err, _ = this.ValidateDeviceType(deviceType)
+	if err != nil {
+		log.Println("Error Validation:", err)
+		return
+	}
 	log.Println(deviceType)
-
 
 	b, err := json.Marshal(deviceType)
 	var result map[string]interface{}
 	err = json.Unmarshal(b, &result)
 
 	context := map[string]interface{}{
-		"id": "@id",
-		"type": "@type",
-		"name": model.RDFS_LABEL,
+		"id":           "@id",
+		"type":         "@type",
+		"name":         model.RDFS_LABEL,
 		"device_class": model.SES_ONTOLOGY_HAS_DEVICE_CLASS,
-		"services": model.SES_ONTOLOGY_HAS_SERVICE,
-		"aspects": model.SES_ONTOLOGY_REFERS_TO,
-		"functions": model.SES_ONTOLOGY_EXPOSES_FUNCTION,
+		"services":     model.SES_ONTOLOGY_HAS_SERVICE,
+		"aspects":      model.SES_ONTOLOGY_REFERS_TO,
+		"functions":    model.SES_ONTOLOGY_EXPOSES_FUNCTION,
 		"concept_ids": map[string]interface{}{
-			"@id": model.SES_ONTOLOGY_HAS_CONCEPT,
-			"@type": "@id",
+			"@id":        model.SES_ONTOLOGY_HAS_CONCEPT,
+			"@type":      "@id",
 			"@container": "@set",
 		},
 	}
@@ -122,7 +126,6 @@ func (this *Controller) SetDeviceType(deviceType model.DeviceType, owner string)
 
 	log.Println("---->")
 	log.Println(triples)
-
 
 	//os.Stdout.WriteString(triples.(string))
 	success, err := this.db.InsertData(triples.(string))

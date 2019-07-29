@@ -60,7 +60,7 @@ func Test(t *testing.T) {
 		"",
 		[]model.Content{},
 		[]model.Content{},
-		[]model.Function{{Id:"urn:infai:ses:function:5555", Name: "brightnessAdjustment", ConceptIds: []string{"urn:infai:ses:concept:6666","urn:infai:ses:concept:7777"}, Type: model.SES_ONTOLOGY_CONTROLLING_FUNCTION }},
+		[]model.Function{{Id:"urn:infai:ses:function:5555", Name: "brightnessAdjustment", ConceptIds: []model.ConceptId{{"urn:infai:ses:concept:6666"},{"urn:infai:ses:concept:7777"}}, Type: model.SES_ONTOLOGY_CONTROLLING_FUNCTION }},
 		"asdasdsadsadasd",
 	})
 

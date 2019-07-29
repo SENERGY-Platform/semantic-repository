@@ -18,6 +18,7 @@ package controller
 
 import (
 	"github.com/SENERGY-Platform/semantic-repository/lib/model"
+	"github.com/pkg/errors"
 	"log"
 	"net/http"
 )
@@ -40,6 +41,26 @@ func (this *Controller) GetAspects() (result []model.Aspect, err error, errCode 
 	}
 
 	return result, nil, http.StatusOK
+}
+
+func (this *Controller) ValidateAspects(aspects []model.Aspect) (error, int) {
+	if (len(aspects)) == 0 {
+		return errors.New("expect at least one aspect"), http.StatusBadRequest
+	}
+
+	for _, aspect := range aspects {
+		if aspect.Id == "" {
+			return errors.New("missing aspect id"), http.StatusBadRequest
+		}
+		if aspect.Name == "" {
+			return errors.New("missing aspect name"), http.StatusBadRequest
+		}
+		if aspect.Type != model.SES_ONTOLOGY_ASPECT {
+			return errors.New("wrong aspect type"), http.StatusBadRequest
+		}
+	}
+
+	return nil, http.StatusOK
 }
 
 /////////////////////////
