@@ -59,13 +59,7 @@ func (*Controller) RdfXmlToModel(deviceClasses string, result interface{}) (err 
 		return err
 	}
 
-	flattenDocCast, _ := flattenDoc.(map[string]interface{})
-	if err != nil {
-		debug.PrintStack()
-		log.Println("Error: FlattenDoc Cast()", err)
-		return err
-	}
-
+	flattenDocCast := flattenDoc.(map[string]interface{})
 	if flattenDocCast["@graph"] == nil {
 		return nil
 	}
