@@ -19,6 +19,7 @@ package api
 import (
 	"encoding/json"
 	"github.com/SENERGY-Platform/semantic-repository/lib/config"
+	"github.com/SENERGY-Platform/semantic-repository/lib/controller"
 	"github.com/SENERGY-Platform/semantic-repository/lib/model"
 	jwt_http_router "github.com/SmartEnergyPlatform/jwt-http-router"
 	"log"
@@ -64,6 +65,7 @@ func DeviceTypeEndpoints(config config.Config, control Controller, router *jwt_h
 			http.Error(writer, err.Error(), http.StatusBadRequest)
 			return
 		}
+		controller.SetTypes(&dt)
 		err, code := control.ValidateDeviceType(dt)
 		if err != nil {
 			http.Error(writer, err.Error(), code)

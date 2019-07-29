@@ -76,18 +76,7 @@ func (this *Controller) ValidateDeviceType(dt model.DeviceType) (err error, code
 /////////////////////////
 
 func (this *Controller) SetDeviceType(deviceType model.DeviceType, owner string) (err error) {
-	deviceType.Type = model.SES_ONTOLOGY_DEVICE_TYPE
-	deviceType.DeviceClass.Type = model.SES_ONTOLOGY_DEVICE_CLASS
-	for serviceIndex, _ := range deviceType.Services {
-		deviceType.Services[serviceIndex].Type = model.SES_ONTOLOGY_SERVICE
-		for aspectIndex, _ := range deviceType.Services[serviceIndex].Aspects {
-			deviceType.Services[serviceIndex].Aspects[aspectIndex].Type = model.SES_ONTOLOGY_ASPECT
-		}
-		for _, function := range deviceType.Services[serviceIndex].Functions {
-			log.Println("Function:", function)
-			// todo check functionType
-		}
-	}
+	SetTypes(&deviceType)
 
 	err, _ = this.ValidateDeviceType(deviceType)
 	if err != nil {
@@ -140,6 +129,17 @@ func (this *Controller) SetDeviceType(deviceType model.DeviceType, owner string)
 		return this.db.SetDeviceType(ctx, deviceType)
 	*/
 	return
+}
+
+func SetTypes(deviceType *model.DeviceType) {
+	deviceType.Type = model.SES_ONTOLOGY_DEVICE_TYPE
+	deviceType.DeviceClass.Type = model.SES_ONTOLOGY_DEVICE_CLASS
+	for serviceIndex, _ := range deviceType.Services {
+		deviceType.Services[serviceIndex].Type = model.SES_ONTOLOGY_SERVICE
+		for aspectIndex, _ := range deviceType.Services[serviceIndex].Aspects {
+			deviceType.Services[serviceIndex].Aspects[aspectIndex].Type = model.SES_ONTOLOGY_ASPECT
+		}
+	}
 }
 
 func (this *Controller) DeleteDeviceType(id string) error {
