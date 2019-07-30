@@ -70,22 +70,7 @@ func TestProduceValidDeviceType(t *testing.T) {
 }
 
 func TestReadControllingFunction(t *testing.T) {
-	conf, err := config.Load("../config.json")
-	if err != nil {
-		t.Fatal(err)
-	}
-	db, err := database.New(conf)
-	if err != nil {
-		t.Fatal(err)
-	}
-	producer, err := producer.New(conf)
-	if err != nil {
-		t.Fatal(err)
-	}
-	con, err := controller.New(conf, db, producer)
-	if err != nil {
-		t.Fatal(err)
-	}
+	err, con := StartUpScript(t)
 	res, err, code := con.GetFunctions(model.SES_ONTOLOGY_CONTROLLING_FUNCTION)
 	if err != nil {
 		t.Fatal(res, err, code)
@@ -95,6 +80,36 @@ func TestReadControllingFunction(t *testing.T) {
 }
 
 func TestReadMeasuringFunction(t *testing.T) {
+	err, con := StartUpScript(t)
+	res, err, code := con.GetFunctions(model.SES_ONTOLOGY_MEASURING_FUNCTION)
+	if err != nil {
+		t.Fatal(res, err, code)
+	} else {
+		t.Log(res)
+	}
+}
+
+func TestReadAspect(t *testing.T) {
+	err, con := StartUpScript(t)
+	res, err, code := con.GetAspects()
+	if err != nil {
+		t.Fatal(res, err, code)
+	} else {
+		t.Log(res)
+	}
+}
+
+func TestReadDeviceClass(t *testing.T) {
+	err, con := StartUpScript(t)
+	res, err, code := con.GetDeviceClasses()
+	if err != nil {
+		t.Fatal(res, err, code)
+	} else {
+		t.Log(res)
+	}
+}
+
+func StartUpScript(t *testing.T) (error, *controller.Controller) {
 	conf, err := config.Load("../config.json")
 	if err != nil {
 		t.Fatal(err)
@@ -111,12 +126,7 @@ func TestReadMeasuringFunction(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	res, err, code := con.GetFunctions(model.SES_ONTOLOGY_MEASURING_FUNCTION)
-	if err != nil {
-		t.Fatal(res, err, code)
-	} else {
-		t.Log(res)
-	}
+	return err, con
 }
 
 func TestDeviceTypeQuery(t *testing.T) {
