@@ -133,6 +133,11 @@ func (*Controller) RdfXmlToSingleResult(rdfxml string, result *model.DeviceType)
 			"@id": model.SES_ONTOLOGY_EXPOSES_FUNCTION,
 			"@container": "@set",
 		},
+		"concept_ids": map[string]interface{}{
+			"@id":        model.SES_ONTOLOGY_HAS_CONCEPT,
+			"@type":      "@id",
+			"@container": "@set",
+		},
 	}
 
 	frameContext := contextDoc
