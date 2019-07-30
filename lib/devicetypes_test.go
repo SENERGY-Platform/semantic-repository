@@ -56,7 +56,7 @@ func TestProduceValidDeviceType(t *testing.T) {
 	devicetype.Services = append(devicetype.Services, model.Service{
 		"urn:infai:ses:service:3333",
 		"localId",
-		"setBrigthness",
+		"setBrightness",
 		"",
 		[]model.Aspect{{Id:"urn:infai:ses:aspect:4444", Name: "Lighting", Type: "asasasdsadas"}},
 		"asdasda",
@@ -102,6 +102,16 @@ func TestReadAspect(t *testing.T) {
 func TestReadDeviceClass(t *testing.T) {
 	err, con := StartUpScript(t)
 	res, err, code := con.GetDeviceClasses()
+	if err != nil {
+		t.Fatal(res, err, code)
+	} else {
+		t.Log(res)
+	}
+}
+
+func TestReadDeviceType(t *testing.T) {
+	err, con := StartUpScript(t)
+	res, err, code := con.GetDeviceType("urn:infai:ses:devicetype:1111")
 	if err != nil {
 		t.Fatal(res, err, code)
 	} else {

@@ -85,8 +85,24 @@ func (*Database) ReadData() (body []byte, err error) {
 	return body, nil
 }
 
-func (this *Database) GetConstruct(s string, p string, o string) (rdfxml string, err error) {
-	query := this.getConstructQuery(s, p, o)
+func (this *Database) GetConstructWithoutProperties(s string, p string, o string) (rdfxml string, err error) {
+	query := this.getConstructQueryWithoutProperties(s, p, o)
+	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
+	if err != nil {
+		log.Println("ERROR: GetFunctions", err)
+		return "", err
+	}
+	defer resp.Body.Close()
+	byteArray, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Println("ERROR:", err)
+		return "", err
+	}
+	return string(byteArray), nil
+}
+
+func (this *Database) GetConstructWithProperties(subject string) (rdfxml string, err error) {
+	query := this.getSubjectWithAllPropertiesQuery(subject)
 	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
 	if err != nil {
 		log.Println("ERROR: GetFunctions", err)

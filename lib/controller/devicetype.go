@@ -20,7 +20,6 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/SENERGY-Platform/semantic-repository/lib/model"
-	"github.com/SmartEnergyPlatform/jwt-http-router"
 	"github.com/piprate/json-gold/ld"
 	"log"
 	"net/http"
@@ -30,20 +29,20 @@ import (
 //		api
 /////////////////////////
 
-func (this *Controller) ReadDeviceType(id string, jwt jwt_http_router.Jwt) (result model.DeviceType, err error, errCode int) {
-	panic("not implemented")
-	/*
-		ctx, _ := getTimeoutContext()
-		deviceType, exists, err := this.db.GetDeviceType(ctx, id)
-		if err != nil {
-			return result, err, http.StatusInternalServerError
-		}
-		if !exists {
-			return result, errors.New("not found"), http.StatusNotFound
-		}
-		return deviceType, nil, http.StatusOK
+func (this *Controller) GetDeviceType(subject string) (result model.DeviceType, err error, errCode int) {
+	deviceType, err := this.db.GetConstructWithProperties(subject)
+	if err != nil {
+		log.Println("GetDeviceClasses ERROR: GetConstructWithoutProperties", err)
+		return result, err, http.StatusInternalServerError
+	}
 
-	*/
+	err = this.RdfXmlToSingleResult(deviceType, &result)
+	if err != nil {
+		log.Println("GetDeviceClasses ERROR: RdfXmlToModel", err)
+		return result, err, http.StatusInternalServerError
+	}
+
+	return result, nil, http.StatusOK
 }
 
 func (this *Controller) ValidateDeviceType(dt model.DeviceType) (err error, code int) {

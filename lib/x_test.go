@@ -25,17 +25,6 @@ func TestInsertSparql(t *testing.T) {
 	t.Log(success)
 }
 
-func TestConstructSparql(t *testing.T) {
-	conf, err := config.Load("../config.json")
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	db, err := database.New(conf)
-	body, err := db.GetConstruct("", "", "")
-	t.Log(string(body))
-}
-
 func TestJsonLd(t *testing.T) {
 	conf, err := config.Load("../config.json")
 	if err != nil {

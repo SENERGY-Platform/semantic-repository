@@ -28,7 +28,7 @@ import (
 /////////////////////////
 
 func (this *Controller) GetFunctions(funcType string) (result []model.Function, err error, errCode int) {
-	functions, err := this.db.GetConstruct("", model.RDF_TYPE, funcType)
+	functions, err := this.db.GetConstructWithoutProperties("", model.RDF_TYPE, funcType)
 	if err != nil {
 		return result, err, http.StatusInternalServerError
 	}

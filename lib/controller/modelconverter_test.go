@@ -25,15 +25,36 @@ func TestDeviceType(t *testing.T) {
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
 	xmlns:fn="http://www.w3.org/2005/xpath-functions#">
 
+<rdf:Description rdf:about="urn:infai:ses:function:5555">
+	<hasConcept xmlns="https://senergy.infai.org/ontology/" rdf:resource="urn:infai:ses:concept:7777"/>
+	<hasConcept xmlns="https://senergy.infai.org/ontology/" rdf:resource="urn:infai:ses:concept:6666"/>
+	<rdf:type rdf:resource="https://senergy.infai.org/ontology/ControllingFunction"/>
+	<rdfs:label>brightnessAdjustment</rdfs:label>
+</rdf:Description>
 
+<rdf:Description rdf:about="urn:infai:ses:service:3333">
+	<exposesFunction xmlns="https://senergy.infai.org/ontology/" rdf:resource="urn:infai:ses:function:5555"/>
+	<refersTo xmlns="https://senergy.infai.org/ontology/" rdf:resource="urn:infai:ses:aspect:4444"/>
+	<rdf:type rdf:resource="https://senergy.infai.org/ontology/Service"/>
+	<rdfs:label>setBrigthness</rdfs:label>
+</rdf:Description>
 
+<rdf:Description rdf:about="urn:infai:ses:deviceclass:2222">
+	<rdf:type rdf:resource="https://senergy.infai.org/ontology/DeviceClass"/>
+	<rdfs:label>Lamp</rdfs:label>
+</rdf:Description>
 
 <rdf:Description rdf:about="urn:infai:ses:devicetype:1111">
 	<hasService xmlns="https://senergy.infai.org/ontology/" rdf:resource="urn:infai:ses:service:3333"/>
+	<hasDeviceClass xmlns="https://senergy.infai.org/ontology/" rdf:resource="urn:infai:ses:deviceclass:2222"/>
 	<rdf:type rdf:resource="https://senergy.infai.org/ontology/DeviceType"/>
 	<rdfs:label>Philips Hue Color</rdfs:label>
 </rdf:Description>
 
+<rdf:Description rdf:about="urn:infai:ses:aspect:4444">
+	<rdf:type rdf:resource="https://senergy.infai.org/ontology/Aspect"/>
+	<rdfs:label>Lighting</rdfs:label>
+</rdf:Description>
 
 </rdf:RDF>
 `
@@ -70,7 +91,15 @@ func TestDeviceType(t *testing.T) {
 		"name": model.RDFS_LABEL,
 		"device_class": model.SES_ONTOLOGY_HAS_DEVICE_CLASS,
 		"services": map[string]interface{}{
-			"@id": "https://senergy.infai.org/ontology/hasService",
+			"@id": model.SES_ONTOLOGY_HAS_SERVICE,
+			"@container": "@set",
+		},
+		"aspects": map[string]interface{}{
+			"@id": model.SES_ONTOLOGY_REFERS_TO,
+			"@container": "@set",
+		},
+		"functions": map[string]interface{}{
+			"@id": model.SES_ONTOLOGY_EXPOSES_FUNCTION,
 			"@container": "@set",
 		},
 	}
@@ -109,8 +138,6 @@ func TestDeviceType(t *testing.T) {
 		//return nil
 	}
 
-	test1, _ := json.Marshal(flattenDocGraph)
-	log.Println(string(test1))
 
 	b, err := json.Marshal(flattenDocGraph[0])
 
@@ -120,6 +147,7 @@ func TestDeviceType(t *testing.T) {
 		log.Println("Error: Unmarshal()", err)
 		//return err
 	}
+	log.Println(string(b))
 	log.Println(deviceType)
 	//return nil
 

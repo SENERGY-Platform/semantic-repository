@@ -28,13 +28,13 @@ import (
 /////////////////////////
 
 func (this *Controller) GetAspects() (result []model.Aspect, err error, errCode int) {
-	deviceClasses, err := this.db.GetConstruct("", model.RDF_TYPE, model.SES_ONTOLOGY_ASPECT)
+	aspects, err := this.db.GetConstructWithoutProperties("", model.RDF_TYPE, model.SES_ONTOLOGY_ASPECT)
 	if err != nil {
-		log.Println("GetAspects ERROR: GetConstruct", err)
+		log.Println("GetAspects ERROR: GetConstructWithoutProperties", err)
 		return result, err, http.StatusInternalServerError
 	}
 
-	err = this.RdfXmlToModel(deviceClasses, &result)
+	err = this.RdfXmlToModel(aspects, &result)
 	if err != nil {
 		log.Println("GetAspects ERROR: RdfXmlToModel", err)
 		return result, err, http.StatusInternalServerError

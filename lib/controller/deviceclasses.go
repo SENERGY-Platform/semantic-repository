@@ -28,9 +28,9 @@ import (
 /////////////////////////
 
 func (this *Controller) GetDeviceClasses() (result []model.DeviceClass, err error, errCode int) {
-	deviceClasses, err := this.db.GetConstruct("", model.RDF_TYPE, model.SES_ONTOLOGY_DEVICE_CLASS)
+	deviceClasses, err := this.db.GetConstructWithoutProperties("", model.RDF_TYPE, model.SES_ONTOLOGY_DEVICE_CLASS)
 	if err != nil {
-		log.Println("GetDeviceClasses ERROR: GetConstruct", err)
+		log.Println("GetDeviceClasses ERROR: GetConstructWithoutProperties", err)
 		return result, err, http.StatusInternalServerError
 	}
 

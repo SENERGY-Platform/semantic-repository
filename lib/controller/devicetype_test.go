@@ -42,7 +42,7 @@ func TestValidDeviceType(t *testing.T) {
 	}
 }
 
-func TestMissingId(t *testing.T) {
+func TestValidationDeviceTypeMissingId(t *testing.T) {
 	devicetype := model.DeviceType{}
 	devicetype.Id = ""
 
@@ -55,7 +55,7 @@ func TestMissingId(t *testing.T) {
 	}
 }
 
-func TestMissingName(t *testing.T) {
+func TestValidationDeviceTypeMissingName(t *testing.T) {
 	devicetype := model.DeviceType{}
 	devicetype.Id = "urn:infai:ses:devicetype:5555"
 	devicetype.Name = ""
@@ -69,7 +69,7 @@ func TestMissingName(t *testing.T) {
 	}
 }
 
-func TestWrongType(t *testing.T) {
+func TestValidationDeviceTypeWrongType(t *testing.T) {
 	devicetype := model.DeviceType{}
 	devicetype.Id = "urn:infai:ses:devicetype:5555"
 	devicetype.Name = "philips hue color"
@@ -84,7 +84,7 @@ func TestWrongType(t *testing.T) {
 	}
 }
 
-func TestNoServiceData(t *testing.T) {
+func TestValidationDeviceTypeNoServiceData(t *testing.T) {
 	devicetype := model.DeviceType{}
 	devicetype.Id = "urn:infai:ses:devicetype:5555"
 	devicetype.Name = "philips hue color"
@@ -99,7 +99,7 @@ func TestNoServiceData(t *testing.T) {
 	}
 }
 
-func TestNoServiceNoDeviceClass(t *testing.T) {
+func TestValidationDeviceTypeNoDeviceClass(t *testing.T) {
 	devicetype := model.DeviceType{}
 	devicetype.Id = "urn:infai:ses:devicetype:5555"
 	devicetype.Name = "philips hue color"
