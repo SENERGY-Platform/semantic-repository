@@ -19,6 +19,8 @@ package lib
 import (
 	"encoding/json"
 	"github.com/SENERGY-Platform/semantic-repository/lib/config"
+	"github.com/SENERGY-Platform/semantic-repository/lib/controller"
+	"github.com/SENERGY-Platform/semantic-repository/lib/database"
 	"github.com/SENERGY-Platform/semantic-repository/lib/model"
 	"github.com/SENERGY-Platform/semantic-repository/lib/source/producer"
 	"github.com/satori/go.uuid"
@@ -35,7 +37,7 @@ var devicetype1name = uuid.NewV4().String()
 var devicetype2id = uuid.NewV4().String()
 var devicetype2name = uuid.NewV4().String()
 
-func Test(t *testing.T) {
+func TestProduceValidDeviceType(t *testing.T) {
 	conf, err := config.Load("../config.json")
 	if err != nil {
 		t.Fatal(err)
@@ -57,15 +59,64 @@ func Test(t *testing.T) {
 		"setBrigthness",
 		"",
 		[]model.Aspect{{Id:"urn:infai:ses:aspect:4444", Name: "Lighting", Type: "asasasdsadas"}},
-		"",
+		"asdasda",
 		[]model.Content{},
 		[]model.Content{},
-		[]model.Function{{Id:"urn:infai:ses:function:5555", Name: "brightnessAdjustment", ConceptIds: []model.ConceptId{{"urn:infai:ses:concept:6666"},{"urn:infai:ses:concept:7777"}}, Type: model.SES_ONTOLOGY_CONTROLLING_FUNCTION }},
+		[]model.Function{{Id:"urn:infai:ses:function:5555", Name: "brightnessAdjustment", ConceptIds: []string{"urn:infai:ses:concept:6666","urn:infai:ses:concept:7777"}, Type: model.SES_ONTOLOGY_CONTROLLING_FUNCTION }},
 		"asdasdsadsadasd",
 	})
 
 	producer.PublishDeviceType(devicetype, "sdfdsfsf")
-	//createTestEnv()
+}
+
+func TestReadControllingFunction(t *testing.T) {
+	conf, err := config.Load("../config.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	db, err := database.New(conf)
+	if err != nil {
+		t.Fatal(err)
+	}
+	producer, err := producer.New(conf)
+	if err != nil {
+		t.Fatal(err)
+	}
+	con, err := controller.New(conf, db, producer)
+	if err != nil {
+		t.Fatal(err)
+	}
+	res, err, code := con.GetFunctions(model.SES_ONTOLOGY_CONTROLLING_FUNCTION)
+	if err != nil {
+		t.Fatal(res, err, code)
+	} else {
+		t.Log(res)
+	}
+}
+
+func TestReadMeasuringFunction(t *testing.T) {
+	conf, err := config.Load("../config.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	db, err := database.New(conf)
+	if err != nil {
+		t.Fatal(err)
+	}
+	producer, err := producer.New(conf)
+	if err != nil {
+		t.Fatal(err)
+	}
+	con, err := controller.New(conf, db, producer)
+	if err != nil {
+		t.Fatal(err)
+	}
+	res, err, code := con.GetFunctions(model.SES_ONTOLOGY_MEASURING_FUNCTION)
+	if err != nil {
+		t.Fatal(res, err, code)
+	} else {
+		t.Log(res)
+	}
 }
 
 func TestDeviceTypeQuery(t *testing.T) {

@@ -8,7 +8,7 @@ import (
 
 func TestValidMeasuringFunction (t *testing.T) {
 	functions := []model.Function{}
-	functions = append(functions, model.Function{Id: "urn:infai:ses:function:122", Name: "Air", Type: model.SES_ONTOLOGY_MEASURING_FUNCTION, ConceptIds: []model.ConceptId{{Id: "urn:infai:ses:concept:1"}}})
+	functions = append(functions, model.Function{Id: "urn:infai:ses:function:122", Name: "Air", Type: model.SES_ONTOLOGY_MEASURING_FUNCTION, ConceptIds: []string{"urn:infai:ses:concept:1"}})
 
 	controller := Controller{}
 	err, code := controller.ValidateFunctions(functions)
@@ -21,7 +21,7 @@ func TestValidMeasuringFunction (t *testing.T) {
 
 func TestValidControllingFunction (t *testing.T) {
 	functions := []model.Function{}
-	functions = append(functions, model.Function{Id: "urn:infai:ses:function:122", Name: "Air", Type: model.SES_ONTOLOGY_CONTROLLING_FUNCTION, ConceptIds: []model.ConceptId{{Id: "urn:infai:ses:concept:1"}}})
+	functions = append(functions, model.Function{Id: "urn:infai:ses:function:122", Name: "Air", Type: model.SES_ONTOLOGY_CONTROLLING_FUNCTION, ConceptIds: []string{"urn:infai:ses:concept:1"}})
 
 	controller := Controller{}
 	err, code := controller.ValidateFunctions(functions)
@@ -85,7 +85,7 @@ func TestFunctionWrongType (t *testing.T) {
 
 func TestFunctionMissingConcept (t *testing.T) {
 	functions := []model.Function{}
-	functions = append(functions, model.Function{Id: "urn:infai:ses:function:122", Name: "Air", Type: model.SES_ONTOLOGY_MEASURING_FUNCTION, ConceptIds: []model.ConceptId{}})
+	functions = append(functions, model.Function{Id: "urn:infai:ses:function:122", Name: "Air", Type: model.SES_ONTOLOGY_MEASURING_FUNCTION, ConceptIds: []string{}})
 
 	controller := Controller{}
 	err, code := controller.ValidateFunctions(functions)
@@ -98,7 +98,7 @@ func TestFunctionMissingConcept (t *testing.T) {
 
 func TestFunctionMissingConceptId (t *testing.T) {
 	functions := []model.Function{}
-	functions = append(functions, model.Function{Id: "urn:infai:ses:function:122", Name: "Air", Type: model.SES_ONTOLOGY_MEASURING_FUNCTION, ConceptIds: []model.ConceptId{{Id: ""}}})
+	functions = append(functions, model.Function{Id: "urn:infai:ses:function:122", Name: "Air", Type: model.SES_ONTOLOGY_MEASURING_FUNCTION, ConceptIds: []string{""}})
 
 	controller := Controller{}
 	err, code := controller.ValidateFunctions(functions)

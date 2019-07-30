@@ -108,7 +108,6 @@ func (this *Controller) SetDeviceType(deviceType model.DeviceType, owner string)
 	proc := ld.NewJsonLdProcessor()
 	options := ld.NewJsonLdOptions("")
 	//options.CompactArrays = false
-	// add the processing mode explicitly if you need JSON-LD 1.1 features
 	options.ProcessingMode = ld.JsonLd_1_1
 	options.Format = "application/n-quads"
 

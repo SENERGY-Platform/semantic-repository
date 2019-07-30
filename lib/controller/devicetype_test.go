@@ -29,7 +29,7 @@ func TestValidDeviceType(t *testing.T) {
 		"protocolId",
 		[]model.Content{},
 		[]model.Content{},
-		[]model.Function{{Id: "urn:infai:ses:function:5555", Name: "brightnessAdjustment", ConceptIds: []model.ConceptId{{"urn:infai:ses:concept:6666"}, {"urn:infai:ses:concept:7777"}}, Type: model.SES_ONTOLOGY_CONTROLLING_FUNCTION}},
+		[]model.Function{{Id: "urn:infai:ses:function:5555", Name: "brightnessAdjustment", ConceptIds: []string{"urn:infai:ses:concept:6666", "urn:infai:ses:concept:7777"}, Type: model.SES_ONTOLOGY_CONTROLLING_FUNCTION}},
 		model.SES_ONTOLOGY_SERVICE,
 	})
 
@@ -109,7 +109,7 @@ func TestNoServiceNoDeviceClass(t *testing.T) {
 		Name: "test", LocalId: "2",
 		ProtocolId: "3",
 		Aspects:    []model.Aspect{{Id: "urn:infai:ses:aspect:1", Name: "aspect", Type: model.SES_ONTOLOGY_ASPECT}},
-		Functions:  []model.Function{{Id: "urn:infai:ses:function:1", Name: "function", Type: model.SES_ONTOLOGY_MEASURING_FUNCTION, ConceptIds: []model.ConceptId{{Id: "urn:infai:ses:concept:1"}}}}}}
+		Functions:  []model.Function{{Id: "urn:infai:ses:function:1", Name: "function", Type: model.SES_ONTOLOGY_MEASURING_FUNCTION, ConceptIds: []string{"urn:infai:ses:concept:1"}}}}}
 	devicetype.DeviceClass = model.DeviceClass{}
 
 	controller := Controller{}

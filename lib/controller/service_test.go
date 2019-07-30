@@ -14,7 +14,7 @@ func TestValidService (t *testing.T) {
 		ProtocolId: "1111",
 		Type: model.SES_ONTOLOGY_SERVICE,
 		Aspects: []model.Aspect{{Id: "urn:infai:ses:aspect:1", Name: "aspect", Type: model.SES_ONTOLOGY_ASPECT}},
-		Functions: []model.Function{{Id: "urn:infai:ses:function:1", Name: "function", Type: model.SES_ONTOLOGY_MEASURING_FUNCTION, ConceptIds: []model.ConceptId{{Id: "urn:infai:ses:concept:1"}}}},
+		Functions: []model.Function{{Id: "urn:infai:ses:function:1", Name: "function", Type: model.SES_ONTOLOGY_MEASURING_FUNCTION, ConceptIds: []string{"urn:infai:ses:concept:1"}}},
 	})
 
 	controller := Controller{}

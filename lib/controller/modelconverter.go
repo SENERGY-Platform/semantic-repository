@@ -44,7 +44,11 @@ func (*Controller) RdfXmlToModel(deviceClasses string, result interface{}) (err 
 		"type":        "@type",
 		"name":        "rdfs:label",
 		"functions":   model.SES_ONTOLOGY_EXPOSES_FUNCTION,
-		"concept_ids": model.SES_ONTOLOGY_HAS_CONCEPT,
+		"concept_ids": map[string]interface{}{
+			"@id":        model.SES_ONTOLOGY_HAS_CONCEPT,
+			"@type":      "@id",
+			"@container": "@set",
+		},
 	}
 
 	contextFrame := contextDoc

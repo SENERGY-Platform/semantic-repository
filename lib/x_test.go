@@ -63,7 +63,7 @@ func TestJsonLd(t *testing.T) {
 		},
 	}
 
-	function := model.Function{Id: "urn:infai:ses:function:1", Name: "colorFunction", ConceptIds: []model.ConceptId{{"1"}, {"2"}}, Type: "https://senergy.infai.org/ontology/Function"}
+	function := model.Function{Id: "urn:infai:ses:function:1", Name: "colorFunction", ConceptIds: []string{"1", "2"}, Type: "https://senergy.infai.org/ontology/Function"}
 
 	doc["id"] = function.Id
 	doc["name"] = function.Name

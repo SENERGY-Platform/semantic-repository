@@ -64,7 +64,7 @@ func (this *Controller) ValidateFunctions(functions []model.Function) (error, in
 		}
 
 		for _, conceptId := range function.ConceptIds {
-			if conceptId.Id == "" {
+			if conceptId == "" {
 				return errors.New("missing concept id"), http.StatusBadRequest
 			}
 		}
