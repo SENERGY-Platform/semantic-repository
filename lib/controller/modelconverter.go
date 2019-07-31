@@ -13,6 +13,9 @@ import (
 
 func (*Controller) RdfXmlToModel(rdfxml string, result interface{}) (err error) {
 	turtle, err := rdfxmlToTurtle(rdfxml)
+	if len(turtle) == 0 {
+		return nil
+	}
 	if err != nil {
 		debug.PrintStack()
 		log.Println("Error: FromRDF()", err)
@@ -21,7 +24,6 @@ func (*Controller) RdfXmlToModel(rdfxml string, result interface{}) (err error) 
 
 	proc := ld.NewJsonLdProcessor()
 	options := ld.NewJsonLdOptions("")
-	//options.CompactArrays = false
 	options.ProcessingMode = ld.JsonLd_1_1
 	doc, err := proc.FromRDF(strings.Join(turtle, ""), options)
 	if err != nil {
@@ -29,30 +31,13 @@ func (*Controller) RdfXmlToModel(rdfxml string, result interface{}) (err error) 
 		log.Println("Error: FromRDF()", err)
 		return err
 	}
-	contextDoc := map[string]interface{}{
-		"id":           "@id",
-		"type":         "@type",
-		"name":         model.RDFS_LABEL,
-		"device_class": model.SES_ONTOLOGY_HAS_DEVICE_CLASS,
-		"services":     model.SES_ONTOLOGY_HAS_SERVICE,
-		"aspects":      model.SES_ONTOLOGY_REFERS_TO,
-		"functions":    model.SES_ONTOLOGY_EXPOSES_FUNCTION,
-		"concept_ids": map[string]interface{}{
-			"@id":        model.SES_ONTOLOGY_HAS_CONCEPT,
-			"@type":      "@id",
-			"@container": "@set",
-		},
-	}
-
-	contextFrame := contextDoc
-
-	graph := map[string]interface{}{
-	}
+	contextDoc := getContext()
+	graph := map[string]interface{}{}
 	graph["@context"] = contextDoc
 	graph["@graph"] = doc
 
 	cont := map[string]interface{}{}
-	cont["@context"] = contextFrame
+	cont["@context"] = contextDoc
 
 	flattenDoc, err := proc.Flatten(graph, cont, options)
 	if err != nil {
@@ -61,13 +46,23 @@ func (*Controller) RdfXmlToModel(rdfxml string, result interface{}) (err error) 
 		return err
 	}
 
-	flattenDocCast := flattenDoc.(map[string]interface{})
+	flattenDocCast, ok := flattenDoc.(map[string]interface{})
+	if !ok {
+		debug.PrintStack()
+		log.Println("Error: FlattenDoc casting()", ok)
+		return errors.New("Error casting")
+	}
 	if flattenDocCast["@graph"] == nil {
 		return nil
 	}
 
 	flattenDocGraph := flattenDocCast["@graph"].([]interface{})
 	b, err := json.Marshal(flattenDocGraph)
+	if err != nil {
+		debug.PrintStack()
+		log.Println("Error: Marshal()", err)
+		return err
+	}
 	err = json.Unmarshal(b, &result)
 	if err != nil {
 		debug.PrintStack()
@@ -76,6 +71,66 @@ func (*Controller) RdfXmlToModel(rdfxml string, result interface{}) (err error) 
 	}
 	return nil
 }
+
+func (*Controller) RdfXmlToSingleResult(rdfxml string, result *model.DeviceType) (err error) {
+	turtle, err := rdfxmlToTurtle(rdfxml)
+	if len(turtle) == 0 {
+		return nil
+	}
+	if err != nil {
+		debug.PrintStack()
+		log.Println("Error: FromRDF()", err)
+		return err
+	}
+
+	proc := ld.NewJsonLdProcessor()
+	options := ld.NewJsonLdOptions("")
+	options.ProcessingMode = ld.JsonLd_1_1
+	doc, err := proc.FromRDF(strings.Join(turtle, ""), options)
+	if err != nil {
+		debug.PrintStack()
+		log.Println("Error: FromRDF()", err)
+		return err
+	}
+	contextDoc := getContext()
+	graph := map[string]interface{}{}
+	graph["@context"] = contextDoc
+	graph["@graph"] = doc
+
+	cont := map[string]interface{}{}
+	cont["@context"] = contextDoc
+	cont["@type"] = model.SES_ONTOLOGY_DEVICE_TYPE
+
+	frameDoc, err := proc.Frame(graph, cont, options)
+	if err != nil {
+		debug.PrintStack()
+		log.Println("Error: Frame()", err)
+		return err
+	}
+
+	frameDocGraph, ok := frameDoc["@graph"].([]interface{})
+	if !ok {
+		debug.PrintStack()
+		log.Println("Error: FrameDoc casting()", ok)
+		return errors.New("Error casting")
+	}
+
+	b, err := json.Marshal(frameDocGraph[0])
+	if err != nil {
+		debug.PrintStack()
+		log.Println("Error: Marshal()", err)
+		return err
+	}
+
+	err = json.Unmarshal(b, &result)
+	if err != nil {
+		debug.PrintStack()
+		log.Println("Error: Unmarshal()", err)
+		return err
+	}
+	return nil
+}
+
 
 func rdfxmlToTurtle(rdfxml string) (result []string, err error) {
 	triples, err := rdf.NewTripleDecoder(strings.NewReader(rdfxml), rdf.RDFXML).DecodeAll()
@@ -95,39 +150,22 @@ func rdfxmlToTurtle(rdfxml string) (result []string, err error) {
 	return turtle, nil
 }
 
-func (*Controller) RdfXmlToSingleResult(rdfxml string, result *model.DeviceType) (err error) {
-	turtle, err := rdfxmlToTurtle(rdfxml)
-	if err != nil {
-		debug.PrintStack()
-		log.Println("Error: FromRDF()", err)
-		return err
-	}
-
-	proc := ld.NewJsonLdProcessor()
-	options := ld.NewJsonLdOptions("")
-	//options.CompactArrays = false
-	options.ProcessingMode = ld.JsonLd_1_1
-	doc, err := proc.FromRDF(strings.Join(turtle, ""), options)
-	if err != nil {
-		debug.PrintStack()
-		log.Println("Error: FromRDF()", err)
-		return err
-	}
+func getContext() map[string]interface{} {
 	contextDoc := map[string]interface{}{
-		"id":"@id",
-		"type":"@type",
-		"name": model.RDFS_LABEL,
+		"id":           "@id",
+		"type":         "@type",
+		"name":         model.RDFS_LABEL,
 		"device_class": model.SES_ONTOLOGY_HAS_DEVICE_CLASS,
 		"services": map[string]interface{}{
-			"@id": model.SES_ONTOLOGY_HAS_SERVICE,
+			"@id":        model.SES_ONTOLOGY_HAS_SERVICE,
 			"@container": "@set",
 		},
 		"aspects": map[string]interface{}{
-			"@id": model.SES_ONTOLOGY_REFERS_TO,
+			"@id":        model.SES_ONTOLOGY_REFERS_TO,
 			"@container": "@set",
 		},
 		"functions": map[string]interface{}{
-			"@id": model.SES_ONTOLOGY_EXPOSES_FUNCTION,
+			"@id":        model.SES_ONTOLOGY_EXPOSES_FUNCTION,
 			"@container": "@set",
 		},
 		"concept_ids": map[string]interface{}{
@@ -136,40 +174,5 @@ func (*Controller) RdfXmlToSingleResult(rdfxml string, result *model.DeviceType)
 			"@container": "@set",
 		},
 	}
-
-	frameContext := contextDoc
-
-	graph := map[string]interface{}{
-	}
-	graph["@context"] = contextDoc
-	graph["@graph"] = doc
-
-
-	cont := map[string]interface{}{}
-	cont["@context"] = frameContext
-	cont["@type"] = model.SES_ONTOLOGY_DEVICE_TYPE
-
-	flattenDoc, err := proc.Frame(graph, cont, options)
-	if err != nil {
-		debug.PrintStack()
-		log.Println("Error: Flatten()", err)
-		return err
-	}
-
-	flattenDocGraph, ok := flattenDoc["@graph"].([]interface{})
-	if !ok {
-		debug.PrintStack()
-		log.Println("Error: Flatten()", ok)
-		return errors.New("Error casting")
-	}
-
-	b, err := json.Marshal(flattenDocGraph[0])
-
-	err = json.Unmarshal(b, &result)
-	if err != nil {
-		debug.PrintStack()
-		log.Println("Error: Unmarshal()", err)
-		return err
-	}
-	return nil
+	return contextDoc
 }
