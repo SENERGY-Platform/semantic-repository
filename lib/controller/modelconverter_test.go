@@ -1,15 +1,66 @@
 package controller
 
 import (
-	"encoding/json"
-	"github.com/SENERGY-Platform/semantic-repository/lib/database/sparql/rdf"
 	"github.com/SENERGY-Platform/semantic-repository/lib/model"
-	"github.com/piprate/json-gold/ld"
-	"log"
-	"runtime/debug"
-	"strings"
 	"testing"
 )
+
+func TestControllingFunction(t *testing.T) {
+	contFunc := []model.Function{}
+	rdfxml := `<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:sesame="http://www.openrdf.org/schema/sesame#" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:xsd="http://www.w3.org/2001/XMLSchema#" xmlns:fn="http://www.w3.org/2005/xpath-functions#">
+<rdf:Description rdf:about="urn:infai:ses:function:5555">
+<rdf:type rdf:resource="https://senergy.infai.org/ontology/ControllingFunction"/>
+<rdfs:label>brightnessAdjustment</rdfs:label>
+<hasConcept xmlns="https://senergy.infai.org/ontology/" rdf:resource="urn:infai:ses:concept:6666"/>
+<hasConcept xmlns="https://senergy.infai.org/ontology/" rdf:resource="urn:infai:ses:concept:7777"/>
+</rdf:Description>
+</rdf:RDF>`
+
+	controller := Controller{}
+	err := controller.RdfXmlToModel(rdfxml, &contFunc)
+	if err == nil {
+		// check content
+		if contFunc[0].Id != "urn:infai:ses:function:5555" {
+			t.Fatal("wrong id")
+		}
+		if contFunc[0].Name != "brightnessAdjustment" {
+			t.Fatal("wrong name")
+		}
+		if contFunc[0].Type != "https://senergy.infai.org/ontology/ControllingFunction" {
+			t.Fatal("wrong type")
+		}
+		if contFunc[0].ConceptIds[0] != "urn:infai:ses:concept:6666" {
+			t.Fatal("wrong concept id -> index 0")
+		}
+		if contFunc[0].ConceptIds[1] != "urn:infai:ses:concept:7777" {
+			t.Fatal("wrong concept id -> index 1")
+		}
+		t.Log(contFunc)
+
+	} else {
+		t.Fatal(err)
+	}
+}
+
+func TestAspects(t *testing.T) {
+	contFunc := []model.Function{}
+	rdfxml := `<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:sesame="http://www.openrdf.org/schema/sesame#" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:xsd="http://www.w3.org/2001/XMLSchema#" xmlns:fn="http://www.w3.org/2005/xpath-functions#">
+<rdf:Description rdf:about="urn:infai:ses:function:5555">
+<rdf:type rdf:resource="https://senergy.infai.org/ontology/ControllingFunction"/>
+<rdfs:label>brightnessAdjustment</rdfs:label>
+<hasConcept xmlns="https://senergy.infai.org/ontology/" rdf:resource="urn:infai:ses:concept:6666"/>
+<hasConcept xmlns="https://senergy.infai.org/ontology/" rdf:resource="urn:infai:ses:concept:7777"/>
+</rdf:Description>
+</rdf:RDF>`
+
+	controller := Controller{}
+	err := controller.RdfXmlToModel(rdfxml, &contFunc)
+	if err == nil {
+		t.Log(contFunc)
+	} else {
+		t.Fatal(err)
+	}
+}
 
 func TestDeviceType(t *testing.T) {
 
@@ -58,97 +109,13 @@ func TestDeviceType(t *testing.T) {
 
 </rdf:RDF>
 `
-	triples, err := rdf.NewTripleDecoder(strings.NewReader(rdfxml), rdf.RDFXML).DecodeAll()
-	if err != nil {
-		debug.PrintStack()
-		log.Println("Error: NewTripleDecoder()", err)
-		//return err
+
+	controller := Controller{}
+	err := controller.RdfXmlToSingleResult(rdfxml, &deviceType)
+	if err == nil {
+		t.Log(deviceType)
+	} else {
+		t.Fatal(err)
 	}
-
-	if len(triples) == 0 {
-		log.Println("No triples found")
-		//return nil
-	}
-
-	turtle := []string{}
-	for _, triple := range triples {
-		turtle = append(turtle, triple.Serialize(rdf.Turtle))
-	}
-
-	proc := ld.NewJsonLdProcessor()
-	options := ld.NewJsonLdOptions("")
-	//options.CompactArrays = false
-	options.ProcessingMode = ld.JsonLd_1_1
-	doc, err := proc.FromRDF(strings.Join(turtle, ""), options)
-	if err != nil {
-		debug.PrintStack()
-		log.Println("Error: FromRDF()", err)
-		//return err
-	}
-	contextDoc := map[string]interface{}{
-		"id":"@id",
-		"type":"@type",
-		"name": model.RDFS_LABEL,
-		"device_class": model.SES_ONTOLOGY_HAS_DEVICE_CLASS,
-		"services": map[string]interface{}{
-			"@id": model.SES_ONTOLOGY_HAS_SERVICE,
-			"@container": "@set",
-		},
-		"aspects": map[string]interface{}{
-			"@id": model.SES_ONTOLOGY_REFERS_TO,
-			"@container": "@set",
-		},
-		"functions": map[string]interface{}{
-			"@id": model.SES_ONTOLOGY_EXPOSES_FUNCTION,
-			"@container": "@set",
-		},
-	}
-
-	frameContext := contextDoc
-
-	graph := map[string]interface{}{
-	}
-	graph["@context"] = contextDoc
-	graph["@graph"] = doc
-
-
-	cont := map[string]interface{}{}
-	cont["@context"] = frameContext
-	cont["@type"] = model.SES_ONTOLOGY_DEVICE_TYPE
-
-
-
-
-	flattenDoc, err := proc.Frame(graph, cont, options)
-	if err != nil {
-		debug.PrintStack()
-		log.Println("Error: Flatten()", err)
-	}
-
-	//flattenDocCast := flattenDoc.(map[string]interface{})
-	//if flattenDocCast["@graph"] == nil {
-	//	//return nil
-	//}
-
-
-
-
-	flattenDocGraph, ok := flattenDoc["@graph"].([]interface{})
-	if !ok {
-		//return nil
-	}
-
-
-	b, err := json.Marshal(flattenDocGraph[0])
-
-	err = json.Unmarshal(b, &deviceType)
-	if err != nil {
-		debug.PrintStack()
-		log.Println("Error: Unmarshal()", err)
-		//return err
-	}
-	log.Println(string(b))
-	log.Println(deviceType)
-	//return nil
 
 }
