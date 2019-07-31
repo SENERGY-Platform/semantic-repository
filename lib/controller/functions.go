@@ -55,7 +55,7 @@ func (this *Controller) ValidateFunctions(functions []model.Function) (error, in
 		if function.Name == "" {
 			return errors.New("missing function name"), http.StatusBadRequest
 		}
-		if !(function.Type == model.SES_ONTOLOGY_CONTROLLING_FUNCTION || function.Type == model.SES_ONTOLOGY_MEASURING_FUNCTION) {
+		if !(function.RdfType == model.SES_ONTOLOGY_CONTROLLING_FUNCTION || function.RdfType == model.SES_ONTOLOGY_MEASURING_FUNCTION) {
 			return errors.New("wrong function type"), http.StatusBadRequest
 		}
 

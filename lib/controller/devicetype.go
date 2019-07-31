@@ -53,7 +53,7 @@ func (this *Controller) ValidateDeviceType(dt model.DeviceType) (err error, code
 		return errors.New("missing device-type name"), http.StatusBadRequest
 	}
 
-	if dt.Type != model.SES_ONTOLOGY_DEVICE_TYPE {
+	if dt.RdfType != model.SES_ONTOLOGY_DEVICE_TYPE {
 		return errors.New("wrong device type"), http.StatusBadRequest
 	}
 
@@ -130,12 +130,12 @@ func (this *Controller) SetDeviceType(deviceType model.DeviceType, owner string)
 }
 
 func SetTypes(deviceType *model.DeviceType) {
-	deviceType.Type = model.SES_ONTOLOGY_DEVICE_TYPE
-	deviceType.DeviceClass.Type = model.SES_ONTOLOGY_DEVICE_CLASS
+	deviceType.RdfType = model.SES_ONTOLOGY_DEVICE_TYPE
+	deviceType.DeviceClass.RdfType = model.SES_ONTOLOGY_DEVICE_CLASS
 	for serviceIndex, _ := range deviceType.Services {
-		deviceType.Services[serviceIndex].Type = model.SES_ONTOLOGY_SERVICE
+		deviceType.Services[serviceIndex].RdfType = model.SES_ONTOLOGY_SERVICE
 		for aspectIndex, _ := range deviceType.Services[serviceIndex].Aspects {
-			deviceType.Services[serviceIndex].Aspects[aspectIndex].Type = model.SES_ONTOLOGY_ASPECT
+			deviceType.Services[serviceIndex].Aspects[aspectIndex].RdfType = model.SES_ONTOLOGY_ASPECT
 		}
 	}
 }

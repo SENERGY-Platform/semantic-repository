@@ -42,7 +42,7 @@ func (this *Controller) ValidateService(services []model.Service) (error, int) {
 			return errors.New("missing service protocol id"), http.StatusBadRequest
 		}
 
-		if service.Type != model.SES_ONTOLOGY_SERVICE {
+		if service.RdfType != model.SES_ONTOLOGY_SERVICE {
 			return errors.New("wrong service type"), http.StatusBadRequest
 		}
 

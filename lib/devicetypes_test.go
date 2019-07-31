@@ -58,11 +58,11 @@ func TestProduceValidDeviceType(t *testing.T) {
 		"localId",
 		"setBrightness",
 		"",
-		[]model.Aspect{{Id:"urn:infai:ses:aspect:4444", Name: "Lighting", Type: "asasasdsadas"}},
+		[]model.Aspect{{Id:"urn:infai:ses:aspect:4444", Name: "Lighting", RdfType: "asasasdsadas"}},
 		"asdasda",
 		[]model.Content{},
 		[]model.Content{},
-		[]model.Function{{Id:"urn:infai:ses:function:5555", Name: "brightnessAdjustment", ConceptIds: []string{"urn:infai:ses:concept:6666","urn:infai:ses:concept:7777"}, Type: model.SES_ONTOLOGY_CONTROLLING_FUNCTION }},
+		[]model.Function{{Id:"urn:infai:ses:function:5555", Name: "brightnessAdjustment", ConceptIds: []string{"urn:infai:ses:concept:6666","urn:infai:ses:concept:7777"}, RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION }},
 		"asdasdsadsadasd",
 	})
 

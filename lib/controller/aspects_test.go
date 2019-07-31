@@ -8,7 +8,7 @@ import (
 
 func TestValidAspect (t *testing.T) {
 	aspects := []model.Aspect{}
-	aspects = append(aspects, model.Aspect{Id: "urn:infai:ses:aspect:122", Name: "Air", Type: model.SES_ONTOLOGY_ASPECT})
+	aspects = append(aspects, model.Aspect{Id: "urn:infai:ses:aspect:122", Name: "Air", RdfType: model.SES_ONTOLOGY_ASPECT})
 
 	controller := Controller{}
 	err, code := controller.ValidateAspects(aspects)
@@ -59,7 +59,7 @@ func TestAspectMissingName (t *testing.T) {
 
 func TestAspectWrongType (t *testing.T) {
 	aspects := []model.Aspect{}
-	aspects = append(aspects, model.Aspect{Id: "urn:infai:ses:aspect:122", Name: "Air", Type: "wrongType"})
+	aspects = append(aspects, model.Aspect{Id: "urn:infai:ses:aspect:122", Name: "Air", RdfType: "wrongType"})
 
 	controller := Controller{}
 	err, code := controller.ValidateAspects(aspects)

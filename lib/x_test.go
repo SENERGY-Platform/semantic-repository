@@ -52,11 +52,11 @@ func TestJsonLd(t *testing.T) {
 		},
 	}
 
-	function := model.Function{Id: "urn:infai:ses:function:1", Name: "colorFunction", ConceptIds: []string{"1", "2"}, Type: "https://senergy.infai.org/ontology/Function"}
+	function := model.Function{Id: "urn:infai:ses:function:1", Name: "colorFunction", ConceptIds: []string{"1", "2"}, RdfType: "https://senergy.infai.org/ontology/Function"}
 
 	doc["id"] = function.Id
 	doc["name"] = function.Name
-	doc["type"] = function.Type
+	doc["type"] = function.RdfType
 	doc["concept_ids"] = function.ConceptIds
 
 	triples, err := proc.ToRDF(doc, options)

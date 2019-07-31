@@ -10,7 +10,7 @@ func TestValidDeviceClass (t *testing.T) {
 	deviceclass := model.DeviceClass{}
 	deviceclass.Id = "urn:infai:ses:deviceclass:1234"
 	deviceclass.Name = "Lamp"
-	deviceclass.Type = model.SES_ONTOLOGY_DEVICE_CLASS
+	deviceclass.RdfType = model.SES_ONTOLOGY_DEVICE_CLASS
 
 	controller := Controller{}
 	err, code := controller.ValidateDeviceClass(deviceclass)
@@ -52,7 +52,7 @@ func TestDeviceClassWrongType (t *testing.T) {
 	deviceclass := model.DeviceClass{}
 	deviceclass.Id = "urn:infai:ses:deviceclass:1234"
 	deviceclass.Name = "Lamp"
-	deviceclass.Type = "wrongType"
+	deviceclass.RdfType = "wrongType"
 
 	controller := Controller{}
 	err, code := controller.ValidateDeviceClass(deviceclass)

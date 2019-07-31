@@ -51,7 +51,7 @@ func (this *Controller) ValidateDeviceClass(deviceClass model.DeviceClass) (erro
 		if deviceClass.Name == "" {
 			return errors.New("missing device class name"), http.StatusBadRequest
 		}
-		if deviceClass.Type != model.SES_ONTOLOGY_DEVICE_CLASS {
+		if deviceClass.RdfType != model.SES_ONTOLOGY_DEVICE_CLASS {
 			return errors.New("wrong device class type"), http.StatusBadRequest
 		}
 

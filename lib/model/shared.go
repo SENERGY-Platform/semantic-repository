@@ -30,7 +30,7 @@ type DeviceType struct {
 	Image       string      `json:"image"`
 	Services    []Service   `json:"services"`
 	DeviceClass DeviceClass `json:"device_class"`
-	Type        string      `json:"type"`
+	RdfType     string      `json:"rdf_type"`
 }
 
 type Service struct {
@@ -43,5 +43,5 @@ type Service struct {
 	Inputs      []Content  `json:"inputs"`
 	Outputs     []Content  `json:"outputs"`
 	Functions   []Function `json:"functions"`
-	Type        string     `json:"type"`
+	RdfType     string     `json:"rdf_type"`
 }

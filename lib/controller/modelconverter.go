@@ -153,7 +153,7 @@ func rdfxmlToTurtle(rdfxml string) (result []string, err error) {
 func getContext() map[string]interface{} {
 	contextDoc := map[string]interface{}{
 		"id":           "@id",
-		"type":         "@type",
+		"rdf_type":         "@type",
 		"name":         model.RDFS_LABEL,
 		"device_class": model.SES_ONTOLOGY_HAS_DEVICE_CLASS,
 		"services": map[string]interface{}{

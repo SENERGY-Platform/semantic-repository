@@ -55,7 +55,7 @@ func (this *Controller) ValidateAspects(aspects []model.Aspect) (error, int) {
 		if aspect.Name == "" {
 			return errors.New("missing aspect name"), http.StatusBadRequest
 		}
-		if aspect.Type != model.SES_ONTOLOGY_ASPECT {
+		if aspect.RdfType != model.SES_ONTOLOGY_ASPECT {
 			return errors.New("wrong aspect type"), http.StatusBadRequest
 		}
 	}

@@ -14,22 +14,22 @@ func TestValidDeviceType(t *testing.T) {
 	devicetype.DeviceClass = model.DeviceClass{
 		Id:   "urn:infai:ses:deviceclass:2222",
 		Name: "Lamp",
-		Type: model.SES_ONTOLOGY_DEVICE_CLASS,
+		RdfType: model.SES_ONTOLOGY_DEVICE_CLASS,
 	}
 	devicetype.Description = "description"
 	devicetype.Image = "image"
-	devicetype.Type = model.SES_ONTOLOGY_DEVICE_TYPE
+	devicetype.RdfType = model.SES_ONTOLOGY_DEVICE_TYPE
 	devicetype.Services = []model.Service{}
 	devicetype.Services = append(devicetype.Services, model.Service{
 		"urn:infai:ses:service:3333",
 		"localId",
 		"setBrigthness",
 		"",
-		[]model.Aspect{{Id: "urn:infai:ses:aspect:4444", Name: "Lighting", Type: model.SES_ONTOLOGY_ASPECT}},
+		[]model.Aspect{{Id: "urn:infai:ses:aspect:4444", Name: "Lighting", RdfType: model.SES_ONTOLOGY_ASPECT}},
 		"protocolId",
 		[]model.Content{},
 		[]model.Content{},
-		[]model.Function{{Id: "urn:infai:ses:function:5555", Name: "brightnessAdjustment", ConceptIds: []string{"urn:infai:ses:concept:6666", "urn:infai:ses:concept:7777"}, Type: model.SES_ONTOLOGY_CONTROLLING_FUNCTION}},
+		[]model.Function{{Id: "urn:infai:ses:function:5555", Name: "brightnessAdjustment", ConceptIds: []string{"urn:infai:ses:concept:6666", "urn:infai:ses:concept:7777"}, RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION}},
 		model.SES_ONTOLOGY_SERVICE,
 	})
 
@@ -73,7 +73,7 @@ func TestValidationDeviceTypeWrongType(t *testing.T) {
 	devicetype := model.DeviceType{}
 	devicetype.Id = "urn:infai:ses:devicetype:5555"
 	devicetype.Name = "philips hue color"
-	devicetype.Type = "type"
+	devicetype.RdfType = "type"
 
 	controller := Controller{}
 	err, code := controller.ValidateDeviceType(devicetype)
@@ -88,7 +88,7 @@ func TestValidationDeviceTypeNoServiceData(t *testing.T) {
 	devicetype := model.DeviceType{}
 	devicetype.Id = "urn:infai:ses:devicetype:5555"
 	devicetype.Name = "philips hue color"
-	devicetype.Type = model.SES_ONTOLOGY_DEVICE_TYPE
+	devicetype.RdfType = model.SES_ONTOLOGY_DEVICE_TYPE
 
 	controller := Controller{}
 	err, code := controller.ValidateDeviceType(devicetype)
@@ -103,13 +103,13 @@ func TestValidationDeviceTypeNoDeviceClass(t *testing.T) {
 	devicetype := model.DeviceType{}
 	devicetype.Id = "urn:infai:ses:devicetype:5555"
 	devicetype.Name = "philips hue color"
-	devicetype.Type = model.SES_ONTOLOGY_DEVICE_TYPE
+	devicetype.RdfType = model.SES_ONTOLOGY_DEVICE_TYPE
 	devicetype.Services = []model.Service{{Id: "urn:infai:ses:service:1",
-		Type: model.SES_ONTOLOGY_SERVICE,
+		RdfType: model.SES_ONTOLOGY_SERVICE,
 		Name: "test", LocalId: "2",
 		ProtocolId: "3",
-		Aspects:    []model.Aspect{{Id: "urn:infai:ses:aspect:1", Name: "aspect", Type: model.SES_ONTOLOGY_ASPECT}},
-		Functions:  []model.Function{{Id: "urn:infai:ses:function:1", Name: "function", Type: model.SES_ONTOLOGY_MEASURING_FUNCTION, ConceptIds: []string{"urn:infai:ses:concept:1"}}}}}
+		Aspects:    []model.Aspect{{Id: "urn:infai:ses:aspect:1", Name: "aspect", RdfType: model.SES_ONTOLOGY_ASPECT}},
+		Functions:  []model.Function{{Id: "urn:infai:ses:function:1", Name: "function", RdfType: model.SES_ONTOLOGY_MEASURING_FUNCTION, ConceptIds: []string{"urn:infai:ses:concept:1"}}}}}
 	devicetype.DeviceClass = model.DeviceClass{}
 
 	controller := Controller{}
