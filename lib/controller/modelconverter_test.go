@@ -5,6 +5,40 @@ import (
 	"testing"
 )
 
+func TestNoData_RdfXmlToModel(t *testing.T) {
+	contFunc := []model.Function{}
+	rdfxml := `<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:sesame="http://www.openrdf.org/schema/sesame#" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:xsd="http://www.w3.org/2001/XMLSchema#" xmlns:fn="http://www.w3.org/2005/xpath-functions#"> </rdf:RDF>`
+
+	controller := Controller{}
+	err := controller.RdfXmlToModel(rdfxml, &contFunc)
+	if err == nil {
+		if len(contFunc) != 0 {
+			t.Fatal("wrong response")
+		}
+		t.Log(contFunc)
+
+	} else {
+		t.Fatal(err)
+	}
+}
+
+func TestNoData_RdfXmlToSingleResult(t *testing.T) {
+	deviceType := model.DeviceType{}
+	rdfxml := `<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:sesame="http://www.openrdf.org/schema/sesame#" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:xsd="http://www.w3.org/2001/XMLSchema#" xmlns:fn="http://www.w3.org/2005/xpath-functions#"> </rdf:RDF>`
+
+	controller := Controller{}
+	err := controller.RdfXmlToSingleResult(rdfxml, &deviceType)
+	if err == nil {
+		if deviceType.Type != "" {
+			t.Fatal("wrong response")
+		}
+		t.Log(deviceType)
+
+	} else {
+		t.Fatal(err)
+	}
+}
+
 func TestControllingFunction(t *testing.T) {
 	contFunc := []model.Function{}
 	rdfxml := `<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:sesame="http://www.openrdf.org/schema/sesame#" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:xsd="http://www.w3.org/2001/XMLSchema#" xmlns:fn="http://www.w3.org/2005/xpath-functions#">
