@@ -12,21 +12,11 @@ import (
 )
 
 func (*Controller) RdfXmlToModel(rdfxml string, result interface{}) (err error) {
-	triples, err := rdf.NewTripleDecoder(strings.NewReader(rdfxml), rdf.RDFXML).DecodeAll()
+	turtle, err := rdfxmlToTurtle(rdfxml)
 	if err != nil {
 		debug.PrintStack()
-		log.Println("Error: NewTripleDecoder()", err)
+		log.Println("Error: FromRDF()", err)
 		return err
-	}
-
-	if len(triples) == 0 {
-		log.Println("No triples found")
-		return nil
-	}
-
-	turtle := []string{}
-	for _, triple := range triples {
-		turtle = append(turtle, triple.Serialize(rdf.Turtle))
 	}
 
 	proc := ld.NewJsonLdProcessor()
@@ -53,7 +43,6 @@ func (*Controller) RdfXmlToModel(rdfxml string, result interface{}) (err error) 
 			"@container": "@set",
 		},
 	}
-
 
 	contextFrame := contextDoc
 
@@ -88,22 +77,30 @@ func (*Controller) RdfXmlToModel(rdfxml string, result interface{}) (err error) 
 	return nil
 }
 
-func (*Controller) RdfXmlToSingleResult(rdfxml string, result *model.DeviceType) (err error) {
+func rdfxmlToTurtle(rdfxml string) (result []string, err error) {
 	triples, err := rdf.NewTripleDecoder(strings.NewReader(rdfxml), rdf.RDFXML).DecodeAll()
 	if err != nil {
 		debug.PrintStack()
 		log.Println("Error: NewTripleDecoder()", err)
-		return err
+		return nil, err
 	}
-
 	if len(triples) == 0 {
 		log.Println("No triples found")
-		return nil
+		return nil, nil
 	}
-
 	turtle := []string{}
 	for _, triple := range triples {
 		turtle = append(turtle, triple.Serialize(rdf.Turtle))
+	}
+	return turtle, nil
+}
+
+func (*Controller) RdfXmlToSingleResult(rdfxml string, result *model.DeviceType) (err error) {
+	turtle, err := rdfxmlToTurtle(rdfxml)
+	if err != nil {
+		debug.PrintStack()
+		log.Println("Error: FromRDF()", err)
+		return err
 	}
 
 	proc := ld.NewJsonLdProcessor()
