@@ -88,25 +88,11 @@ func (this *Controller) SetDeviceType(deviceType model.DeviceType, owner string)
 	var result map[string]interface{}
 	err = json.Unmarshal(b, &result)
 
-	context := map[string]interface{}{
-		"id":           "@id",
-		"type":         "@type",
-		"name":         model.RDFS_LABEL,
-		"device_class": model.SES_ONTOLOGY_HAS_DEVICE_CLASS,
-		"services":     model.SES_ONTOLOGY_HAS_SERVICE,
-		"aspects":      model.SES_ONTOLOGY_REFERS_TO,
-		"functions":    model.SES_ONTOLOGY_EXPOSES_FUNCTION,
-		"concept_ids": map[string]interface{}{
-			"@id":        model.SES_ONTOLOGY_HAS_CONCEPT,
-			"@type":      "@id",
-			"@container": "@set",
-		},
-	}
+	context := getContext()
 	result["@context"] = context
 
 	proc := ld.NewJsonLdProcessor()
 	options := ld.NewJsonLdOptions("")
-	//options.CompactArrays = false
 	options.ProcessingMode = ld.JsonLd_1_1
 	options.Format = "application/n-quads"
 
@@ -122,10 +108,7 @@ func (this *Controller) SetDeviceType(deviceType model.DeviceType, owner string)
 	//os.Stdout.WriteString(triples.(string))
 	success, err := this.db.InsertData(triples.(string))
 	log.Println(success)
-	/*
-		ctx, _ := getTimeoutContext()
-		return this.db.SetDeviceType(ctx, deviceType)
-	*/
+
 	return
 }
 
