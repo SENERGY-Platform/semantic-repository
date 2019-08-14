@@ -23,6 +23,7 @@ import (
 	"github.com/piprate/json-gold/ld"
 	"log"
 	"net/http"
+	"runtime/debug"
 )
 
 /////////////////////////
@@ -123,11 +124,16 @@ func SetTypes(deviceType *model.DeviceType) {
 	}
 }
 
-func (this *Controller) DeleteDeviceType(id string) error {
+func (this *Controller) DeleteDeviceType(id string) (err error) {
+	if id == "" {
+		debug.PrintStack()
+		return errors.New("missing deviceType id")
+	}
+
+	err = this.db.DeleteDeviceType(id)
+	if err != nil {
+		debug.PrintStack()
+		return err
+	}
 	return nil
-	// todo
-	/*
-		ctx, _ := getTimeoutContext()
-		return this.db.RemoveDeviceType(ctx, id)
-	*/
 }

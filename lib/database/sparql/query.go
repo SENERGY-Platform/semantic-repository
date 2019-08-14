@@ -20,9 +20,8 @@ func (*Database) getConstructQueryWithoutProperties(s string, p string, o string
 	} else {
 		o = " <" + o + "> "
 	}
-	return url.QueryEscape("construct {?s ?p ?o} where {" + "?s ?p ?o ." +s +p +o +".}")
+	return url.QueryEscape("construct {?s ?p ?o} where {" + "?s ?p ?o ." + s + p + o + ".}")
 }
-
 
 func (*Database) getSubjectWithAllPropertiesQuery(subject string) (string) {
 
@@ -31,3 +30,22 @@ func (*Database) getSubjectWithAllPropertiesQuery(subject string) (string) {
 		"where {<" + subject + "> (x:|!x:)* ?s . ?s ?p ?o . }")
 }
 
+func (*Database) getDeleteDeviceTypeQuery(subject string) (string) {
+
+	return url.QueryEscape(
+		"PREFIX ses: <https://senergy.infai.org/ontology/> " +
+			"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
+			"delete {" +
+			"<" + subject + "> rdf:type ?type;" +
+			"rdfs:label ?label;" +
+			"ses:hasDeviceClass ?deviceclass;" +
+			"ses:hasService ?service ." +
+			"?service ?p ?o." +
+			"} where {" +
+			"<" + subject + "> rdf:type ?type;" +
+			"rdfs:label ?label;" +
+			"ses:hasDeviceClass ?deviceclass;" +
+			"ses:hasService ?service ." +
+			"?service ?p ?o." +
+			"}")
+}

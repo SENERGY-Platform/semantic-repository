@@ -69,6 +69,63 @@ func TestProduceValidDeviceType(t *testing.T) {
 	producer.PublishDeviceType(devicetype, "sdfdsfsf")
 }
 
+func TestCreateAndDeleteDeviceTypePart1(t *testing.T) {
+	conf, err := config.Load("../config.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	producer, _ := producer.New(conf)
+	devicetype := model.DeviceType{}
+	devicetype.Id = "urn:infai:ses:devicetype:1"
+	devicetype.Name = "Philips Hue Color"
+	devicetype.DeviceClass = model.DeviceClass{
+		Id: "urn:infai:ses:deviceclass:2",
+		Name: "Lamp",
+	}
+	devicetype.Description = "description"
+	devicetype.Image = "image"
+	devicetype.Services = []model.Service{}
+	devicetype.Services = append(devicetype.Services, model.Service{
+		"urn:infai:ses:service:3a",
+		"localId",
+		"setBrightness",
+		"",
+		[]model.Aspect{{Id:"urn:infai:ses:aspect:4a", Name: "Lighting", RdfType: "asasasdsadas"}},
+		"asdasda",
+		[]model.Content{},
+		[]model.Content{},
+		[]model.Function{{Id:"urn:infai:ses:function:5a", Name: "brightnessAdjustment", ConceptIds: []string{"urn:infai:ses:concept:6a","urn:infai:ses:concept:7a"}, RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION }},
+		"asdasdsadsadasd",
+	})
+
+	devicetype.Services = append(devicetype.Services, model.Service{
+		"urn:infai:ses:service:3b",
+		"localId",
+		"setBrightness",
+		"",
+		[]model.Aspect{{Id:"urn:infai:ses:aspect:4b", Name: "Lighting", RdfType: "asasasdsadas"}},
+		"asdasda",
+		[]model.Content{},
+		[]model.Content{},
+		[]model.Function{{Id:"urn:infai:ses:function:5b", Name: "brightnessAdjustment", ConceptIds: []string{"urn:infai:ses:concept:6b","urn:infai:ses:concept:7b"}, RdfType: model.SES_ONTOLOGY_MEASURING_FUNCTION }},
+		"asdasdsadsadasd",
+	})
+
+	producer.PublishDeviceType(devicetype, "sdfdsfsf")
+}
+
+func TestCreateAndDeleteDeviceTypePart2(t *testing.T) {
+	conf, err := config.Load("../config.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	producer, _ := producer.New(conf)
+	err = producer.PublishDeviceTypeDelete("urn:infai:ses:devicetype:1", "sdfdsfsf")
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestReadControllingFunction(t *testing.T) {
 	err, con := StartUpScript(t)
 	res, err, code := con.GetFunctions(model.SES_ONTOLOGY_CONTROLLING_FUNCTION)

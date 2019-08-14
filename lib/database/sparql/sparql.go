@@ -85,6 +85,18 @@ func (*Database) ReadData() (body []byte, err error) {
 	return body, nil
 }
 
+
+func (this *Database) DeleteDeviceType(s string) (err error) {
+	query := this.getDeleteDeviceTypeQuery(s)
+	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
+	if err != nil {
+		log.Println("ERROR:", err)
+		return  err
+	}
+	defer resp.Body.Close()
+	return  nil
+}
+
 func (this *Database) GetConstructWithoutProperties(s string, p string, o string) (rdfxml string, err error) {
 	query := this.getConstructQueryWithoutProperties(s, p, o)
 	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
