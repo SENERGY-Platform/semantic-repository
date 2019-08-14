@@ -78,39 +78,38 @@ func (this *Controller) ValidateDeviceType(dt model.DeviceType) (err error, code
 func (this *Controller) SetDeviceType(deviceType model.DeviceType, owner string) (err error) {
 	SetTypes(&deviceType)
 
-	err, _ = this.ValidateDeviceType(deviceType)
+	err, code := this.ValidateDeviceType(deviceType)
 	if err != nil {
-		log.Println("Error Validation:", err)
+		debug.PrintStack()
+		log.Println("Error Validation:", err, code)
 		return
 	}
-	log.Println(deviceType)
 
 	b, err := json.Marshal(deviceType)
-	var result map[string]interface{}
-	err = json.Unmarshal(b, &result)
+	var deviceTypeJsonLd map[string]interface{}
+	err = json.Unmarshal(b, &deviceTypeJsonLd)
 
-	context := getContext()
-	result["@context"] = context
+	deviceTypeJsonLd["@context"] = getContext()
 
 	proc := ld.NewJsonLdProcessor()
 	options := ld.NewJsonLdOptions("")
 	options.ProcessingMode = ld.JsonLd_1_1
 	options.Format = "application/n-quads"
 
-	triples, err := proc.ToRDF(result, options)
+	triples, err := proc.ToRDF(deviceTypeJsonLd, options)
 	if err != nil {
+		debug.PrintStack()
 		log.Println("Error when transforming JSON-LD document to RDF:", err)
-		return
+		return err
 	}
 
-	log.Println("---->")
-	log.Println(triples)
-
-	//os.Stdout.WriteString(triples.(string))
-	success, err := this.db.InsertData(triples.(string))
-	log.Println(success)
-
-	return
+	err = this.db.InsertData(triples.(string))
+	if err != nil {
+		debug.PrintStack()
+		log.Println("Error insert devicetype:", err)
+		return err
+	}
+	return nil
 }
 
 func SetTypes(deviceType *model.DeviceType) {

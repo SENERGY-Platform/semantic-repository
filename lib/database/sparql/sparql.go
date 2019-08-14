@@ -49,18 +49,18 @@ func (*Database) RemoveDeviceType(ctx context.Context, id string) error {
 	panic("implement me")
 }
 
-func (this *Database) InsertData(triples string) (success bool, err error) {
+func (this *Database) InsertData(triples string) (err error) {
 	requestBody := []byte(triples)
 	resp, err := http.Post(this.conf.RyaUrl+"/web.rya/loadrdf?format=N-Triples", "text/plain", bytes.NewBuffer(requestBody))
 	if err != nil {
 		log.Println("ERROR: ", err)
-		return false, err
+		return err
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode == 200 {
-		return true, nil
+		return nil
 	} else {
-		return false, errors.New("ERROR: Statuscode " + string(resp.StatusCode))
+		return errors.New("ERROR: Statuscode " + string(resp.StatusCode))
 	}
 }
 
@@ -94,7 +94,11 @@ func (this *Database) DeleteDeviceType(s string) (err error) {
 		return  err
 	}
 	defer resp.Body.Close()
-	return  nil
+	if resp.StatusCode == 200 {
+		return nil
+	} else {
+		return errors.New("ERROR: Statuscode " + string(resp.StatusCode))
+	}
 }
 
 func (this *Database) GetConstructWithoutProperties(s string, p string, o string) (rdfxml string, err error) {

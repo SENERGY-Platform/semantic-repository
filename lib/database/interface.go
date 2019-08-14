@@ -19,7 +19,7 @@ package database
 type Database interface {
 	Disconnect()
 
-	InsertData(triples string) (success bool, err error)
+	InsertData(triples string) (err error)
 	ReadData() (body []byte, err error)
 	DeleteDeviceType(s string) (err error)
 	GetConstructWithoutProperties(s string, p string, o string) (rdfxml string, err error)

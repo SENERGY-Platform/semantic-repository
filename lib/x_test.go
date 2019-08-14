@@ -20,9 +20,11 @@ func TestInsertSparql(t *testing.T) {
 		t.Fatal(err)
 	}
 	db, err := database.New(conf)
-	success, err := db.InsertData(`<urn:infai:ses:concept:7777> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://senergy.infai.org/ontology/Concept> .
+	err = db.InsertData(`<urn:infai:ses:concept:7777> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://senergy.infai.org/ontology/Concept> .
 <urn:infai:ses:concept:7777> <http://www.w3.org/2000/01/rdf-schema#label> "temperature" .`)
-	t.Log(success)
+	if err != nil {
+		t.Fatal(err)
+	}
 }
 
 func TestJsonLd(t *testing.T) {
@@ -67,8 +69,10 @@ func TestJsonLd(t *testing.T) {
 
 	os.Stdout.WriteString(triples.(string))
 	db, err := database.New(conf)
-	success, err := db.InsertData(triples.(string))
-	t.Log(success)
+	err = db.InsertData(triples.(string))
+	if err != nil {
+		t.Fatal(err)
+	}
 }
 
 func TestFromRDF(t *testing.T) {
@@ -204,10 +208,10 @@ func TestY(t *testing.T) {
 
 	doc := map[string]interface{}{
 		"@context": map[string]interface{}{
-			"id": "@id",
-			"type": "@type",
-			"rdfs": "http://www.w3.org/2000/01/rdf-schema#",
-			"name": "rdfs:label",
+			"id":          "@id",
+			"type":        "@type",
+			"rdfs":        "http://www.w3.org/2000/01/rdf-schema#",
+			"name":        "rdfs:label",
 			"concept_ids": "https://senergy.infai.org/ontology/hasConcept",
 		},
 		"@graph": []interface{}{
@@ -216,7 +220,7 @@ func TestY(t *testing.T) {
 				"@type": []interface{}{"https://senergy.infai.org/ontology/ControllingFunction"},
 				"http://www.w3.org/2000/01/rdf-schema#label": map[string]interface{}{
 					"@value": "brightnessAdjustment"},
-				"https://senergy.infai.org/ontology/hasConcept" :[]interface{}{
+				"https://senergy.infai.org/ontology/hasConcept": []interface{}{
 					map[string]interface{}{"@id": "urn:infai:ses:concept:6666"},
 					map[string]interface{}{"@id": "urn:infai:ses:concept:7777"},
 				},
@@ -226,10 +230,10 @@ func TestY(t *testing.T) {
 
 	frame := map[string]interface{}{
 		"@context": map[string]interface{}{
-			"id": "@id",
-			"type": "@type",
-			"rdfs": "http://www.w3.org/2000/01/rdf-schema#",
-			"name": "rdfs:label",
+			"id":          "@id",
+			"type":        "@type",
+			"rdfs":        "http://www.w3.org/2000/01/rdf-schema#",
+			"name":        "rdfs:label",
 			"concept_ids": "https://senergy.infai.org/ontology/hasConcept",
 		},
 	}
