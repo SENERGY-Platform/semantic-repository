@@ -84,6 +84,13 @@ func (this *Controller) SetDeviceType(deviceType model.DeviceType, owner string)
 		log.Println("Error Validation:", err, code)
 		return
 	}
+	// delete is required for the update of devicetypes
+	err = this.DeleteDeviceType(deviceType.Id)
+	if err != nil {
+		debug.PrintStack()
+		log.Println("Error Delete Device Type:", err, code)
+		return
+	}
 
 	b, err := json.Marshal(deviceType)
 	var deviceTypeJsonLd map[string]interface{}
