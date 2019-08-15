@@ -20,7 +20,12 @@ func (*Database) getConstructQueryWithoutProperties(s string, p string, o string
 	} else {
 		o = " <" + o + "> "
 	}
-	return url.QueryEscape("construct {?s ?p ?o} where {" + "?s ?p ?o ." + s + p + o + ".}")
+	return url.QueryEscape("CONSTRUCT {?s ?p ?o} " +
+		"WHERE {" + "?s ?p ?o ." +
+		s + p + o + "." +
+		"?s <http://www.w3.org/2000/01/rdf-schema#label> ?label" +
+		"}" +
+		"ORDER BY ASC(?label)")
 }
 
 func (*Database) getSubjectWithAllPropertiesQuery(subject string) (string) {

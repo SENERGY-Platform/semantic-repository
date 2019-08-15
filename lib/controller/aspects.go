@@ -21,6 +21,7 @@ import (
 	"github.com/pkg/errors"
 	"log"
 	"net/http"
+	"sort"
 )
 
 /////////////////////////
@@ -39,6 +40,10 @@ func (this *Controller) GetAspects() (result []model.Aspect, err error, errCode 
 		log.Println("GetAspects ERROR: RdfXmlToModel", err)
 		return result, err, http.StatusInternalServerError
 	}
+
+	sort.Slice(result, func(i, j int) bool {
+		return result[i].Name < result[j].Name
+	})
 
 	return result, nil, http.StatusOK
 }
