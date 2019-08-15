@@ -17,19 +17,13 @@
 package lib
 
 import (
-	"encoding/json"
 	"github.com/SENERGY-Platform/semantic-repository/lib/config"
 	"github.com/SENERGY-Platform/semantic-repository/lib/controller"
 	"github.com/SENERGY-Platform/semantic-repository/lib/database"
 	"github.com/SENERGY-Platform/semantic-repository/lib/model"
 	"github.com/SENERGY-Platform/semantic-repository/lib/source/producer"
 	"github.com/satori/go.uuid"
-	"io/ioutil"
-	"net/http"
-	"net/url"
-	"reflect"
 	"testing"
-	"time"
 )
 
 var devicetype1id = "urn:infai:ses:device-type:2cc43032-207e-494e-8de4-94784cd4961d"
@@ -56,7 +50,20 @@ func TestProduceValidDeviceType(t *testing.T) {
 	devicetype.Services = append(devicetype.Services, model.Service{
 		"urn:infai:ses:service:3333",
 		"localId",
-		"setBrightness",
+		"setBrightness1",
+		"",
+		[]model.Aspect{{Id:"urn:infai:ses:aspect:4444", Name: "Lighting", RdfType: "asasasdsadas"}},
+		"asdasda",
+		[]model.Content{},
+		[]model.Content{},
+		[]model.Function{{Id:"urn:infai:ses:function:5555", Name: "brightnessAdjustment", ConceptIds: []string{"urn:infai:ses:concept:6666","urn:infai:ses:concept:7777"}, RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION }},
+		"asdasdsadsadasd",
+	})
+
+	devicetype.Services = append(devicetype.Services, model.Service{
+		"urn:infai:ses:service:3333bbbb",
+		"localId",
+		"setBrightness2",
 		"",
 		[]model.Aspect{{Id:"urn:infai:ses:aspect:4444", Name: "Lighting", RdfType: "asasasdsadas"}},
 		"asdasda",
@@ -168,11 +175,126 @@ func TestReadDeviceClass(t *testing.T) {
 
 func TestReadDeviceType(t *testing.T) {
 	err, con := StartUpScript(t)
-	res, err, code := con.GetDeviceType("urn:infai:ses:devicetype:1111")
+	deviceType, err, code := con.GetDeviceType("urn:infai:ses:devicetype:1111")
+
+	if deviceType.Id != "urn:infai:ses:devicetype:1111" {
+		t.Fatal("error id")
+	}
+
+	if deviceType.RdfType != model.SES_ONTOLOGY_DEVICE_TYPE {
+		t.Fatal("error model")
+	}
+
+	if deviceType.Name != "Philips Hue Color" {
+		t.Fatal("error name")
+	}
+
+	if deviceType.Description != "" {
+		t.Fatal("error description")
+	}
+
+	if deviceType.Image != "" {
+		t.Fatal("error image")
+	}
+	// DeviceClass
+	if deviceType.DeviceClass.Id != "urn:infai:ses:deviceclass:2222" {
+		t.Fatal("error deviceclass id")
+	}
+	if deviceType.DeviceClass.Name != "Lamp" {
+		t.Fatal("error deviceclass name")
+	}
+	if deviceType.DeviceClass.RdfType != model.SES_ONTOLOGY_DEVICE_CLASS {
+		t.Fatal("error deviceclass rdf type")
+	}
+	// Service
+	if deviceType.Services[0].Id != "urn:infai:ses:service:3333" {
+		t.Fatal("error service -> 0 -> id")
+	}
+	if deviceType.Services[0].RdfType != model.SES_ONTOLOGY_SERVICE {
+		t.Fatal("error service -> 0 -> RdfType")
+	}
+	if deviceType.Services[0].Name != "setBrightness1" {
+		t.Log(deviceType.Services[0].Name)
+		t.Fatal("error service -> 0 -> name")
+	}
+	if deviceType.Services[0].Description != "" {
+		t.Fatal("error service -> 0 -> description")
+	}
+	if deviceType.Services[0].LocalId != "" {                // not stored as TRIPLE
+		t.Fatal("error service -> 0 -> LocalId")
+	}
+	if deviceType.Services[0].Aspects[0].Id != "urn:infai:ses:aspect:4444" {
+		t.Fatal("error aspect -> 0/0 -> id")
+	}
+	if deviceType.Services[0].Aspects[0].Name != "Lighting" {
+		t.Log(deviceType.Services[0].Aspects[0].Name)
+		t.Fatal("error aspect -> 0/0 -> Name")
+	}
+	if deviceType.Services[0].Aspects[0].RdfType != model.SES_ONTOLOGY_ASPECT {
+		t.Fatal("error aspect -> 0/0 -> RdfType")
+	}
+	if deviceType.Services[0].Functions[0].Id != "urn:infai:ses:function:5555" {
+		t.Fatal("error function -> 0/0 -> id")
+	}
+	if deviceType.Services[0].Functions[0].Name != "brightnessAdjustment" {
+		t.Fatal("error function -> 0/0 -> Name")
+	}
+	if deviceType.Services[0].Functions[0].RdfType != model.SES_ONTOLOGY_CONTROLLING_FUNCTION {
+		t.Fatal("error function -> 0/0 -> RdfType")
+	}
+	if deviceType.Services[0].Functions[0].ConceptIds[0] != "urn:infai:ses:concept:7777" {
+		t.Fatal("error function -> 0/0/0 -> ConceptIds")
+	}
+	if deviceType.Services[0].Functions[0].ConceptIds[1] != "urn:infai:ses:concept:6666" {
+		t.Fatal("error function -> 0/0/1 -> ConceptIds")
+	}
+	/// service 2
+	if deviceType.Services[1].Id != "urn:infai:ses:service:3333bbbb" {
+		t.Fatal("error service -> 1 -> id")
+	}
+	if deviceType.Services[1].RdfType != model.SES_ONTOLOGY_SERVICE {
+		t.Fatal("error service -> 1 -> RdfType")
+	}
+	if deviceType.Services[1].Name != "setBrightness2" {
+		t.Log(deviceType.Services[1].Name)
+		t.Fatal("error service -> 1 -> name")
+	}
+	if deviceType.Services[1].Description != "" {
+		t.Fatal("error service -> 1 -> description")
+	}
+	if deviceType.Services[1].LocalId != "" {                // not stored as TRIPLE
+		t.Fatal("error service -> 1 -> LocalId")
+	}
+	if deviceType.Services[1].Aspects[0].Id != "urn:infai:ses:aspect:4444" {
+		t.Fatal("error aspect -> 1/0 -> id")
+	}
+	if deviceType.Services[1].Aspects[0].Name != "Lighting" {
+		t.Log(deviceType.Services[1].Aspects[0].Name)
+		t.Fatal("error aspect -> 1/0 -> Name")
+	}
+	if deviceType.Services[1].Aspects[0].RdfType != model.SES_ONTOLOGY_ASPECT {
+		t.Fatal("error aspect -> 1/0 -> RdfType")
+	}
+	if deviceType.Services[1].Functions[0].Id != "urn:infai:ses:function:5555" {
+		t.Fatal("error function -> 1/0 -> id")
+	}
+	if deviceType.Services[1].Functions[0].Name != "brightnessAdjustment" {
+		t.Fatal("error function -> 1/0 -> Name")
+	}
+	if deviceType.Services[1].Functions[0].RdfType != model.SES_ONTOLOGY_CONTROLLING_FUNCTION {
+		t.Fatal("error function -> 1/0 -> RdfType")
+	}
+	if deviceType.Services[1].Functions[0].ConceptIds[0] != "urn:infai:ses:concept:7777" {
+		t.Fatal("error function -> 1/0/0 -> ConceptIds")
+	}
+	if deviceType.Services[1].Functions[0].ConceptIds[1] != "urn:infai:ses:concept:6666" {
+		t.Fatal("error function -> 1/0/1 -> ConceptIds")
+	}
+
 	if err != nil {
-		t.Fatal(res, err, code)
+		t.Fatal(deviceType, err, code)
 	} else {
-		t.Log(res)
+		t.Log(deviceType)
 	}
 }
 
@@ -194,245 +316,4 @@ func StartUpScript(t *testing.T) (error, *controller.Controller) {
 		t.Fatal(err)
 	}
 	return err, con
-}
-
-func TestDeviceTypeQuery(t *testing.T) {
-	closer, conf, err := createTestEnv()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if true {
-		defer closer()
-	}
-
-	/*
-		err = InitTopic(conf.ZookeeperUrl, conf.DeviceTypeTopic)
-		if err != nil {
-			t.Error(err)
-			return
-		}
-	*/
-	producer, err := NewPublisher(conf)
-	if err != nil {
-		t.Error(err)
-		return
-	}
-
-	err = producer.PublishDeviceType(model.DeviceType{Id: devicetype1id, Name: devicetype1name}, userid)
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	for i := 0; i < 20; i++ {
-		err = producer.PublishDeviceType(model.DeviceType{Id: uuid.NewV4().String(), Name: uuid.NewV4().String()}, userid)
-		if err != nil {
-			t.Error(err)
-			return
-		}
-	}
-	time.Sleep(10 * time.Second)
-
-	t.Run("unexisting", func(t *testing.T) {
-		testDeviceTypeReadNotFound(t, conf, uuid.NewV4().String())
-	})
-	t.Run("testDeviceTypeRead", func(t *testing.T) {
-		testDeviceTypeRead(t, conf)
-	})
-	t.Run("testDeviceTypeList", func(t *testing.T) {
-		testDeviceTypeList(t, conf)
-	})
-	t.Run("testDeviceTypeListLimit10", func(t *testing.T) {
-		testDeviceTypeListLimit10(t, conf)
-	})
-	t.Run("testDeviceTypeListLimit10Offset20", func(t *testing.T) {
-		testDeviceTypeListLimit10Offset20(t, conf)
-	})
-	t.Run("testDeviceTypeListSort", func(t *testing.T) {
-		testDeviceTypeListSort(t, conf)
-	})
-}
-
-func testDeviceTypeRead(t *testing.T, conf config.Config, expectedDt ...model.DeviceType) {
-	expected := model.DeviceType{Id: devicetype1id, Name: devicetype1name}
-	if len(expectedDt) > 0 {
-		expected = expectedDt[0]
-	}
-	endpoint := "http://localhost:" + conf.ServerPort + "/device-types/" + url.PathEscape(expected.Id)
-	resp, err := userjwt.Get(endpoint)
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	if resp.StatusCode != http.StatusOK {
-		b, _ := ioutil.ReadAll(resp.Body)
-		t.Error("unexpected response", endpoint, resp.Status, resp.StatusCode, string(b))
-		return
-	}
-	result := model.DeviceType{}
-	err = json.NewDecoder(resp.Body).Decode(&result)
-	if err != nil {
-		t.Error(err)
-	}
-	if result.Name != expected.Name {
-		t.Error("unexpected result", result)
-		return
-	}
-}
-
-func testDeviceTypeList(t *testing.T, conf config.Config) {
-	endpoint := "http://localhost:" + conf.ServerPort + "/device-types"
-	resp, err := userjwt.Get(endpoint)
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	if resp.StatusCode != http.StatusOK {
-		b, _ := ioutil.ReadAll(resp.Body)
-		t.Error("unexpected response", endpoint, resp.Status, resp.StatusCode, string(b))
-		return
-	}
-	result := []model.DeviceType{}
-	err = json.NewDecoder(resp.Body).Decode(&result)
-	if err != nil {
-		t.Error(err)
-	}
-	if len(result) != 21 {
-		t.Error("unexpected result", result)
-		return
-	}
-}
-
-func testDeviceTypeListLimit10(t *testing.T, conf config.Config) {
-	endpoint := "http://localhost:" + conf.ServerPort + "/device-types?limit=10"
-	resp, err := userjwt.Get(endpoint)
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	if resp.StatusCode != http.StatusOK {
-		b, _ := ioutil.ReadAll(resp.Body)
-		t.Error("unexpected response", endpoint, resp.Status, resp.StatusCode, string(b))
-		return
-	}
-	result := []model.DeviceType{}
-	err = json.NewDecoder(resp.Body).Decode(&result)
-	if err != nil {
-		t.Error(err)
-	}
-	if len(result) != 10 {
-		t.Error("unexpected result", result)
-		return
-	}
-}
-
-func testDeviceTypeListLimit10Offset20(t *testing.T, conf config.Config) {
-	endpoint := "http://localhost:" + conf.ServerPort + "/device-types?limit=10&offset=20"
-	resp, err := userjwt.Get(endpoint)
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	if resp.StatusCode != http.StatusOK {
-		b, _ := ioutil.ReadAll(resp.Body)
-		t.Error("unexpected response", endpoint, resp.Status, resp.StatusCode, string(b))
-		return
-	}
-	result := []model.DeviceType{}
-	err = json.NewDecoder(resp.Body).Decode(&result)
-	if err != nil {
-		t.Error(err)
-	}
-	if len(result) != 1 {
-		t.Error("unexpected result", result)
-		return
-	}
-}
-
-func testDeviceTypeListSort(t *testing.T, config config.Config) {
-	defaultendpoint := "http://localhost:" + config.ServerPort + "/device-types?sort=name"
-	resp, err := userjwt.Get(defaultendpoint)
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	if resp.StatusCode != http.StatusOK {
-		b, _ := ioutil.ReadAll(resp.Body)
-		t.Error("unexpected response", defaultendpoint, resp.Status, resp.StatusCode, string(b))
-		return
-	}
-	defaultresult := []model.DeviceType{}
-	err = json.NewDecoder(resp.Body).Decode(&defaultresult)
-	if err != nil {
-		t.Error(err)
-	}
-	if len(defaultresult) != 21 {
-		t.Error("unexpected result", len(defaultresult))
-		return
-	}
-	ascendpoint := "http://localhost:" + config.ServerPort + "/device-types?sort=name.asc"
-	resp, err = userjwt.Get(ascendpoint)
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	if resp.StatusCode != http.StatusOK {
-		b, _ := ioutil.ReadAll(resp.Body)
-		t.Error("unexpected response", ascendpoint, resp.Status, resp.StatusCode, string(b))
-		return
-	}
-	ascresult := []model.DeviceType{}
-	err = json.NewDecoder(resp.Body).Decode(&ascresult)
-	if err != nil {
-		t.Error(err)
-	}
-	if len(ascresult) != 21 {
-		t.Error("unexpected result", ascresult)
-		return
-	}
-	if !reflect.DeepEqual(defaultresult, ascresult) {
-		t.Error("unexpected result", defaultresult, ascresult)
-		return
-	}
-
-	descendpoint := "http://localhost:" + config.ServerPort + "/device-types?sort=name.desc"
-	resp, err = userjwt.Get(descendpoint)
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	if resp.StatusCode != http.StatusOK {
-		b, _ := ioutil.ReadAll(resp.Body)
-		t.Error("unexpected response", descendpoint, resp.Status, resp.StatusCode, string(b))
-		return
-	}
-	descresult := []model.DeviceType{}
-	err = json.NewDecoder(resp.Body).Decode(&descresult)
-	if err != nil {
-		t.Error(err)
-	}
-	if len(ascresult) != 21 {
-		t.Error("unexpected result", descresult)
-		return
-	}
-
-	for i := 0; i < 21; i++ {
-		if descresult[i].Id != ascresult[20-i].Id {
-			t.Error("unexpected sorting result", i, descresult[i].Id, ascresult[20-i].Id)
-			return
-		}
-	}
-}
-
-func testDeviceTypeReadNotFound(t *testing.T, conf config.Config, id string) {
-	endpoint := "http://localhost:" + conf.ServerPort + "/device-types/" + url.PathEscape(id)
-	resp, err := userjwt.Get(endpoint)
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	if resp.StatusCode != http.StatusNotFound {
-		b, _ := ioutil.ReadAll(resp.Body)
-		t.Error("unexpected response", endpoint, resp.Status, resp.StatusCode, string(b))
-		return
-	}
 }

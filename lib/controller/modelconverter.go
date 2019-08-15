@@ -100,6 +100,7 @@ func (*Controller) RdfXmlToSingleResult(rdfxml string, result *model.DeviceType)
 	cont := map[string]interface{}{}
 	cont["@context"] = contextDoc
 	cont["@type"] = model.SES_ONTOLOGY_DEVICE_TYPE
+	cont["@embed"] = "@always"
 
 	frameDoc, err := proc.Frame(graph, cont, options)
 	if err != nil {
