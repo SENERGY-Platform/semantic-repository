@@ -208,13 +208,51 @@ func TestReadAspect(t *testing.T) {
 }
 
 func TestReadDeviceClass(t *testing.T) {
-	err, con, _ := StartUpScript(t)
+	err, con, db := StartUpScript(t)
+	/// DeviceClass Lightning
+	err = db.InsertData(
+		`<urn:infai:ses:device-class:123> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <` +  model.SES_ONTOLOGY_DEVICE_CLASS + `> .
+<urn:infai:ses:device-class:123> <http://www.w3.org/2000/01/rdf-schema#label> "Ventilator" .`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = db.InsertData(
+		`<urn:infai:ses:device-class:234> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <` +  model.SES_ONTOLOGY_DEVICE_CLASS + `> .
+<urn:infai:ses:device-class:234> <http://www.w3.org/2000/01/rdf-schema#label> "ElectricityMeter" .`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = db.InsertData(
+		`<urn:infai:ses:device-class:111> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <` +  model.SES_ONTOLOGY_DEVICE_CLASS + `> .
+<urn:infai:ses:device-class:111> <http://www.w3.org/2000/01/rdf-schema#label> "CarbonDioxideMeter" .`)
+	if err != nil {
+		t.Fatal(err)
+	}
 	res, err, code := con.GetDeviceClasses()
 	if err != nil {
 		t.Fatal(res, err, code)
 	} else {
 		t.Log(res)
 	}
+	if res[0].Id != "urn:infai:ses:device-class:111" {
+		t.Fatal("error id")
+	}
+	if res[0].Name != "CarbonDioxideMeter" {
+		t.Fatal("error Name")
+	}
+	if res[1].Id != "urn:infai:ses:device-class:234" {
+		t.Fatal("error id")
+	}
+	if res[1].Name != "ElectricityMeter" {
+		t.Fatal("error Name")
+	}
+	if res[2].Id != "urn:infai:ses:device-class:123" {
+		t.Fatal("error id")
+	}
+	if res[2].Name != "Ventilator" {
+		t.Fatal("error Name")
+	}
+
 }
 
 func TestReadDeviceType(t *testing.T) {

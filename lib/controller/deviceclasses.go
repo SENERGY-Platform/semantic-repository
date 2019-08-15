@@ -21,6 +21,7 @@ import (
 	"github.com/SENERGY-Platform/semantic-repository/lib/model"
 	"log"
 	"net/http"
+	"sort"
 )
 
 /////////////////////////
@@ -39,6 +40,10 @@ func (this *Controller) GetDeviceClasses() (result []model.DeviceClass, err erro
 		log.Println("GetDeviceClasses ERROR: RdfXmlToModel", err)
 		return result, err, http.StatusInternalServerError
 	}
+
+	sort.Slice(result, func(i, j int) bool {
+		return result[i].Name < result[j].Name
+	})
 
 	return result, nil, http.StatusOK
 }
