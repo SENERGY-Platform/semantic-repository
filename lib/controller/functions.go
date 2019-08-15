@@ -21,6 +21,7 @@ import (
 	"github.com/pkg/errors"
 	"log"
 	"net/http"
+	"sort"
 )
 
 /////////////////////////
@@ -38,6 +39,10 @@ func (this *Controller) GetFunctions(funcType string) (result []model.Function, 
 		log.Println("GetFunctions ERROR: RdfXmlToModel", err)
 		return result, err, http.StatusInternalServerError
 	}
+
+	sort.Slice(result, func(i, j int) bool {
+		return result[i].Name < result[j].Name
+	})
 
 	return result, nil, http.StatusOK
 
