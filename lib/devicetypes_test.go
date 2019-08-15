@@ -31,108 +31,6 @@ var devicetype1name = uuid.NewV4().String()
 var devicetype2id = uuid.NewV4().String()
 var devicetype2name = uuid.NewV4().String()
 
-func TestProduceValidDeviceType(t *testing.T) {
-	conf, err := config.Load("../config.json")
-	if err != nil {
-		t.Fatal(err)
-	}
-	producer, _ := producer.New(conf)
-	devicetype := model.DeviceType{}
-	devicetype.Id = "urn:infai:ses:devicetype:1111"
-	devicetype.Name = "Philips Hue Color"
-	devicetype.DeviceClass = model.DeviceClass{
-		Id:   "urn:infai:ses:deviceclass:2222",
-		Name: "Lamp",
-	}
-	devicetype.Description = "description"
-	devicetype.Image = "image"
-	devicetype.Services = []model.Service{}
-	devicetype.Services = append(devicetype.Services, model.Service{
-		"urn:infai:ses:service:3333",
-		"localId",
-		"setBrightness1",
-		"",
-		[]model.Aspect{{Id: "urn:infai:ses:aspect:4444", Name: "Lighting", RdfType: "asasasdsadas"}},
-		"asdasda",
-		[]model.Content{},
-		[]model.Content{},
-		[]model.Function{{Id: "urn:infai:ses:function:5555", Name: "brightnessAdjustment", ConceptIds: []string{"urn:infai:ses:concept:6666", "urn:infai:ses:concept:7777"}, RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION}},
-		"asdasdsadsadasd",
-	})
-
-	devicetype.Services = append(devicetype.Services, model.Service{
-		"urn:infai:ses:service:3333bbbb",
-		"localId",
-		"setBrightness2",
-		"",
-		[]model.Aspect{{Id: "urn:infai:ses:aspect:4444", Name: "Lighting", RdfType: "asasasdsadas"}},
-		"asdasda",
-		[]model.Content{},
-		[]model.Content{},
-		[]model.Function{{Id: "urn:infai:ses:function:5555", Name: "brightnessAdjustment", ConceptIds: []string{"urn:infai:ses:concept:6666", "urn:infai:ses:concept:7777"}, RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION}},
-		"asdasdsadsadasd",
-	})
-
-	producer.PublishDeviceType(devicetype, "sdfdsfsf")
-}
-
-func TestCreateAndDeleteDeviceTypePart1(t *testing.T) {
-	conf, err := config.Load("../config.json")
-	if err != nil {
-		t.Fatal(err)
-	}
-	producer, _ := producer.New(conf)
-	devicetype := model.DeviceType{}
-	devicetype.Id = "urn:infai:ses:devicetype:1"
-	devicetype.Name = "Philips Hue Color"
-	devicetype.DeviceClass = model.DeviceClass{
-		Id:   "urn:infai:ses:deviceclass:2",
-		Name: "Lamp",
-	}
-	devicetype.Description = "description"
-	devicetype.Image = "image"
-	devicetype.Services = []model.Service{}
-	devicetype.Services = append(devicetype.Services, model.Service{
-		"urn:infai:ses:service:3a",
-		"localId",
-		"setBrightness",
-		"",
-		[]model.Aspect{{Id: "urn:infai:ses:aspect:4a", Name: "Lighting", RdfType: "asasasdsadas"}},
-		"asdasda",
-		[]model.Content{},
-		[]model.Content{},
-		[]model.Function{{Id: "urn:infai:ses:function:5a", Name: "brightnessAdjustment", ConceptIds: []string{"urn:infai:ses:concept:6a", "urn:infai:ses:concept:7a"}, RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION}},
-		"asdasdsadsadasd",
-	})
-
-	devicetype.Services = append(devicetype.Services, model.Service{
-		"urn:infai:ses:service:3b",
-		"localId",
-		"setBrightness",
-		"",
-		[]model.Aspect{{Id: "urn:infai:ses:aspect:4b", Name: "Lighting", RdfType: "asasasdsadas"}},
-		"asdasda",
-		[]model.Content{},
-		[]model.Content{},
-		[]model.Function{{Id: "urn:infai:ses:function:5b", Name: "brightnessAdjustment", ConceptIds: []string{"urn:infai:ses:concept:6b", "urn:infai:ses:concept:7b"}, RdfType: model.SES_ONTOLOGY_MEASURING_FUNCTION}},
-		"asdasdsadsadasd",
-	})
-
-	producer.PublishDeviceType(devicetype, "sdfdsfsf")
-}
-
-func TestCreateAndDeleteDeviceTypePart2(t *testing.T) {
-	conf, err := config.Load("../config.json")
-	if err != nil {
-		t.Fatal(err)
-	}
-	producer, _ := producer.New(conf)
-	err = producer.PublishDeviceTypeDelete("urn:infai:ses:devicetype:1", "sdfdsfsf")
-	if err != nil {
-		t.Fatal(err)
-	}
-}
-
 func TestReadControllingFunction(t *testing.T) {
 	err, con, db := StartUpScript(t)
 	err = db.InsertData(
@@ -186,19 +84,19 @@ func TestReadMeasuringFunction(t *testing.T) {
 	err, con, db := StartUpScript(t)
 	err = db.InsertData(
 		`<urn:infai:ses:measuring-function:23> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <` +  model.SES_ONTOLOGY_MEASURING_FUNCTION + `> .
-<urn:infai:ses:controlling-function:23> <http://www.w3.org/2000/01/rdf-schema#label> "aaa" .`)
+<urn:infai:ses:measuring-function:23> <http://www.w3.org/2000/01/rdf-schema#label> "aaa" .`)
 	if err != nil {
 		t.Fatal(err)
 	}
 	err = db.InsertData(
 		`<urn:infai:ses:measuring-function:321> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <` +  model.SES_ONTOLOGY_MEASURING_FUNCTION + `> .
-<urn:infai:ses:controlling-function:321> <http://www.w3.org/2000/01/rdf-schema#label> "zzz" .`)
+<urn:infai:ses:measuring-function:321> <http://www.w3.org/2000/01/rdf-schema#label> "zzz" .`)
 	if err != nil {
 		t.Fatal(err)
 	}
 	err = db.InsertData(
 		`<urn:infai:ses:measuring-function:467> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <` +  model.SES_ONTOLOGY_MEASURING_FUNCTION + `> .
-<urn:infai:ses:controlling-function:467> <http://www.w3.org/2000/01/rdf-schema#label> "bbb" .`)
+<urn:infai:ses:measuring-function:467> <http://www.w3.org/2000/01/rdf-schema#label> "bbb" .`)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -212,7 +110,7 @@ func TestReadMeasuringFunction(t *testing.T) {
 	if res[0].Id != "urn:infai:ses:measuring-function:23" {
 		t.Fatal("error id")
 	}
-	if res[0].Name != "colorFunction" {
+	if res[0].Name != "aaa" {
 		t.Fatal("error Name")
 	}
 
@@ -333,11 +231,56 @@ func TestReadDeviceClass(t *testing.T) {
 
 }
 
+func TestProduceValidDeviceType(t *testing.T) {
+	conf, err := config.Load("../config.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	producer, _ := producer.New(conf)
+	devicetype := model.DeviceType{}
+	devicetype.Id = "urn:infai:ses:devicetype:1e1e"
+	devicetype.Name = "Philips Hue Color"
+	devicetype.DeviceClass = model.DeviceClass{
+		Id:   "urn:infai:ses:deviceclass:2e2e",
+		Name: "Lamp",
+	}
+	devicetype.Description = "description"
+	devicetype.Image = "image"
+	devicetype.Services = []model.Service{}
+	devicetype.Services = append(devicetype.Services, model.Service{
+		"urn:infai:ses:service:3e3e",
+		"localId",
+		"setBrightness2",
+		"",
+		[]model.Aspect{{Id: "urn:infai:ses:aspect:4e4e", Name: "Lighting", RdfType: "asasasdsadas"}},
+		"asdasda",
+		[]model.Content{},
+		[]model.Content{},
+		[]model.Function{{Id: "urn:infai:ses:function:5e5e", Name: "brightnessAdjustment", ConceptIds: []string{"urn:infai:ses:concept:6e6e", "urn:infai:ses:concept:7e7e"}, RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION}},
+		"asdasdsadsadasd",
+	})
+
+	devicetype.Services = append(devicetype.Services, model.Service{
+		"urn:infai:ses:service:3f3f",
+		"localId",
+		"setBrightness1",
+		"",
+		[]model.Aspect{{Id: "urn:infai:ses:aspect:4e4e", Name: "Lighting", RdfType: "asasasdsadas"}},
+		"asdasda",
+		[]model.Content{},
+		[]model.Content{},
+		[]model.Function{{Id: "urn:infai:ses:function:5e5e", Name: "brightnessAdjustment", ConceptIds: []string{"urn:infai:ses:concept:6e6e", "urn:infai:ses:concept:7e7e"}, RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION}},
+		"asdasdsadsadasd",
+	})
+
+	producer.PublishDeviceType(devicetype, "sdfdsfsf")
+}
+
 func TestReadDeviceType(t *testing.T) {
 	err, con, _ := StartUpScript(t)
-	deviceType, err, code := con.GetDeviceType("urn:infai:ses:devicetype:1111")
+	deviceType, err, code := con.GetDeviceType("urn:infai:ses:devicetype:1e1e")
 
-	if deviceType.Id != "urn:infai:ses:devicetype:1111" {
+	if deviceType.Id != "urn:infai:ses:devicetype:1e1e" {
 		t.Fatal("error id")
 	}
 
@@ -357,7 +300,7 @@ func TestReadDeviceType(t *testing.T) {
 		t.Fatal("error image")
 	}
 	// DeviceClass
-	if deviceType.DeviceClass.Id != "urn:infai:ses:deviceclass:2222" {
+	if deviceType.DeviceClass.Id != "urn:infai:ses:deviceclass:2e2e" {
 		t.Fatal("error deviceclass id")
 	}
 	if deviceType.DeviceClass.Name != "Lamp" {
@@ -367,7 +310,7 @@ func TestReadDeviceType(t *testing.T) {
 		t.Fatal("error deviceclass rdf type")
 	}
 	// Service
-	if deviceType.Services[0].Id != "urn:infai:ses:service:3333" {
+	if deviceType.Services[0].Id != "urn:infai:ses:service:3f3f" {
 		t.Fatal("error service -> 0 -> id")
 	}
 	if deviceType.Services[0].RdfType != model.SES_ONTOLOGY_SERVICE {
@@ -383,7 +326,7 @@ func TestReadDeviceType(t *testing.T) {
 	if deviceType.Services[0].LocalId != "" { // not stored as TRIPLE
 		t.Fatal("error service -> 0 -> LocalId")
 	}
-	if deviceType.Services[0].Aspects[0].Id != "urn:infai:ses:aspect:4444" {
+	if deviceType.Services[0].Aspects[0].Id != "urn:infai:ses:aspect:4e4e" {
 		t.Fatal("error aspect -> 0/0 -> id")
 	}
 	if deviceType.Services[0].Aspects[0].Name != "Lighting" {
@@ -393,7 +336,7 @@ func TestReadDeviceType(t *testing.T) {
 	if deviceType.Services[0].Aspects[0].RdfType != model.SES_ONTOLOGY_ASPECT {
 		t.Fatal("error aspect -> 0/0 -> RdfType")
 	}
-	if deviceType.Services[0].Functions[0].Id != "urn:infai:ses:function:5555" {
+	if deviceType.Services[0].Functions[0].Id != "urn:infai:ses:function:5e5e" {
 		t.Fatal("error function -> 0/0 -> id")
 	}
 	if deviceType.Services[0].Functions[0].Name != "brightnessAdjustment" {
@@ -402,14 +345,14 @@ func TestReadDeviceType(t *testing.T) {
 	if deviceType.Services[0].Functions[0].RdfType != model.SES_ONTOLOGY_CONTROLLING_FUNCTION {
 		t.Fatal("error function -> 0/0 -> RdfType")
 	}
-	if deviceType.Services[0].Functions[0].ConceptIds[0] != "urn:infai:ses:concept:7777" {
+	if deviceType.Services[0].Functions[0].ConceptIds[0] != "urn:infai:ses:concept:7e7e" {
 		t.Fatal("error function -> 0/0/0 -> ConceptIds")
 	}
-	if deviceType.Services[0].Functions[0].ConceptIds[1] != "urn:infai:ses:concept:6666" {
+	if deviceType.Services[0].Functions[0].ConceptIds[1] != "urn:infai:ses:concept:6e6e" {
 		t.Fatal("error function -> 0/0/1 -> ConceptIds")
 	}
 	/// service 2
-	if deviceType.Services[1].Id != "urn:infai:ses:service:3333bbbb" {
+	if deviceType.Services[1].Id != "urn:infai:ses:service:3e3e" {
 		t.Fatal("error service -> 1 -> id")
 	}
 	if deviceType.Services[1].RdfType != model.SES_ONTOLOGY_SERVICE {
@@ -425,7 +368,7 @@ func TestReadDeviceType(t *testing.T) {
 	if deviceType.Services[1].LocalId != "" { // not stored as TRIPLE
 		t.Fatal("error service -> 1 -> LocalId")
 	}
-	if deviceType.Services[1].Aspects[0].Id != "urn:infai:ses:aspect:4444" {
+	if deviceType.Services[1].Aspects[0].Id != "urn:infai:ses:aspect:4e4e" {
 		t.Fatal("error aspect -> 1/0 -> id")
 	}
 	if deviceType.Services[1].Aspects[0].Name != "Lighting" {
@@ -435,7 +378,7 @@ func TestReadDeviceType(t *testing.T) {
 	if deviceType.Services[1].Aspects[0].RdfType != model.SES_ONTOLOGY_ASPECT {
 		t.Fatal("error aspect -> 1/0 -> RdfType")
 	}
-	if deviceType.Services[1].Functions[0].Id != "urn:infai:ses:function:5555" {
+	if deviceType.Services[1].Functions[0].Id != "urn:infai:ses:function:5e5e" {
 		t.Fatal("error function -> 1/0 -> id")
 	}
 	if deviceType.Services[1].Functions[0].Name != "brightnessAdjustment" {
@@ -444,10 +387,10 @@ func TestReadDeviceType(t *testing.T) {
 	if deviceType.Services[1].Functions[0].RdfType != model.SES_ONTOLOGY_CONTROLLING_FUNCTION {
 		t.Fatal("error function -> 1/0 -> RdfType")
 	}
-	if deviceType.Services[1].Functions[0].ConceptIds[0] != "urn:infai:ses:concept:7777" {
+	if deviceType.Services[1].Functions[0].ConceptIds[0] != "urn:infai:ses:concept:7e7e" {
 		t.Fatal("error function -> 1/0/0 -> ConceptIds")
 	}
-	if deviceType.Services[1].Functions[0].ConceptIds[1] != "urn:infai:ses:concept:6666" {
+	if deviceType.Services[1].Functions[0].ConceptIds[1] != "urn:infai:ses:concept:6e6e" {
 		t.Fatal("error function -> 1/0/1 -> ConceptIds")
 	}
 
@@ -455,6 +398,63 @@ func TestReadDeviceType(t *testing.T) {
 		t.Fatal(deviceType, err, code)
 	} else {
 		t.Log(deviceType)
+	}
+}
+
+func TestCreateAndDeleteDeviceTypePart1(t *testing.T) {
+	conf, err := config.Load("../config.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	producer, _ := producer.New(conf)
+	devicetype := model.DeviceType{}
+	devicetype.Id = "urn:infai:ses:devicetype:1"
+	devicetype.Name = "Philips Hue Color"
+	devicetype.DeviceClass = model.DeviceClass{
+		Id:   "urn:infai:ses:deviceclass:2",
+		Name: "Lamp",
+	}
+	devicetype.Description = "description"
+	devicetype.Image = "image"
+	devicetype.Services = []model.Service{}
+	devicetype.Services = append(devicetype.Services, model.Service{
+		"urn:infai:ses:service:3a",
+		"localId",
+		"setBrightness",
+		"",
+		[]model.Aspect{{Id: "urn:infai:ses:aspect:4a", Name: "Lighting", RdfType: "asasasdsadas"}},
+		"asdasda",
+		[]model.Content{},
+		[]model.Content{},
+		[]model.Function{{Id: "urn:infai:ses:function:5a", Name: "brightnessAdjustment", ConceptIds: []string{"urn:infai:ses:concept:6a", "urn:infai:ses:concept:7a"}, RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION}},
+		"asdasdsadsadasd",
+	})
+
+	devicetype.Services = append(devicetype.Services, model.Service{
+		"urn:infai:ses:service:3b",
+		"localId",
+		"setBrightness",
+		"",
+		[]model.Aspect{{Id: "urn:infai:ses:aspect:4b", Name: "Lighting", RdfType: "asasasdsadas"}},
+		"asdasda",
+		[]model.Content{},
+		[]model.Content{},
+		[]model.Function{{Id: "urn:infai:ses:function:5b", Name: "brightnessAdjustment", ConceptIds: []string{"urn:infai:ses:concept:6b", "urn:infai:ses:concept:7b"}, RdfType: model.SES_ONTOLOGY_MEASURING_FUNCTION}},
+		"asdasdsadsadasd",
+	})
+
+	producer.PublishDeviceType(devicetype, "sdfdsfsf")
+}
+
+func TestCreateAndDeleteDeviceTypePart2(t *testing.T) {
+	conf, err := config.Load("../config.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	producer, _ := producer.New(conf)
+	err = producer.PublishDeviceTypeDelete("urn:infai:ses:devicetype:1", "sdfdsfsf")
+	if err != nil {
+		t.Fatal(err)
 	}
 }
 

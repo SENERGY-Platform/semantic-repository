@@ -24,6 +24,7 @@ import (
 	"log"
 	"net/http"
 	"runtime/debug"
+	"sort"
 )
 
 /////////////////////////
@@ -42,6 +43,11 @@ func (this *Controller) GetDeviceType(subject string) (result model.DeviceType, 
 		log.Println("GetDeviceClasses ERROR: RdfXmlToModel", err)
 		return result, err, http.StatusInternalServerError
 	}
+
+	sort.Slice(result.Services, func(i, j int) bool {
+		return result.Services[i].Name < result.Services[j].Name
+	})
+
 
 	return result, nil, http.StatusOK
 }
