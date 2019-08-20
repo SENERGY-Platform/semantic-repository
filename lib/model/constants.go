@@ -6,6 +6,8 @@ const SES_ONTOLOGY_DEVICE_CLASS = "https://senergy.infai.org/ontology/DeviceClas
 const SES_ONTOLOGY_ASPECT = "https://senergy.infai.org/ontology/Aspect"
 const SES_ONTOLOGY_DEVICE_TYPE = "https://senergy.infai.org/ontology/DeviceType"
 const SES_ONTOLOGY_SERVICE = "https://senergy.infai.org/ontology/Service"
+const SES_ONTOLOGY_CONCEPT = "https://senergy.infai.org/ontology/Concept"
+const SES_ONTOLOGY_CHARACTERISTIC = "https://senergy.infai.org/ontology/Characteristic"
 // Properties
 const SES_ONTOLOGY_HAS_CONCEPT = "https://senergy.infai.org/ontology/hasConcept"
 const SES_ONTOLOGY_HAS_DEVICE_CLASS = "https://senergy.infai.org/ontology/hasDeviceClass"

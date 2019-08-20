@@ -82,7 +82,7 @@ func (this *Controller) ValidateDeviceType(dt model.DeviceType) (err error, code
 /////////////////////////
 
 func (this *Controller) SetDeviceType(deviceType model.DeviceType, owner string) (err error) {
-	SetTypes(&deviceType)
+	SetDevicetypeRdfTypes(&deviceType)
 
 	err, code := this.ValidateDeviceType(deviceType)
 	if err != nil {
@@ -125,7 +125,7 @@ func (this *Controller) SetDeviceType(deviceType model.DeviceType, owner string)
 	return nil
 }
 
-func SetTypes(deviceType *model.DeviceType) {
+func SetDevicetypeRdfTypes(deviceType *model.DeviceType) {
 	deviceType.RdfType = model.SES_ONTOLOGY_DEVICE_TYPE
 	deviceType.DeviceClass.RdfType = model.SES_ONTOLOGY_DEVICE_CLASS
 	for serviceIndex, _ := range deviceType.Services {
