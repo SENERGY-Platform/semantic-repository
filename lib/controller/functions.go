@@ -64,15 +64,10 @@ func (this *Controller) ValidateFunctions(functions []model.Function) (error, in
 			return errors.New("wrong function type"), http.StatusBadRequest
 		}
 
-		if len(function.ConceptIds) == 0 {
-			return errors.New("expect at least one concept id"), http.StatusBadRequest
+		if function.ConceptId == "" {
+			return errors.New("missing function concept id"), http.StatusBadRequest
 		}
 
-		for _, conceptId := range function.ConceptIds {
-			if conceptId == "" {
-				return errors.New("missing concept id"), http.StatusBadRequest
-			}
-		}
 	}
 
 	return nil, http.StatusOK

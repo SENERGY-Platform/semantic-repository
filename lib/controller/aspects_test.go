@@ -13,7 +13,7 @@ func TestValidAspect (t *testing.T) {
 	controller := Controller{}
 	err, code := controller.ValidateAspects(aspects)
 	if err == nil && code == http.StatusOK {
-		t.Log(err)
+		t.Log(aspects)
 	} else {
 		t.Fatal(err, code)
 	}

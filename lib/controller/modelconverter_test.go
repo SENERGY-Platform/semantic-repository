@@ -63,12 +63,10 @@ func TestControllingFunction(t *testing.T) {
 		if contFunc[0].RdfType != "https://senergy.infai.org/ontology/ControllingFunction" {
 			t.Fatal("wrong type")
 		}
-		if contFunc[0].ConceptIds[0] != "urn:infai:ses:concept:6666" {
+		if contFunc[0].ConceptId != "urn:infai:ses:concept:6666" {
 			t.Fatal("wrong concept id -> index 0")
 		}
-		if contFunc[0].ConceptIds[1] != "urn:infai:ses:concept:7777" {
-			t.Fatal("wrong concept id -> index 1")
-		}
+
 		t.Log(contFunc)
 
 	} else {
@@ -234,11 +232,8 @@ func TestDeviceType(t *testing.T) {
 		if deviceType.Services[0].Functions[0].Name != "brightnessAdjustment" {
 			t.Fatal("wrong functions name -> index 0,0")
 		}
-		if deviceType.Services[0].Functions[0].ConceptIds[0] != "urn:infai:ses:concept:7777" {
+		if deviceType.Services[0].Functions[0].ConceptId != "urn:infai:ses:concept:7777" {
 			t.Fatal("wrong functions concept id -> index 0,0,0")
-		}
-		if deviceType.Services[0].Functions[0].ConceptIds[1] != "urn:infai:ses:concept:6666" {
-			t.Fatal("wrong functions concept id -> index 0,0,1")
 		}
 		if deviceType.Services[0].Aspects[0].Id != "urn:infai:ses:aspect:4444" {
 			t.Fatal("wrong aspects id -> index 0,0")

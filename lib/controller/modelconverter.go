@@ -156,6 +156,7 @@ func getDeviceTypeContext() map[string]interface{} {
 		"rdf_type":     "@type",
 		"name":         model.RDFS_LABEL,
 		"device_class": model.SES_ONTOLOGY_HAS_DEVICE_CLASS,
+		"concept_id":   model.SES_ONTOLOGY_HAS_CONCEPT,
 		"services": map[string]interface{}{
 			"@id":        model.SES_ONTOLOGY_HAS_SERVICE,
 			"@container": "@set",
@@ -166,11 +167,6 @@ func getDeviceTypeContext() map[string]interface{} {
 		},
 		"functions": map[string]interface{}{
 			"@id":        model.SES_ONTOLOGY_EXPOSES_FUNCTION,
-			"@container": "@set",
-		},
-		"concept_ids": map[string]interface{}{
-			"@id":        model.SES_ONTOLOGY_HAS_CONCEPT,
-			"@type":      "@id",
 			"@container": "@set",
 		},
 	}

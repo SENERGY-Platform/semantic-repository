@@ -29,14 +29,14 @@ func TestValidDeviceType(t *testing.T) {
 		"protocolId",
 		[]model.Content{},
 		[]model.Content{},
-		[]model.Function{{Id: "urn:infai:ses:function:5555", Name: "brightnessAdjustment", ConceptIds: []string{"urn:infai:ses:concept:6666", "urn:infai:ses:concept:7777"}, RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION}},
+		[]model.Function{{Id: "urn:infai:ses:function:5555", Name: "brightnessAdjustment", ConceptId: "urn:infai:ses:concept:6666", RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION}},
 		model.SES_ONTOLOGY_SERVICE,
 	})
 
 	controller := Controller{}
 	err, code := controller.ValidateDeviceType(devicetype)
 	if err == nil && code == http.StatusOK {
-		t.Log(err, code)
+		t.Log(devicetype)
 	} else {
 		t.Fatal(err, code)
 	}
@@ -109,7 +109,7 @@ func TestValidationDeviceTypeNoDeviceClass(t *testing.T) {
 		Name: "test", LocalId: "2",
 		ProtocolId: "3",
 		Aspects:    []model.Aspect{{Id: "urn:infai:ses:aspect:1", Name: "aspect", RdfType: model.SES_ONTOLOGY_ASPECT}},
-		Functions:  []model.Function{{Id: "urn:infai:ses:function:1", Name: "function", RdfType: model.SES_ONTOLOGY_MEASURING_FUNCTION, ConceptIds: []string{"urn:infai:ses:concept:1"}}}}}
+		Functions:  []model.Function{{Id: "urn:infai:ses:function:1", Name: "function", RdfType: model.SES_ONTOLOGY_MEASURING_FUNCTION, ConceptId: "urn:infai:ses:concept:1"}}}}
 	devicetype.DeviceClass = model.DeviceClass{}
 
 	controller := Controller{}
