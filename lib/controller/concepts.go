@@ -88,7 +88,7 @@ func (this *Controller) SetConcept(concept model.Concept, owner string) (err err
 	err = this.DeleteConcept(concept.Id)
 	if err != nil {
 		debug.PrintStack()
-		log.Println("Error Delete Device Type:", err, code)
+		log.Println("Error Delete Concept:", err, code)
 		return
 	}
 
@@ -96,7 +96,7 @@ func (this *Controller) SetConcept(concept model.Concept, owner string) (err err
 	var deviceTypeJsonLd map[string]interface{}
 	err = json.Unmarshal(b, &deviceTypeJsonLd)
 
-	deviceTypeJsonLd["@context"] = getDeviceTypeContext()
+	deviceTypeJsonLd["@context"] = getConceptContext()
 
 	proc := ld.NewJsonLdProcessor()
 	options := ld.NewJsonLdOptions("")
@@ -113,7 +113,7 @@ func (this *Controller) SetConcept(concept model.Concept, owner string) (err err
 	err = this.db.InsertData(triples.(string))
 	if err != nil {
 		debug.PrintStack()
-		log.Println("Error insert devicetype:", err)
+		log.Println("Error insert concept:", err)
 		return err
 	}
 	return nil
@@ -137,10 +137,10 @@ func (this *Controller) DeleteConcept(id string) (err error) {
 		return errors.New("missing concept id")
 	}
 
-	//err = this.db.DeleteDeviceType(id)
-	//if err != nil {
-	//	debug.PrintStack()
-	//	return err
-	//}
+	err = this.db.DeleteConcept(id)
+	if err != nil {
+		debug.PrintStack()
+		return err
+	}
 	return nil
 }

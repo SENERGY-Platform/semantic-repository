@@ -101,6 +101,21 @@ func (this *Database) DeleteDeviceType(s string) (err error) {
 	}
 }
 
+func (this *Database) DeleteConcept(s string) (err error) {
+	query := this.getDeleteConceptQuery(s)
+	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
+	if err != nil {
+		log.Println("ERROR:", err)
+		return  err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode == 200 {
+		return nil
+	} else {
+		return errors.New("ERROR: Statuscode " + string(resp.StatusCode))
+	}
+}
+
 func (this *Database) GetConstructWithoutProperties(s string, p string, o string) (rdfxml string, err error) {
 	query := this.getConstructQueryWithoutProperties(s, p, o)
 	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)

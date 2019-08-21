@@ -175,27 +175,24 @@ func getDeviceTypeContext() map[string]interface{} {
 
 func getConceptContext() map[string]interface{} {
 	contextDoc := map[string]interface{}{
-		"id":           "@id",
-		"rdf_type":     "@type",
-		"name":         model.RDFS_LABEL,
-		//"device_class": model.SES_ONTOLOGY_HAS_DEVICE_CLASS,
-		//"services": map[string]interface{}{
-		//	"@id":        model.SES_ONTOLOGY_HAS_SERVICE,
-		//	"@container": "@set",
-		//},
-		//"aspects": map[string]interface{}{
-		//	"@id":        model.SES_ONTOLOGY_REFERS_TO,
-		//	"@container": "@set",
-		//},
-		//"functions": map[string]interface{}{
-		//	"@id":        model.SES_ONTOLOGY_EXPOSES_FUNCTION,
-		//	"@container": "@set",
-		//},
-		//"concept_ids": map[string]interface{}{
-		//	"@id":        model.SES_ONTOLOGY_HAS_CONCEPT,
-		//	"@type":      "@id",
-		//	"@container": "@set",
-		//},
+		"id":       "@id",
+		"rdf_type": "@type",
+		"name":     model.RDFS_LABEL,
+		"characteristics": map[string]interface{}{
+			"@id":        model.SES_ONTOLOGY_HAS_CHARACTERISTIC,
+			"@container": "@set",
+		},
+		"type": map[string]interface{}{
+			"@id":   model.SES_ONTOLOGY_HAS_VALUE_TYPE,
+			"@type": "@id",
+		},
+		"sub_characteristics": map[string]interface{}{
+			"@id":        model.SES_ONTOLOGY_HAS_CHARACTERISTIC,
+			"@container": "@set",
+		},
+		"value": model.SES_ONTOLOGY_HAS_VALUE,
+		"min_value": model.SES_ONTOLOGY_HAS_MIN_VALUE,
+		"max_value": model.SES_ONTOLOGY_HAS_MAX_VALUE,
 	}
 	return contextDoc
 }
