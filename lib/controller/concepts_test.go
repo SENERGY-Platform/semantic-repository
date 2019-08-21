@@ -157,6 +157,27 @@ func TestValidationMissingCharacteristicRdfType(t *testing.T) {
 	concept.Characteristics = []model.Characteristic{{
 		Id: "2",
 		Name: "nameChar",
+		RdfType: "xxxxas",
+	}}
+
+	controller := Controller{}
+	err, code := controller.ValidateConcept(concept)
+	if err != nil && code == http.StatusBadRequest {
+		t.Log(err, code)
+	} else {
+		t.Fatal(err, code)
+	}
+}
+
+func TestValidationMissingCharacteristicType(t *testing.T) {
+	concept := model.Concept{}
+	concept.Id = "1"
+	concept.Name = "name"
+	concept.RdfType = model.SES_ONTOLOGY_CONCEPT
+	concept.Characteristics = []model.Characteristic{{
+		Id: "2",
+		Name: "nameChar",
+		RdfType: model.SES_ONTOLOGY_CONCEPT,
 		Type: "xxxxas",
 	}}
 
@@ -178,6 +199,7 @@ func TestValidationValidWith1Characteristic(t *testing.T) {
 		Id: "2",
 		Name: "nameChar",
 		RdfType: model.SES_ONTOLOGY_CHARACTERISTIC,
+		Type: model.Integer,
 	}}
 
 	controller := Controller{}
@@ -198,11 +220,13 @@ func TestValidationValidWith2Characteristic(t *testing.T) {
 		Id: "2",
 		Name: "Char1",
 		RdfType: model.SES_ONTOLOGY_CHARACTERISTIC,
+		Type: model.Structure,
 	}}
 	concept.Characteristics = append(concept.Characteristics, model.Characteristic{
 		Id: "3",
 		Name: "char2",
 		RdfType: model.SES_ONTOLOGY_CHARACTERISTIC,
+		Type: model.Structure,
 	})
 
 	controller := Controller{}
@@ -223,14 +247,17 @@ func TestValidationValidWith2CharacteristicAndSubSubs(t *testing.T) {
 		Id: "2",
 		Name: "Char2",
 		RdfType: model.SES_ONTOLOGY_CHARACTERISTIC,
+		Type: model.Structure,
 		SubCharacteristics: []model.Characteristic{{
 			Id: "2a",
 			Name: "char2a",
 			RdfType: model.SES_ONTOLOGY_CHARACTERISTIC,
+			Type: model.Structure,
 			SubCharacteristics: []model.Characteristic{{
 				Id: "2a.a",
 				Name: "char2a",
 				RdfType: model.SES_ONTOLOGY_CHARACTERISTIC,
+				Type: model.Boolean,
 			}},
 		}},
 	}}
@@ -238,6 +265,7 @@ func TestValidationValidWith2CharacteristicAndSubSubs(t *testing.T) {
 		Id: "3",
 		Name: "char3",
 		RdfType: model.SES_ONTOLOGY_CHARACTERISTIC,
+		Type: model.Boolean,
 	})
 
 	controller := Controller{}

@@ -31,6 +31,14 @@ func (this *Controller) ValidateCharacteristics(characteristics []model.Characte
 			return errors.New("missing characteristic name"), http.StatusBadRequest
 		}
 		if characteristic.RdfType != model.SES_ONTOLOGY_CHARACTERISTIC {
+			return errors.New("wrong characteristic rdf_type"), http.StatusBadRequest
+		}
+		if characteristic.Type != model.String &&
+			characteristic.Type != model.Integer &&
+			characteristic.Type != model.Float &&
+			characteristic.Type != model.Boolean &&
+			characteristic.Type != model.List &&
+			characteristic.Type != model.Structure {
 			return errors.New("wrong characteristic type"), http.StatusBadRequest
 		}
 
