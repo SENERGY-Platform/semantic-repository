@@ -14,16 +14,23 @@
  * limitations under the License.
  */
 
-package listener
+package lib
 
-import "github.com/SENERGY-Platform/semantic-repository/lib/model"
+import (
+	"github.com/SENERGY-Platform/semantic-repository/lib/config"
+	"github.com/SENERGY-Platform/semantic-repository/lib/model"
+	"github.com/SENERGY-Platform/semantic-repository/lib/source/producer"
+	"testing"
+)
 
-type Controller interface {
-	SetDevice(device model.Device, owner string) error
-	DeleteDevice(id string) error
-	SetDeviceType(deviceType model.DeviceType, owner string) error
-	DeleteDeviceType(id string) error
+func TestProduceValidDeviceTyp1e(t *testing.T) {
+	conf, err := config.Load("../config.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	producer, _ := producer.New(conf)
+	concept := model.Concept{}
 
-	SetConcept(concept model.Concept, owner string) error
-	DeleteConcept(id string) error
+	producer.PublishConcept(concept, "sdfdsfsf")
 }
+

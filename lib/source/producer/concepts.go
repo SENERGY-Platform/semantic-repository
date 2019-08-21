@@ -27,26 +27,26 @@ import (
 	"time"
 )
 
-func (this *Producer) PublishDeviceType(deviceType model.DeviceType, userId string) (err error) {
-	cmd := listener.DeviceTypeCommand{Command: "PUT", Id: deviceType.Id, DeviceType: deviceType, Owner: userId}
-	return this.PublishDeviceTypeCommand(cmd)
+func (this *Producer) PublishConcept(concept model.Concept, userId string) (err error) {
+	cmd := listener.ConceptCommand{Command: "PUT", Id: concept.Id, Concept: concept, Owner: userId}
+	return this.PublishConceptCommand(cmd)
 }
 
-func (this *Producer) PublishDeviceTypeDelete(id string, userId string) error {
-	cmd := listener.DeviceTypeCommand{Command: "DELETE", Id: id, Owner: userId}
-	return this.PublishDeviceTypeCommand(cmd)
+func (this *Producer) PublishConceptDelete(id string, userId string) error {
+	cmd := listener.ConceptCommand{Command: "DELETE", Id: id, Owner: userId}
+	return this.PublishConceptCommand(cmd)
 }
 
-func (this *Producer) PublishDeviceTypeCommand(cmd listener.DeviceTypeCommand) error {
+func (this *Producer) PublishConceptCommand(cmd listener.ConceptCommand) error {
 	if this.config.LogLevel == "DEBUG" {
-		log.Println("DEBUG: produce devicetype", cmd)
+		log.Println("DEBUG: produce concept", cmd)
 	}
 	message, err := json.Marshal(cmd)
 	if err != nil {
 		debug.PrintStack()
 		return err
 	}
-	err = this.devicetypes.WriteMessages(
+	err = this.concepts.WriteMessages(
 		context.Background(),
 		kafka.Message{
 			Key:   []byte(cmd.Id),

@@ -31,4 +31,6 @@ type Controller interface {
 	GetFunctions(funcType string) (result []model.Function, err error, errCode int)
 	GetDeviceClasses() (result []model.DeviceClass, err error, errCode int)
 	GetAspects() (result []model.Aspect, err error, errCode int)
+
+	ValidateConcept(concept model.Concept) (err error, code int)
 }

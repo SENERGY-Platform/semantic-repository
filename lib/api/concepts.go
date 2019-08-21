@@ -64,8 +64,8 @@ func DeviceConcepts(config config.Config, control Controller, router *jwt_http_r
 			http.Error(writer, err.Error(), http.StatusBadRequest)
 			return
 		}
-		controller.SetDevicetypeRdfTypes(&dt)
-		err, code := control.ValidateDeviceType(dt)
+		controller.SetConceptRdfTypes(&concept)
+		err, code := control.ValidateConcept(concept)
 		if err != nil {
 			http.Error(writer, err.Error(), code)
 			return

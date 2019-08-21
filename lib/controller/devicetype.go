@@ -102,7 +102,7 @@ func (this *Controller) SetDeviceType(deviceType model.DeviceType, owner string)
 	var deviceTypeJsonLd map[string]interface{}
 	err = json.Unmarshal(b, &deviceTypeJsonLd)
 
-	deviceTypeJsonLd["@context"] = getContext()
+	deviceTypeJsonLd["@context"] = getDeviceTypeContext()
 
 	proc := ld.NewJsonLdProcessor()
 	options := ld.NewJsonLdOptions("")

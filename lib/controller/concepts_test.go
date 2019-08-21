@@ -38,8 +38,7 @@ func TestConceptsSetRdfTypes(t *testing.T) {
 		}),
 	})
 
-	controller := Controller{}
-	controller.SetConceptRdfTypes(&concept)
+	SetConceptRdfTypes(&concept)
 	if concept.RdfType != model.SES_ONTOLOGY_CONCEPT {
 		t.Fatal()
 	}

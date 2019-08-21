@@ -6,6 +6,7 @@
     "log_level": "CALL",
     "device_topic": "devices",
     "device_type_topic": "device-types",
+    "concept_topic": "concept",
     "zookeeper_url": "localhost:2181",
     "group_id": "semantic-repository",
     "rya_url": "http://0.0.0.0:8080",

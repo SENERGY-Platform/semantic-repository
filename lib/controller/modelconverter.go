@@ -31,7 +31,7 @@ func (*Controller) RdfXmlToModel(rdfxml string, result interface{}) (err error) 
 		log.Println("Error: FromRDF()", err)
 		return err
 	}
-	contextDoc := getContext()
+	contextDoc := getDeviceTypeContext()
 	graph := map[string]interface{}{}
 	graph["@context"] = contextDoc
 	graph["@graph"] = doc
@@ -92,7 +92,7 @@ func (*Controller) RdfXmlToSingleResult(rdfxml string, result *model.DeviceType)
 		log.Println("Error: FromRDF()", err)
 		return err
 	}
-	contextDoc := getContext()
+	contextDoc := getDeviceTypeContext()
 	graph := map[string]interface{}{}
 	graph["@context"] = contextDoc
 	graph["@graph"] = doc
@@ -132,7 +132,6 @@ func (*Controller) RdfXmlToSingleResult(rdfxml string, result *model.DeviceType)
 	return nil
 }
 
-
 func rdfxmlToTurtle(rdfxml string) (result []string, err error) {
 	triples, err := rdf.NewTripleDecoder(strings.NewReader(rdfxml), rdf.RDFXML).DecodeAll()
 	if err != nil {
@@ -151,10 +150,10 @@ func rdfxmlToTurtle(rdfxml string) (result []string, err error) {
 	return turtle, nil
 }
 
-func getContext() map[string]interface{} {
+func getDeviceTypeContext() map[string]interface{} {
 	contextDoc := map[string]interface{}{
 		"id":           "@id",
-		"rdf_type":         "@type",
+		"rdf_type":     "@type",
 		"name":         model.RDFS_LABEL,
 		"device_class": model.SES_ONTOLOGY_HAS_DEVICE_CLASS,
 		"services": map[string]interface{}{
@@ -174,6 +173,33 @@ func getContext() map[string]interface{} {
 			"@type":      "@id",
 			"@container": "@set",
 		},
+	}
+	return contextDoc
+}
+
+func getConceptContext() map[string]interface{} {
+	contextDoc := map[string]interface{}{
+		"id":           "@id",
+		"rdf_type":     "@type",
+		"name":         model.RDFS_LABEL,
+		//"device_class": model.SES_ONTOLOGY_HAS_DEVICE_CLASS,
+		//"services": map[string]interface{}{
+		//	"@id":        model.SES_ONTOLOGY_HAS_SERVICE,
+		//	"@container": "@set",
+		//},
+		//"aspects": map[string]interface{}{
+		//	"@id":        model.SES_ONTOLOGY_REFERS_TO,
+		//	"@container": "@set",
+		//},
+		//"functions": map[string]interface{}{
+		//	"@id":        model.SES_ONTOLOGY_EXPOSES_FUNCTION,
+		//	"@container": "@set",
+		//},
+		//"concept_ids": map[string]interface{}{
+		//	"@id":        model.SES_ONTOLOGY_HAS_CONCEPT,
+		//	"@type":      "@id",
+		//	"@container": "@set",
+		//},
 	}
 	return contextDoc
 }

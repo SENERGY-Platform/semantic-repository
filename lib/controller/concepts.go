@@ -17,9 +17,13 @@
 package controller
 
 import (
+	"encoding/json"
 	"errors"
 	"github.com/SENERGY-Platform/semantic-repository/lib/model"
+	"github.com/piprate/json-gold/ld"
+	"log"
 	"net/http"
+	"runtime/debug"
 )
 
 /////////////////////////
@@ -71,51 +75,51 @@ func (this *Controller) ValidateConcept(concept model.Concept) (err error, code 
 //		source
 /////////////////////////
 
-//func (this *Controller) SetDeviceType(deviceType model.DeviceType, owner string) (err error) {
-//	SetDevicetypeRdfTypes(&deviceType)
-//
-//	err, code := this.ValidateDeviceType(deviceType)
-//	if err != nil {
-//		debug.PrintStack()
-//		log.Println("Error Validation:", err, code)
-//		return
-//	}
-//	// delete is required for the update of devicetypes
-//	err = this.DeleteDeviceType(deviceType.Id)
-//	if err != nil {
-//		debug.PrintStack()
-//		log.Println("Error Delete Device Type:", err, code)
-//		return
-//	}
-//
-//	b, err := json.Marshal(deviceType)
-//	var deviceTypeJsonLd map[string]interface{}
-//	err = json.Unmarshal(b, &deviceTypeJsonLd)
-//
-//	deviceTypeJsonLd["@context"] = getContext()
-//
-//	proc := ld.NewJsonLdProcessor()
-//	options := ld.NewJsonLdOptions("")
-//	options.ProcessingMode = ld.JsonLd_1_1
-//	options.Format = "application/n-quads"
-//
-//	triples, err := proc.ToRDF(deviceTypeJsonLd, options)
-//	if err != nil {
-//		debug.PrintStack()
-//		log.Println("Error when transforming JSON-LD document to RDF:", err)
-//		return err
-//	}
-//
-//	err = this.db.InsertData(triples.(string))
-//	if err != nil {
-//		debug.PrintStack()
-//		log.Println("Error insert devicetype:", err)
-//		return err
-//	}
-//	return nil
-//}
+func (this *Controller) SetConcept(concept model.Concept, owner string) (err error) {
+	SetConceptRdfTypes(&concept)
 
-func (this *Controller) SetConceptRdfTypes(concept *model.Concept) {
+	err, code := this.ValidateConcept(concept)
+	if err != nil {
+		debug.PrintStack()
+		log.Println("Error Validation:", err, code)
+		return
+	}
+	// delete is required for the update of concepts
+	err = this.DeleteConcept(concept.Id)
+	if err != nil {
+		debug.PrintStack()
+		log.Println("Error Delete Device Type:", err, code)
+		return
+	}
+
+	b, err := json.Marshal(concept)
+	var deviceTypeJsonLd map[string]interface{}
+	err = json.Unmarshal(b, &deviceTypeJsonLd)
+
+	deviceTypeJsonLd["@context"] = getDeviceTypeContext()
+
+	proc := ld.NewJsonLdProcessor()
+	options := ld.NewJsonLdOptions("")
+	options.ProcessingMode = ld.JsonLd_1_1
+	options.Format = "application/n-quads"
+
+	triples, err := proc.ToRDF(deviceTypeJsonLd, options)
+	if err != nil {
+		debug.PrintStack()
+		log.Println("Error when transforming JSON-LD document to RDF:", err)
+		return err
+	}
+
+	err = this.db.InsertData(triples.(string))
+	if err != nil {
+		debug.PrintStack()
+		log.Println("Error insert devicetype:", err)
+		return err
+	}
+	return nil
+}
+
+func SetConceptRdfTypes(concept *model.Concept) {
 	concept.RdfType = model.SES_ONTOLOGY_CONCEPT
 	SetCharacteristicRdfTypes(concept.Characteristics)
 }
@@ -127,16 +131,16 @@ func SetCharacteristicRdfTypes(characteristic []model.Characteristic) {
 	}
 }
 
-//func (this *Controller) DeleteDeviceType(id string) (err error) {
-//	if id == "" {
-//		debug.PrintStack()
-//		return errors.New("missing deviceType id")
-//	}
-//
-//	err = this.db.DeleteDeviceType(id)
-//	if err != nil {
-//		debug.PrintStack()
-//		return err
-//	}
-//	return nil
-//}
+func (this *Controller) DeleteConcept(id string) (err error) {
+	if id == "" {
+		debug.PrintStack()
+		return errors.New("missing concept id")
+	}
+
+	//err = this.db.DeleteDeviceType(id)
+	//if err != nil {
+	//	debug.PrintStack()
+	//	return err
+	//}
+	return nil
+}
