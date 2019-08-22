@@ -22,31 +22,32 @@ import (
 	"github.com/SENERGY-Platform/semantic-repository/lib/controller"
 	"github.com/SENERGY-Platform/semantic-repository/lib/model"
 	"github.com/SmartEnergyPlatform/jwt-http-router"
+	"log"
 	"net/http"
 	"strconv"
 )
 
 func init() {
-	endpoints = append(endpoints, DeviceConcepts)
+	endpoints = append(endpoints, Concepts)
 }
 
-func DeviceConcepts(config config.Config, control Controller, router *jwt_http_router.Router) {
+func Concepts(config config.Config, control Controller, router *jwt_http_router.Router) {
 	resource := "/concepts"
 
-	//router.GET(resource+"/:id", func(writer http.ResponseWriter, request *http.Request, params jwt_http_router.Params, jwt jwt_http_router.Jwt) {
-	//	id := params.ByName("id")
-	//	result, err, errCode := control.GetDeviceType(id)
-	//	if err != nil {
-	//		http.Error(writer, err.Error(), errCode)
-	//		return
-	//	}
-	//	writer.Header().Set("Content-Type", "application/json; charset=utf-8")
-	//	err = json.NewEncoder(writer).Encode(result)
-	//	if err != nil {
-	//		log.Println("ERROR: unable to encode response", err)
-	//	}
-	//	return
-	//})
+	router.GET(resource+"/:id", func(writer http.ResponseWriter, request *http.Request, params jwt_http_router.Params, jwt jwt_http_router.Jwt) {
+		id := params.ByName("id")
+		result, err, errCode := control.GetConcept(id)
+		if err != nil {
+			http.Error(writer, err.Error(), errCode)
+			return
+		}
+		writer.Header().Set("Content-Type", "application/json; charset=utf-8")
+		err = json.NewEncoder(writer).Encode(result)
+		if err != nil {
+			log.Println("ERROR: unable to encode response", err)
+		}
+		return
+	})
 
 	router.PUT(resource, func(writer http.ResponseWriter, request *http.Request, params jwt_http_router.Params, jwt jwt_http_router.Jwt) {
 		dryRun, err := strconv.ParseBool(request.URL.Query().Get("dry-run"))

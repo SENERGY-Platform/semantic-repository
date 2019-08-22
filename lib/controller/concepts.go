@@ -30,26 +30,21 @@ import (
 //		api
 /////////////////////////
 
-//func (this *Controller) GetDeviceType(subject string) (result model.DeviceType, err error, errCode int) {
-//	deviceType, err := this.db.GetConstructWithProperties(subject)
-//	if err != nil {
-//		log.Println("GetDeviceClasses ERROR: GetConstructWithoutProperties", err)
-//		return result, err, http.StatusInternalServerError
-//	}
-//
-//	err = this.RdfXmlToSingleResult(deviceType, &result)
-//	if err != nil {
-//		log.Println("GetDeviceClasses ERROR: RdfXmlToModel", err)
-//		return result, err, http.StatusInternalServerError
-//	}
-//
-//	sort.Slice(result.Services, func(i, j int) bool {
-//		return result.Services[i].Name < result.Services[j].Name
-//	})
-//
-//
-//	return result, nil, http.StatusOK
-//}
+func (this *Controller) GetConcept(subject string) (result model.Concept, err error, errCode int) {
+	concept, err := this.db.GetConstructWithProperties(subject)
+	if err != nil {
+		log.Println("GetDeviceClasses ERROR: GetConstructWithoutProperties", err)
+		return result, err, http.StatusInternalServerError
+	}
+
+	err = this.RdfXmlToSingleResult(concept, &result)
+	if err != nil {
+		log.Println("GetDeviceClasses ERROR: RdfXmlToModel", err)
+		return result, err, http.StatusInternalServerError
+	}
+
+	return result, nil, http.StatusOK
+}
 
 func (this *Controller) ValidateConcept(concept model.Concept) (err error, code int) {
 	if concept.Id == "" {

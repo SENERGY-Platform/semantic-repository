@@ -11,6 +11,7 @@ const SES_ONTOLOGY_CHARACTERISTIC = "https://senergy.infai.org/ontology/Characte
 // Properties
 const SES_ONTOLOGY_HAS_CONCEPT = "https://senergy.infai.org/ontology/hasConcept"
 const SES_ONTOLOGY_HAS_CHARACTERISTIC = "https://senergy.infai.org/ontology/hasCharacteristic"
+const SES_ONTOLOGY_HAS_SUB_CHARACTERISTIC = "https://senergy.infai.org/ontology/hasSubCharacteristic"
 const SES_ONTOLOGY_HAS_VALUE_TYPE = "https://senergy.infai.org/ontology/hasValueType"
 const SES_ONTOLOGY_HAS_VALUE = "https://senergy.infai.org/ontology/hasValue"
 const SES_ONTOLOGY_HAS_MIN_VALUE = "https://senergy.infai.org/ontology/hasMinValue"
