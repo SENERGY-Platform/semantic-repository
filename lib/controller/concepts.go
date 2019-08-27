@@ -58,9 +58,10 @@ func (this *Controller) ValidateConcept(concept model.Concept) (err error, code 
 		return errors.New("wrong concept type"), http.StatusBadRequest
 	}
 
-	err, code = this.ValidateCharacteristics(concept.Characteristics)
-	if err != nil {
-		return err, code
+	for _, charId := range concept.CharacteristicIds {
+		if charId == "" {
+			return errors.New("missing char id"), http.StatusBadRequest
+		}
 	}
 
 	return nil, http.StatusOK
@@ -116,7 +117,6 @@ func (this *Controller) SetConcept(concept model.Concept, owner string) (err err
 
 func SetConceptRdfTypes(concept *model.Concept) {
 	concept.RdfType = model.SES_ONTOLOGY_CONCEPT
-	SetCharacteristicRdfTypes(concept.Characteristics)
 }
 
 func SetCharacteristicRdfTypes(characteristic []model.Characteristic) {

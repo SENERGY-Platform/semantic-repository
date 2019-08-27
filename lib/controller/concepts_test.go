@@ -9,46 +9,9 @@ import (
 func TestConceptsSetRdfTypes(t *testing.T) {
 
 	concept := model.Concept{}
-	concept.Characteristics = append(concept.Characteristics, model.Characteristic{
-		Id:       "",
-		Name:     "",
-		RdfType:  "",
-		Type:     "",
-		MaxValue: 0,
-		MinValue: 0,
-		Value:    0,
-		SubCharacteristics: append(concept.Characteristics, model.Characteristic{
-			Id:       "",
-			Name:     "",
-			RdfType:  "",
-			Type:     "",
-			MaxValue: 0,
-			MinValue: 0,
-			Value:    0,
-			SubCharacteristics: append(concept.Characteristics, model.Characteristic{
-				Id:                 "",
-				Name:               "",
-				RdfType:            "",
-				Type:               "",
-				MaxValue:           0,
-				MinValue:           0,
-				Value:              0,
-				SubCharacteristics: nil,
-			}),
-		}),
-	})
 
 	SetConceptRdfTypes(&concept)
 	if concept.RdfType != model.SES_ONTOLOGY_CONCEPT {
-		t.Fatal()
-	}
-	if concept.Characteristics[0].RdfType != model.SES_ONTOLOGY_CHARACTERISTIC {
-		t.Fatal()
-	}
-	if concept.Characteristics[0].SubCharacteristics[0].RdfType != model.SES_ONTOLOGY_CHARACTERISTIC {
-		t.Fatal()
-	}
-	if concept.Characteristics[0].SubCharacteristics[0].SubCharacteristics[0].RdfType != model.SES_ONTOLOGY_CHARACTERISTIC {
 		t.Fatal()
 	}
 	t.Log(concept)
@@ -96,12 +59,11 @@ func TestValidationWrongConceptRdfType(t *testing.T) {
 	}
 }
 
-func TestValidationValidConceptWithoutCharacteristic(t *testing.T) {
+func TestValidationValidConceptWithoutCharacteristicId(t *testing.T) {
 	concept := model.Concept{}
 	concept.Id = "1"
 	concept.Name = "name"
 	concept.RdfType = model.SES_ONTOLOGY_CONCEPT
-	concept.Characteristics = []model.Characteristic{}
 
 	controller := Controller{}
 	err, code := controller.ValidateConcept(concept)
@@ -112,95 +74,12 @@ func TestValidationValidConceptWithoutCharacteristic(t *testing.T) {
 	}
 }
 
-func TestValidationMissingCharacteristicId(t *testing.T) {
+func TestValidationValidConceptWith1CharacteristicId(t *testing.T) {
 	concept := model.Concept{}
 	concept.Id = "1"
 	concept.Name = "name"
 	concept.RdfType = model.SES_ONTOLOGY_CONCEPT
-	concept.Characteristics = []model.Characteristic{{
-		Id: "",
-	}}
-
-	controller := Controller{}
-	err, code := controller.ValidateConcept(concept)
-	if err != nil && code == http.StatusBadRequest {
-		t.Log(err, code)
-	} else {
-		t.Fatal(err, code)
-	}
-}
-
-func TestValidationMissingCharacteristicName(t *testing.T) {
-	concept := model.Concept{}
-	concept.Id = "1"
-	concept.Name = "name"
-	concept.RdfType = model.SES_ONTOLOGY_CONCEPT
-	concept.Characteristics = []model.Characteristic{{
-		Id: "2",
-		Name: "",
-	}}
-
-	controller := Controller{}
-	err, code := controller.ValidateConcept(concept)
-	if err != nil && code == http.StatusBadRequest {
-		t.Log(err, code)
-	} else {
-		t.Fatal(err, code)
-	}
-}
-
-func TestValidationMissingCharacteristicRdfType(t *testing.T) {
-	concept := model.Concept{}
-	concept.Id = "1"
-	concept.Name = "name"
-	concept.RdfType = model.SES_ONTOLOGY_CONCEPT
-	concept.Characteristics = []model.Characteristic{{
-		Id: "2",
-		Name: "nameChar",
-		RdfType: "xxxxas",
-	}}
-
-	controller := Controller{}
-	err, code := controller.ValidateConcept(concept)
-	if err != nil && code == http.StatusBadRequest {
-		t.Log(err, code)
-	} else {
-		t.Fatal(err, code)
-	}
-}
-
-func TestValidationMissingCharacteristicType(t *testing.T) {
-	concept := model.Concept{}
-	concept.Id = "1"
-	concept.Name = "name"
-	concept.RdfType = model.SES_ONTOLOGY_CONCEPT
-	concept.Characteristics = []model.Characteristic{{
-		Id: "2",
-		Name: "nameChar",
-		RdfType: model.SES_ONTOLOGY_CONCEPT,
-		Type: "xxxxas",
-	}}
-
-	controller := Controller{}
-	err, code := controller.ValidateConcept(concept)
-	if err != nil && code == http.StatusBadRequest {
-		t.Log(err, code)
-	} else {
-		t.Fatal(err, code)
-	}
-}
-
-func TestValidationValidWith1Characteristic(t *testing.T) {
-	concept := model.Concept{}
-	concept.Id = "1"
-	concept.Name = "name"
-	concept.RdfType = model.SES_ONTOLOGY_CONCEPT
-	concept.Characteristics = []model.Characteristic{{
-		Id: "2",
-		Name: "nameChar",
-		RdfType: model.SES_ONTOLOGY_CHARACTERISTIC,
-		Type: model.Integer,
-	}}
+	concept.CharacteristicIds = []string{"urn:infai:ses:characteristic:4444"}
 
 	controller := Controller{}
 	err, code := controller.ValidateConcept(concept)
@@ -211,62 +90,12 @@ func TestValidationValidWith1Characteristic(t *testing.T) {
 	}
 }
 
-func TestValidationValidWith2Characteristic(t *testing.T) {
+func TestValidationValidConceptWith2CharacteristicIds(t *testing.T) {
 	concept := model.Concept{}
 	concept.Id = "1"
 	concept.Name = "name"
 	concept.RdfType = model.SES_ONTOLOGY_CONCEPT
-	concept.Characteristics = []model.Characteristic{{
-		Id: "2",
-		Name: "Char1",
-		RdfType: model.SES_ONTOLOGY_CHARACTERISTIC,
-		Type: model.Structure,
-	}}
-	concept.Characteristics = append(concept.Characteristics, model.Characteristic{
-		Id: "3",
-		Name: "char2",
-		RdfType: model.SES_ONTOLOGY_CHARACTERISTIC,
-		Type: model.Structure,
-	})
-
-	controller := Controller{}
-	err, code := controller.ValidateConcept(concept)
-	if err == nil && code == http.StatusOK {
-		t.Log(concept)
-	} else {
-		t.Fatal(err, code)
-	}
-}
-
-func TestValidationValidWith2CharacteristicAndSubSubs(t *testing.T) {
-	concept := model.Concept{}
-	concept.Id = "1"
-	concept.Name = "name"
-	concept.RdfType = model.SES_ONTOLOGY_CONCEPT
-	concept.Characteristics = []model.Characteristic{{
-		Id: "2",
-		Name: "Char2",
-		RdfType: model.SES_ONTOLOGY_CHARACTERISTIC,
-		Type: model.Structure,
-		SubCharacteristics: []model.Characteristic{{
-			Id: "2a",
-			Name: "char2a",
-			RdfType: model.SES_ONTOLOGY_CHARACTERISTIC,
-			Type: model.Structure,
-			SubCharacteristics: []model.Characteristic{{
-				Id: "2a.a",
-				Name: "char2a",
-				RdfType: model.SES_ONTOLOGY_CHARACTERISTIC,
-				Type: model.Boolean,
-			}},
-		}},
-	}}
-	concept.Characteristics = append(concept.Characteristics, model.Characteristic{
-		Id: "3",
-		Name: "char3",
-		RdfType: model.SES_ONTOLOGY_CHARACTERISTIC,
-		Type: model.Boolean,
-	})
+	concept.CharacteristicIds = []string{"urn:infai:ses:characteristic:4444","urn:infai:ses:characteristic:5555"}
 
 	controller := Controller{}
 	err, code := controller.ValidateConcept(concept)

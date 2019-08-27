@@ -200,23 +200,24 @@ func getConceptContext() map[string]interface{} {
 		"id":       "@id",
 		"rdf_type": "@type",
 		"name":     model.RDFS_LABEL,
-		"characteristics": map[string]interface{}{
+		"characteristic_ids": map[string]interface{}{
 			"@id":        model.SES_ONTOLOGY_HAS_CHARACTERISTIC,
+			"@type":      "@id",
 			"@container": "@set",
 		},
-		"type": map[string]interface{}{
-			"@id":   model.SES_ONTOLOGY_HAS_VALUE_TYPE,
-			"@type": "@id",
-		},
-		"sub_characteristics": map[string]interface{}{
-			"@id":        model.SES_ONTOLOGY_HAS_SUB_CHARACTERISTIC,
-			"@container": "@set",
-		},
-		"value": model.SES_ONTOLOGY_HAS_VALUE,
-		"min_value": map[string]interface{}{
-			"@id":   model.SES_ONTOLOGY_HAS_MIN_VALUE,
-		},
-		"max_value": model.SES_ONTOLOGY_HAS_MAX_VALUE,
+		//"type": map[string]interface{}{
+		//	"@id":   model.SES_ONTOLOGY_HAS_VALUE_TYPE,
+		//	"@type": "@id",
+		//},
+		//"sub_characteristics": map[string]interface{}{
+		//	"@id":        model.SES_ONTOLOGY_HAS_SUB_CHARACTERISTIC,
+		//	"@container": "@set",
+		//},
+		//"value": model.SES_ONTOLOGY_HAS_VALUE,
+		//"min_value": map[string]interface{}{
+		//	"@id":   model.SES_ONTOLOGY_HAS_MIN_VALUE,
+		//},
+		//"max_value": model.SES_ONTOLOGY_HAS_MAX_VALUE,
 	}
 	return contextDoc
 }
