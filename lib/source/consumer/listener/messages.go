@@ -41,6 +41,7 @@ type ConceptCommand struct {
 
 type CharacteristicCommand struct {
 	Command           string           		`json:"command"`
+	ConceptId         string           		`json:"concept_id"`
 	Id                string           		`json:"id"`
 	Owner      		  string           		`json:"owner"`
 	Characteristic    model.Characteristic  `json:"characteristic"`

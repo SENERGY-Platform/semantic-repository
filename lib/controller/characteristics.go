@@ -85,13 +85,19 @@ func SetSubCharacteristicRdfTypes(characteristic []model.Characteristic) {
 	}
 }
 
-func (this *Controller) SetCharacteristic(characteristic model.Characteristic, owner string) (err error) {
+func (this *Controller) SetCharacteristic(conceptId string, characteristic model.Characteristic, owner string) (err error) {
 	SetCharacteristicRdfTypes(&characteristic)
 
 	err, code := this.ValidateCharacteristics(characteristic)
 	if err != nil {
 		debug.PrintStack()
 		log.Println("Error Validation:", err, code)
+		return
+	}
+
+	if conceptId == "" {
+		debug.PrintStack()
+		log.Println("Error missing conceptId:", err, code)
 		return
 	}
 	// delete is required for the update of characteristics
@@ -126,6 +132,13 @@ func (this *Controller) SetCharacteristic(characteristic model.Characteristic, o
 		log.Println("Error insert characteristics:", err)
 		return err
 	}
+
+	err = this.db.InsertData("<" + conceptId +"> <" + model.SES_ONTOLOGY_HAS_CHARACTERISTIC + "> <" + characteristic.Id +"> .")
+	if err != nil {
+		debug.PrintStack()
+		log.Println("Error insert hasCharacteristics:", err)
+		return err
+	}
 	return nil
 }
 
@@ -135,7 +148,7 @@ func (this *Controller) DeleteCharacteristic(id string) (err error) {
 		return errors.New("missing characteristic id")
 	}
 
-	err = this.db.DeleteConcept(id)
+	err = this.db.DeleteCharacteristic(id)
 	if err != nil {
 		debug.PrintStack()
 		return err

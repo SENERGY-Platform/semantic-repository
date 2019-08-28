@@ -35,7 +35,7 @@ func CharacteristicsListenerFactory(config config.Config, control Controller) (t
 		}
 		switch command.Command {
 		case "PUT":
-			return control.SetCharacteristic(command.Characteristic, command.Owner)
+			return control.SetCharacteristic(command.ConceptId, command.Characteristic, command.Owner)
 		case "DELETE":
 			return control.DeleteCharacteristic(command.Id)
 		}

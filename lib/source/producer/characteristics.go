@@ -27,8 +27,8 @@ import (
 	"time"
 )
 
-func (this *Producer) PublishCharacteristic(characteristic model.Characteristic, userId string) (err error) {
-	cmd := listener.CharacteristicCommand{Command: "PUT", Id: characteristic.Id, Characteristic: characteristic, Owner: userId}
+func (this *Producer) PublishCharacteristic(conceptId string, characteristic model.Characteristic, userId string) (err error) {
+	cmd := listener.CharacteristicCommand{Command: "PUT", ConceptId: conceptId, Id: characteristic.Id, Characteristic: characteristic, Owner: userId}
 	return this.PublishCharacteristicCommand(cmd)
 }
 

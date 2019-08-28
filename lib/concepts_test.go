@@ -34,7 +34,7 @@ func TestProduceValidConcept1(t *testing.T) {
 	concept.Id = "urn:ses:infai:concept:1a1a1a"
 	concept.Name = "color"
 	concept.RdfType = "xxx"
-	concept.CharacteristicIds = []string{"urn:ses:infai:characteristic:1a1a1a"}
+	concept.CharacteristicIds = nil
 	producer.PublishConcept(concept, "sdfdsfsf")
 }
 
@@ -49,7 +49,7 @@ func TestProduceValidConcept2(t *testing.T) {
 	concept.Id = "urn:ses:infai:concept:2_1a1a1a"
 	concept.Name = "color"
 	concept.RdfType = "xxx"
-	concept.CharacteristicIds = []string{"urn:ses:infai:characteristic:2b2b2c","urn:ses:infai:characteristic:3c3c3d"}
+	concept.CharacteristicIds = nil
 
 	producer.PublishConcept(concept, "sdfdsfsf")
 }

@@ -45,7 +45,7 @@ func TestProduceValidCharacteristic1(t *testing.T) {
 		Name:               "charFloat",
 		SubCharacteristics: nil,
 	}}
-	producer.PublishCharacteristic(characteristic, "sdfdsfsf")
+	producer.PublishCharacteristic("urn:ses:infai:concept:1a1a1a", characteristic, "sdfdsfsf")
 }
 
 
