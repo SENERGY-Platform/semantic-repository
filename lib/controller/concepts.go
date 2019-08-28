@@ -31,7 +31,7 @@ import (
 /////////////////////////
 
 func (this *Controller) GetConcept(subject string) (result model.Concept, err error, errCode int) {
-	concept, err := this.db.GetConstructWithProperties(subject)
+	concept, err := this.db.GetConstructWithoutProperties(subject, "", "")
 	if err != nil {
 		log.Println("GetDeviceClasses ERROR: GetConstructWithoutProperties", err)
 		return result, err, http.StatusInternalServerError
