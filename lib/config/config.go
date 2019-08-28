@@ -38,6 +38,7 @@ type Config struct {
 	DeviceTopic               string `json:"device_topic"`
 	DeviceTypeTopic           string `json:"device_type_topic"`
 	ConceptTopic              string `json:"concept_topic"`
+	CharacteristicTopic       string `json:"characteristic_topic"`
 	Debug                     bool   `json:"debug"`
 	RyaUrl                    string `json:"rya_url"`
 }

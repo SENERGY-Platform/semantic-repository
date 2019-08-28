@@ -38,3 +38,10 @@ type ConceptCommand struct {
 	Owner      string           `json:"owner"`
 	Concept    model.Concept    `json:"concept"`
 }
+
+type CharacteristicCommand struct {
+	Command           string           		`json:"command"`
+	Id                string           		`json:"id"`
+	Owner      		  string           		`json:"owner"`
+	Characteristic    model.Characteristic  `json:"characteristic"`
+}

@@ -119,13 +119,6 @@ func SetConceptRdfTypes(concept *model.Concept) {
 	concept.RdfType = model.SES_ONTOLOGY_CONCEPT
 }
 
-func SetCharacteristicRdfTypes(characteristic []model.Characteristic) {
-	for charIndex, _ := range characteristic {
-		characteristic[charIndex].RdfType = model.SES_ONTOLOGY_CHARACTERISTIC
-		SetCharacteristicRdfTypes(characteristic[charIndex].SubCharacteristics)
-	}
-}
-
 func (this *Controller) DeleteConcept(id string) (err error) {
 	if id == "" {
 		debug.PrintStack()

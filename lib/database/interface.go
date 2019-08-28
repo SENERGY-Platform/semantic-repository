@@ -23,6 +23,7 @@ type Database interface {
 	ReadData() (body []byte, err error)
 	DeleteDeviceType(s string) (err error)
 	DeleteConcept(s string) (err error)
+	DeleteCharacteristic(s string) (err error)
 	GetConstructWithoutProperties(s string, p string, o string) (rdfxml string, err error)
 	GetConstructWithProperties(subject string) (rdfxml string, err error)
 }

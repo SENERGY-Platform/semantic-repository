@@ -26,4 +26,7 @@ type Controller interface {
 
 	SetConcept(concept model.Concept, owner string) error
 	DeleteConcept(id string) error
+
+	SetCharacteristic(concept model.Characteristic, owner string) error
+	DeleteCharacteristic(id string) error
 }
