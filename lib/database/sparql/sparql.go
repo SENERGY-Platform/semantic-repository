@@ -103,7 +103,7 @@ func (this *Database) DeleteDeviceType(s string) (err error) {
 
 func (this *Database) DeleteConcept(s string, deleteNested bool) (err error) {
 	query := ""
-	if (deleteNested) {
+	if deleteNested {
 		query = this.getDeleteConceptWithNestedQuery(s)
 	} else {
 		query = this.getDeleteConceptWithouthNestedQuery(s)
