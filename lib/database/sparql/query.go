@@ -1,6 +1,9 @@
 package sparql
 
-import "net/url"
+import (
+	"github.com/SENERGY-Platform/semantic-repository/lib/model"
+	"net/url"
+)
 
 func (*Database) getConstructQueryWithoutProperties(s string, p string, o string) (string) {
 	if s == "" {
@@ -38,8 +41,8 @@ func (*Database) getSubjectWithAllPropertiesQuery(subject string) (string) {
 func (*Database) getDeleteDeviceTypeQuery(subject string) (string) {
 
 	return url.QueryEscape(
-		"PREFIX ses: <https://senergy.infai.org/ontology/> " +
-			"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
+		model.PREFIX_SES +
+			model.PREFIX_RDF +
 			"delete {" +
 			"<" + subject + "> rdf:type ?type;" +
 			"rdfs:label ?label;" +
@@ -55,9 +58,25 @@ func (*Database) getDeleteDeviceTypeQuery(subject string) (string) {
 			"}")
 }
 
-func (*Database) getDeleteConceptQuery(subject string) (string) {
+func (*Database) getDeleteConceptWithNestedQuery(subject string) (string) {
 
 	return url.QueryEscape("prefix x: <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> " +
 		"delete { ?s ?p ?o } " +
 		"where {<" + subject + "> (x:|!x:)* ?s . ?s ?p ?o . }")
 }
+
+func (*Database) getDeleteConceptWithouthNestedQuery(subject string) (string) {
+
+	return url.QueryEscape(
+		model.PREFIX_SES +
+			model.PREFIX_RDF +
+			"delete { " +
+			"<" + subject + "> rdf:type ?type;" +
+			"rdfs:label ?label;" +
+			"	ses:hasCharacteristic ?characteristic." +
+			"} where {" +
+			"<" + subject + "> rdf:type ?type;" +
+			"	rdfs:label ?label;" +
+			"	ses:hasCharacteristic ?characteristic." +
+			"}")
+		}

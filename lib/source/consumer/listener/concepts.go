@@ -37,7 +37,7 @@ func ConceptsListenerFactory(config config.Config, control Controller) (topic st
 		case "PUT":
 			return control.SetConcept(command.Concept, command.Owner)
 		case "DELETE":
-			return control.DeleteConcept(command.Id)
+			return control.DeleteConcept(command.Id, true)
 		}
 		return errors.New("unable to handle command: " + string(msg))
 	}, nil

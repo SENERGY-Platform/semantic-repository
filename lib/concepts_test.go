@@ -23,7 +23,7 @@ import (
 	"testing"
 )
 
-func TestProduceValidConcept1(t *testing.T) {
+func TestProduceValidConcept1withNoCharId(t *testing.T) {
 	conf, err := config.Load("../config.json")
 	if err != nil {
 		t.Fatal(err)
@@ -32,13 +32,13 @@ func TestProduceValidConcept1(t *testing.T) {
 	producer, _ := producer.New(conf)
 	concept := model.Concept{}
 	concept.Id = "urn:ses:infai:concept:1a1a1a"
-	concept.Name = "color"
+	concept.Name = "color1"
 	concept.RdfType = "xxx"
 	concept.CharacteristicIds = nil
 	producer.PublishConcept(concept, "sdfdsfsf")
 }
 
-func TestProduceValidConcept2(t *testing.T) {
+func TestProduceValidConcept1withCharId(t *testing.T) {
 	conf, err := config.Load("../config.json")
 	if err != nil {
 		t.Fatal(err)
@@ -46,11 +46,10 @@ func TestProduceValidConcept2(t *testing.T) {
 
 	producer, _ := producer.New(conf)
 	concept := model.Concept{}
-	concept.Id = "urn:ses:infai:concept:2_1a1a1a"
-	concept.Name = "color"
+	concept.Id = "urn:ses:infai:concept:1a1a1a"
+	concept.Name = "color11"
 	concept.RdfType = "xxx"
-	concept.CharacteristicIds = nil
-
+	concept.CharacteristicIds = []string{"urn:ses:infai:characteristic:1d1e1f"}
 	producer.PublishConcept(concept, "sdfdsfsf")
 }
 
@@ -77,32 +76,6 @@ func TestReadConcept1(t *testing.T) {
 	}
 }
 
-func TestReadConcept2(t *testing.T) {
-	err, con, _ := StartUpScript(t)
-	concept, err, _ := con.GetConcept("urn:ses:infai:concept:2_1a1a1a")
-
-	if err == nil {
-		if concept.Id != "urn:ses:infai:concept:2_1a1a1a" {
-			t.Fatal("wrong id")
-		}
-		if concept.Name != "color" {
-			t.Fatal("wrong name")
-		}
-		if concept.RdfType != model.SES_ONTOLOGY_CONCEPT {
-			t.Fatal("wrong rdf_type")
-		}
-		if concept.CharacteristicIds[0] != "urn:ses:infai:characteristic:2b2b2c" {
-			t.Fatal("wrong CharacteristicIds")
-		}
-		if concept.CharacteristicIds[1] != "urn:ses:infai:characteristic:3c3c3d" {
-			t.Fatal("wrong CharacteristicIds")
-		}
-		t.Log(concept)
-	} else {
-		t.Fatal(err)
-	}
-}
-
 func TestDeleteConcept1(t *testing.T) {
 	conf, err := config.Load("../config.json")
 	if err != nil {
@@ -115,15 +88,4 @@ func TestDeleteConcept1(t *testing.T) {
 	}
 }
 
-func TestDeleteConcept2(t *testing.T) {
-	conf, err := config.Load("../config.json")
-	if err != nil {
-		t.Fatal(err)
-	}
-	producer, _ := producer.New(conf)
-	err = producer.PublishConceptDelete("urn:ses:infai:concept:2_1a1a1a", "sdfdsfsf")
-	if err != nil {
-		t.Fatal(err)
-	}
-}
 

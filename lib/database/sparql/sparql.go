@@ -101,8 +101,13 @@ func (this *Database) DeleteDeviceType(s string) (err error) {
 	}
 }
 
-func (this *Database) DeleteConcept(s string) (err error) {
-	query := this.getDeleteConceptQuery(s)
+func (this *Database) DeleteConcept(s string, deleteNested bool) (err error) {
+	query := ""
+	if (deleteNested) {
+		query = this.getDeleteConceptWithNestedQuery(s)
+	} else {
+		query = this.getDeleteConceptWithouthNestedQuery(s)
+	}
 	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
 	if err != nil {
 		log.Println("ERROR:", err)
@@ -117,7 +122,7 @@ func (this *Database) DeleteConcept(s string) (err error) {
 }
 
 func (this *Database) DeleteCharacteristic(s string) (err error) {
-	query := this.getDeleteConceptQuery(s)
+	query := this.getDeleteConceptWithNestedQuery(s) // todo: implement new function
 	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
 	if err != nil {
 		log.Println("ERROR:", err)

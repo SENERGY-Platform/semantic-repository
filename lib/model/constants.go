@@ -24,4 +24,8 @@ const SES_ONTOLOGY_EXPOSES_FUNCTION = "https://senergy.infai.org/ontology/expose
 const RDFS_LABEL = "http://www.w3.org/2000/01/rdf-schema#label"
 const RDF_TYPE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
 
+// PREFIXES
+const PREFIX_SES = "PREFIX ses: <https://senergy.infai.org/ontology/> "
+const PREFIX_RDF = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"
+
 

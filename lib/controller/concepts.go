@@ -81,7 +81,7 @@ func (this *Controller) SetConcept(concept model.Concept, owner string) (err err
 		return
 	}
 	// delete is required for the update of concepts
-	err = this.DeleteConcept(concept.Id)
+	err = this.DeleteConcept(concept.Id, false)
 	if err != nil {
 		debug.PrintStack()
 		log.Println("Error Delete Concept:", err, code)
@@ -119,13 +119,13 @@ func SetConceptRdfTypes(concept *model.Concept) {
 	concept.RdfType = model.SES_ONTOLOGY_CONCEPT
 }
 
-func (this *Controller) DeleteConcept(id string) (err error) {
+func (this *Controller) DeleteConcept(id string, withNested bool) (err error) {
 	if id == "" {
 		debug.PrintStack()
 		return errors.New("missing concept id")
 	}
 
-	err = this.db.DeleteConcept(id)
+	err = this.db.DeleteConcept(id, withNested)
 	if err != nil {
 		debug.PrintStack()
 		return err

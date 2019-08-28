@@ -32,7 +32,7 @@ func TestProduceValidCharacteristic1(t *testing.T) {
 	producer, _ := producer.New(conf)
 	characteristic := model.Characteristic{}
 	characteristic.Id = "urn:ses:infai:characteristic:1d1e1f"
-	characteristic.Name = "color"
+	characteristic.Name = "struct1"
 	characteristic.RdfType = "xxx"
 	characteristic.Type = model.Structure
 	characteristic.SubCharacteristics = []model.Characteristic{{
