@@ -61,13 +61,13 @@ func TestReadConcept1(t *testing.T) {
 		if concept.Id != "urn:ses:infai:concept:1a1a1a" {
 			t.Fatal("wrong id")
 		}
-		if concept.Name != "color" {
+		if concept.Name != "color1" {
 			t.Fatal("wrong name")
 		}
 		if concept.RdfType != model.SES_ONTOLOGY_CONCEPT {
 			t.Fatal("wrong rdf_type")
 		}
-		if concept.CharacteristicIds[0] != "urn:ses:infai:characteristic:1a1a1a" {
+		if concept.CharacteristicIds[0] != "urn:ses:infai:characteristic:1d1e1f" {
 			t.Fatal("wrong CharacteristicIds")
 		}
 		t.Log(concept)
