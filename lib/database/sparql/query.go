@@ -79,4 +79,21 @@ func (*Database) getDeleteConceptWithouthNestedQuery(subject string) (string) {
 			"	rdfs:label ?label;" +
 			"	ses:hasCharacteristic ?characteristic." +
 			"}")
-		}
+}
+
+func (*Database) getDeleteCharacteristicQuery(subject string) (string) {
+
+	return url.QueryEscape(
+		"prefix x: <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>" +
+			"delete {?s ?p ?o .} where {" +
+			"{" +
+			"	<" + subject + "> (x:|!x:)* ?s ." +
+			"		?s ?p ?o ." +
+			"	}" +
+			"	UNION" +
+			"	{" +
+			"		?s ?p ?o ." +
+			"		?s ?p <" + subject + "> ." +
+			"	}" +
+			"}")
+}

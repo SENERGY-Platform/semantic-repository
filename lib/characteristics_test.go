@@ -80,7 +80,7 @@ func TestDeleteCharacteristic1(t *testing.T) {
 		t.Fatal(err)
 	}
 	producer, _ := producer.New(conf)
-	err = producer.PublishConceptDelete("urn:ses:infai:characteristic:1d1e1f", "sdfdsfsf")
+	err = producer.PublishCharacteristicDelete("urn:ses:infai:characteristic:1d1e1f", "sdfdsfsf")
 	if err != nil {
 		t.Fatal(err)
 	}

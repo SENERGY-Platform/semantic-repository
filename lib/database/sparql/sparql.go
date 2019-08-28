@@ -122,7 +122,7 @@ func (this *Database) DeleteConcept(s string, deleteNested bool) (err error) {
 }
 
 func (this *Database) DeleteCharacteristic(s string) (err error) {
-	query := this.getDeleteConceptWithNestedQuery(s) // todo: implement new function
+	query := this.getDeleteCharacteristicQuery(s)
 	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
 	if err != nil {
 		log.Println("ERROR:", err)
