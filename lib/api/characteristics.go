@@ -59,14 +59,14 @@ func Characteristics(config config.Config, control Controller, router *jwt_http_
 			http.Error(writer, "only with query-parameter 'dry-run=true' allowed", http.StatusNotImplemented)
 			return
 		}
-		concept := model.Concept{}
-		err = json.NewDecoder(request.Body).Decode(&concept)
+		characteristic := model.Characteristic{}
+		err = json.NewDecoder(request.Body).Decode(&characteristic)
 		if err != nil {
 			http.Error(writer, err.Error(), http.StatusBadRequest)
 			return
 		}
-		controller.SetConceptRdfTypes(&concept)
-		err, code := control.ValidateConcept(concept)
+		controller.SetCharacteristicRdfTypes(&characteristic)
+		err, code := control.ValidateCharacteristics(characteristic)
 		if err != nil {
 			http.Error(writer, err.Error(), code)
 			return
