@@ -38,7 +38,7 @@ func (this *Controller) GetDeviceType(subject string) (result model.DeviceType, 
 		return result, err, http.StatusInternalServerError
 	}
 
-	err = this.RdfXmlToSingleResult(deviceType, &result)
+	err = this.RdfXmlToSingleResult(deviceType, &result, subject)
 	if err != nil {
 		log.Println("GetDeviceClasses ERROR: RdfXmlToModel", err)
 		return result, err, http.StatusInternalServerError

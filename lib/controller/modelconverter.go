@@ -73,7 +73,7 @@ func (*Controller) RdfXmlToModel(rdfxml string, result interface{}) (err error) 
 	return nil
 }
 
-func (*Controller) RdfXmlToSingleResult(rdfxml string, result interface{}) (err error) {
+func (*Controller) RdfXmlToSingleResult(rdfxml string, result interface{}, rootElement string) (err error) {
 	turtle, err := rdfxmlToTurtle(rdfxml)
 	if len(turtle) == 0 {
 		return nil
@@ -100,6 +100,8 @@ func (*Controller) RdfXmlToSingleResult(rdfxml string, result interface{}) (err 
 		contextDoc = getDeviceTypeContext()
 	case *model.Concept:
 		contextDoc = getConceptContext()
+	case *model.Characteristic:
+		contextDoc = getCharacteristicsContext()
 	default:
 		debug.PrintStack()
 		log.Println("Unknown model type:", reflect.TypeOf(result))
@@ -117,6 +119,13 @@ func (*Controller) RdfXmlToSingleResult(rdfxml string, result interface{}) (err 
 		cont["@type"] = model.SES_ONTOLOGY_DEVICE_TYPE
 	case *model.Concept:
 		cont["@type"] = model.SES_ONTOLOGY_CONCEPT
+	case *model.Characteristic:
+		cont["@type"] = model.SES_ONTOLOGY_CHARACTERISTIC
+		cont["@id"] = rootElement
+	default:
+		debug.PrintStack()
+		log.Println("Unknown model type:", reflect.TypeOf(result))
+		return err
 	}
 
 	cont["@embed"] = "@always"

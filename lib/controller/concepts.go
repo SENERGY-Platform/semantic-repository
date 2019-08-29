@@ -37,7 +37,7 @@ func (this *Controller) GetConcept(subject string) (result model.Concept, err er
 		return result, err, http.StatusInternalServerError
 	}
 
-	err = this.RdfXmlToSingleResult(concept, &result)
+	err = this.RdfXmlToSingleResult(concept, &result, subject)
 	if err != nil {
 		log.Println("GetDeviceClasses ERROR: RdfXmlToModel", err)
 		return result, err, http.StatusInternalServerError

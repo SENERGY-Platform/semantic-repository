@@ -30,6 +30,22 @@ import (
 //		api
 /////////////////////////
 
+func (this *Controller) GetCharacteristic(subject string) (result model.Characteristic, err error, errCode int) {
+	characteristic, err := this.db.GetConstructWithProperties(subject)
+	if err != nil {
+		log.Println("GetCharacteristic ERROR: GetConstructWithoutProperties", err)
+		return result, err, http.StatusInternalServerError
+	}
+
+	err = this.RdfXmlToSingleResult(characteristic, &result, subject)
+	if err != nil {
+		log.Println("GetCharacteristic ERROR: RdfXmlToModel", err)
+		return result, err, http.StatusInternalServerError
+	}
+
+	return result, nil, http.StatusOK
+}
+
 func (this *Controller) ValidateCharacteristics(characteristic model.Characteristic) (error, int) {
 	if characteristic.Id == "" {
 		return errors.New("missing characteristic id"), http.StatusBadRequest
