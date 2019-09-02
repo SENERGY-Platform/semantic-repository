@@ -72,12 +72,12 @@ func (*Database) getDeleteConceptWithouthNestedQuery(subject string) (string) {
 			model.PREFIX_RDF +
 			"delete { " +
 			"<" + subject + "> rdf:type ?type;" +
-			"rdfs:label ?label;" +
-			"	ses:hasCharacteristic ?characteristic." +
+			"rdfs:label ?label." +
+			"<" + subject + "> ses:hasCharacteristic ?characteristic ." +
 			"} where {" +
 			"<" + subject + "> rdf:type ?type;" +
-			"	rdfs:label ?label;" +
-			"	ses:hasCharacteristic ?characteristic." +
+			"	rdfs:label ?label." +
+			" OPTIONAL {<" + subject + "> ses:hasCharacteristic ?characteristic .}" +
 			"}")
 }
 
