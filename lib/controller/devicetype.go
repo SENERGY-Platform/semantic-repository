@@ -32,7 +32,7 @@ import (
 /////////////////////////
 
 func (this *Controller) GetDeviceType(subject string) (result model.DeviceType, err error, errCode int) {
-	deviceType, err := this.db.GetConstructWithProperties(subject)
+	deviceType, err := this.db.GetDeviceType(subject)
 	if err != nil {
 		log.Println("GetDeviceClasses ERROR: GetConstructWithoutProperties", err)
 		return result, err, http.StatusInternalServerError

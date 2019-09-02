@@ -22,6 +22,7 @@ type Database interface {
 	InsertData(triples string) (err error)
 	ReadData() (body []byte, err error)
 	DeleteDeviceType(s string) (err error)
+	GetDeviceType(s string) (rdfxml string, err error)
 	DeleteConcept(s string, withNested bool) (err error)
 	DeleteCharacteristic(s string) (err error)
 	GetConstructWithoutProperties(s string, p string, o string) (rdfxml string, err error)

@@ -256,7 +256,7 @@ func TestProduceValidDeviceType(t *testing.T) {
 		"asdasda",
 		[]model.Content{},
 		[]model.Content{},
-		[]model.Function{{Id: "urn:infai:ses:function:5e5e", Name: "brightnessAdjustment", ConceptId: "urn:infai:ses:concept:6e6e", RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION}},
+		[]model.Function{{Id: "urn:infai:ses:function:5e5e", Name: "brightnessAdjustment", ConceptId: "urn:ses:infai:concept:1a1a1a", RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION}},
 		"asdasdsadsadasd",
 	})
 
@@ -269,7 +269,7 @@ func TestProduceValidDeviceType(t *testing.T) {
 		"asdasda",
 		[]model.Content{},
 		[]model.Content{},
-		[]model.Function{{Id: "urn:infai:ses:function:5e5e", Name: "brightnessAdjustment", ConceptId: "urn:infai:ses:concept:6e6e", RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION}},
+		[]model.Function{{Id: "urn:infai:ses:function:5e5e", Name: "brightnessAdjustment", ConceptId: "urn:ses:infai:concept:1a1a1a", RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION}},
 		"asdasdsadsadasd",
 	})
 
@@ -345,7 +345,7 @@ func TestReadDeviceType(t *testing.T) {
 	if deviceType.Services[0].Functions[0].RdfType != model.SES_ONTOLOGY_CONTROLLING_FUNCTION {
 		t.Fatal("error function -> 0/0 -> RdfType")
 	}
-	if deviceType.Services[0].Functions[0].ConceptId != "urn:infai:ses:concept:6e6e" {
+	if deviceType.Services[0].Functions[0].ConceptId != "urn:ses:infai:concept:1a1a1a" {
 		t.Fatal("error function -> 0/0/0 -> ConceptIds")
 	}
 	/// service 2
@@ -384,7 +384,7 @@ func TestReadDeviceType(t *testing.T) {
 	if deviceType.Services[1].Functions[0].RdfType != model.SES_ONTOLOGY_CONTROLLING_FUNCTION {
 		t.Fatal("error function -> 1/0 -> RdfType")
 	}
-	if deviceType.Services[1].Functions[0].ConceptId != "urn:infai:ses:concept:6e6e" {
+	if deviceType.Services[1].Functions[0].ConceptId != "urn:ses:infai:concept:1a1a1a" {
 		t.Fatal("error function -> 1/0/0 -> ConceptIds")
 	}
 

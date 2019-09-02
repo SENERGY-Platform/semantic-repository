@@ -37,10 +37,6 @@ func (*Database) RemoveDevice(ctx context.Context, id string) error {
 	panic("implement me")
 }
 
-func (*Database) GetDeviceType(ctx context.Context, id string) (deviceType model.DeviceType, exists bool, err error) {
-	panic("implement me")
-}
-
 func (*Database) SetDeviceType(ctx context.Context, deviceType model.DeviceType) error {
 	panic("implement me")
 }
@@ -99,6 +95,22 @@ func (this *Database) DeleteDeviceType(s string) (err error) {
 	} else {
 		return errors.New("ERROR: Statuscode " + string(resp.StatusCode))
 	}
+}
+
+func (this *Database) GetDeviceType(s string) (rdfxml string, err error) {
+	query := this.getDeviceTypeQuery(s)
+	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
+	if err != nil {
+		log.Println("ERROR: GetFunctions", err)
+		return "", err
+	}
+	defer resp.Body.Close()
+	byteArray, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Println("ERROR:", err)
+		return "", err
+	}
+	return string(byteArray), nil
 }
 
 func (this *Database) DeleteConcept(s string, deleteNested bool) (err error) {

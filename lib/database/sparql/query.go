@@ -58,6 +58,90 @@ func (*Database) getDeleteDeviceTypeQuery(subject string) (string) {
 			"}")
 }
 
+func (*Database) getDeviceTypeQuery(subject string) (string) {
+
+	//PREFIX ses: <https://senergy.infai.org/ontology/>
+	//PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+	//construct {
+	//	<urn:infai:ses:device-type:8cb7bb2c-e661-42a3-b7d1-5e9fc6d60152>
+	//	rdf:type ?type;
+	//	rdfs:label ?label;
+	//	ses:hasDeviceClass ?deviceclass;
+	//	ses:hasService ?service .
+	//	?service rdf:type ?s_type;
+	//	rdfs:label ?s_label;
+	//	ses:refersTo ?aspect;
+	//	ses:exposesFunction ?function.
+	//
+	//	?function rdfs:label ?f_label;
+	//	rdf:type ?f_type;
+	//	ses:hasConcept ?concept_id.
+	//	?aspect rdfs:label ?a_label;
+	//	rdf:type ?a_type.
+	//	?deviceclass rdfs:label ?dc_label;
+	//	rdf:type ?dc_type.
+	//} where {
+	//	<urn:infai:ses:device-type:8cb7bb2c-e661-42a3-b7d1-5e9fc6d60152>
+	//	rdf:type ?type;
+	//	rdfs:label ?label;
+	//	ses:hasDeviceClass ?deviceclass;
+	//	ses:hasService ?service .
+	//	?service rdf:type ?s_type;
+	//	rdfs:label ?s_label;
+	//	ses:refersTo ?aspect;
+	//	ses:exposesFunction ?function.
+	//
+	//	?function rdfs:label ?f_label;
+	//	rdf:type ?f_type;
+	//	ses:hasConcept ?concept_id.
+	//	?aspect rdfs:label ?a_label;
+	//	rdf:type ?a_type.
+	//	?deviceclass rdfs:label ?dc_label;
+	//	rdf:type ?dc_type.
+	//}
+
+	return url.QueryEscape(
+		model.PREFIX_SES +
+			model.PREFIX_RDF +
+			"construct {" +
+			"<" + subject + ">" +
+			"rdf:type ?type;" +
+			"rdfs:label ?label;" +
+			"ses:hasDeviceClass ?deviceclass;" +
+			"ses:hasService ?service ." +
+			"?service rdf:type ?s_type;" +
+			"rdfs:label ?s_label;" +
+			"ses:refersTo ?aspect;" +
+			"ses:exposesFunction ?function." +
+
+			"?function rdfs:label ?f_label;" +
+			"rdf:type ?f_type;" +
+			"ses:hasConcept ?concept_id." +
+			"?aspect rdfs:label ?a_label;" +
+			"rdf:type ?a_type." +
+			"?deviceclass rdfs:label ?dc_label;" +
+			"rdf:type ?dc_type." +
+			"} where {" +
+			"<" + subject + ">" +
+			"rdf:type ?type;" +
+			"rdfs:label ?label;" +
+			"ses:hasDeviceClass ?deviceclass;" +
+			"ses:hasService ?service ." +
+			"?service rdf:type ?s_type;" +
+			"rdfs:label ?s_label;" +
+			"ses:refersTo ?aspect;" +
+			"ses:exposesFunction ?function." +
+
+			"?function rdfs:label ?f_label;" +
+			"rdf:type ?f_type;" +
+			"ses:hasConcept ?concept_id." +
+			"?aspect rdfs:label ?a_label;" +
+			"rdf:type ?a_type." +
+			"?deviceclass rdfs:label ?dc_label;" +
+			"rdf:type ?dc_type." +
+			"}")
+}
+
 func (*Database) getDeleteConceptWithNestedQuery(subject string) (string) {
 
 	return url.QueryEscape("prefix x: <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> " +
