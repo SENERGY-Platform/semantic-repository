@@ -154,7 +154,7 @@ func (*Controller) RdfXmlToSingleResult(rdfxml string, result interface{}, rootE
 	err = json.Unmarshal(b, &result)
 	if err != nil {
 		debug.PrintStack()
-		log.Println("Error: Unmarshal()", err)
+		log.Println("Error: Unmarshal()", err, string(b))
 		return err
 	}
 	return nil
