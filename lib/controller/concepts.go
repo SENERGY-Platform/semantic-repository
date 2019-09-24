@@ -31,15 +31,15 @@ import (
 /////////////////////////
 
 func (this *Controller) GetConceptWithCharacteristics(subject string) (result model.ConceptWithCharacteristics, err error, errCode int) {
-	concept, err := this.db.GetConstructWithProperties(subject)
+	concept, err := this.db.GetWithAllSubProperties(subject)
 	if err != nil {
-		log.Println("GetConceptWithCharacteristics ERROR: GetConstructWithProperties", err)
+		log.Println("GetConceptWithCharacteristics ERROR: GetWithAllSubProperties", err)
 		return result, err, http.StatusInternalServerError
 	}
 
 	err = this.RdfXmlToSingleResult(concept, &result, subject)
 	if err != nil {
-		log.Println("GetConceptWithCharacteristics ERROR: RdfXmlToModel", err)
+		log.Println("GetConceptWithCharacteristics ERROR: RdfXmlToSingleResult", err)
 		return result, err, http.StatusInternalServerError
 	}
 
@@ -47,15 +47,15 @@ func (this *Controller) GetConceptWithCharacteristics(subject string) (result mo
 }
 
 func (this *Controller) GetConceptWithoutCharacteristics(subject string) (result model.Concept, err error, errCode int) {
-	concept, err := this.db.GetConstructWithoutProperties(subject, "", "")
+	concept, err := this.db.GetWithoutSubProperties(subject)
 	if err != nil {
-		log.Println("GetConceptWithoutCharacteristics ERROR: GetConstructWithoutProperties", err)
+		log.Println("GetConceptWithoutCharacteristics ERROR: GetConceptWithoutCharacteristics", err)
 		return result, err, http.StatusInternalServerError
 	}
 
 	err = this.RdfXmlToSingleResult(concept, &result, subject)
 	if err != nil {
-		log.Println("GetConceptWithoutCharacteristics ERROR: RdfXmlToModel", err)
+		log.Println("GetConceptWithoutCharacteristics ERROR: RdfXmlToSingleResult", err)
 		return result, err, http.StatusInternalServerError
 	}
 

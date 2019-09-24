@@ -29,8 +29,9 @@ import (
 /////////////////////////
 
 func (this *Controller) GetFunctions(funcType string) (result []model.Function, err error, errCode int) {
-	functions, err := this.db.GetConstructWithoutProperties("", model.RDF_TYPE, funcType)
+	functions, err := this.db.GetListWithoutSubProperties(model.RDF_TYPE, funcType)
 	if err != nil {
+		log.Println("GetFunctions ERROR: GetListWithoutSubProperties", err)
 		return result, err, http.StatusInternalServerError
 	}
 

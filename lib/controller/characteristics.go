@@ -31,15 +31,15 @@ import (
 /////////////////////////
 
 func (this *Controller) GetCharacteristic(subject string) (result model.Characteristic, err error, errCode int) {
-	characteristic, err := this.db.GetConstructWithProperties(subject)
+	characteristic, err := this.db.GetWithAllSubProperties(subject)
 	if err != nil {
-		log.Println("GetCharacteristic ERROR: GetConstructWithoutProperties", err)
+		log.Println("GetCharacteristic ERROR: GetWithAllSubProperties", err)
 		return result, err, http.StatusInternalServerError
 	}
 
 	err = this.RdfXmlToSingleResult(characteristic, &result, subject)
 	if err != nil {
-		log.Println("GetCharacteristic ERROR: RdfXmlToModel", err)
+		log.Println("GetCharacteristic ERROR: RdfXmlToSingleResult", err)
 		return result, err, http.StatusInternalServerError
 	}
 

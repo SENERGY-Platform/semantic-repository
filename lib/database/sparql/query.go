@@ -5,13 +5,7 @@ import (
 	"net/url"
 )
 
-func (*Database) getConstructQueryWithoutProperties(s string, p string, o string) (string) {
-	if s == "" {
-		s = " ?s "
-	} else {
-		s = " <" + s + "> "
-	}
-
+func (*Database) getConstructListWithoutSubProperties(p string, o string) (string) {
 	if p == "" {
 		p = " ?p "
 	} else {
@@ -25,20 +19,20 @@ func (*Database) getConstructQueryWithoutProperties(s string, p string, o string
 	}
 	return url.QueryEscape("CONSTRUCT {?s ?p ?o} " +
 		"WHERE {" + "?s ?p ?o ." +
-		s + p + o + "." +
+		" ?s " + p + o + "." +
 		"?s <http://www.w3.org/2000/01/rdf-schema#label> ?label" +
 		"}" +
 		"ORDER BY ASC(?label)")
 }
 
-func (*Database) getSubjectWithAllPropertiesQuery(subject string) (string) {
+func (*Database) getConstructWithAllSubProperties(subject string) (string) {
 
 	return url.QueryEscape("prefix x: <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> " +
 		"construct { ?s ?p ?o } " +
 		"where {<" + subject + "> (x:|!x:)* ?s . ?s ?p ?o . }")
 }
 
-func (*Database) getSubjectWithoutSubProperties(subject string) (string) {
+func (*Database) getConstructWithoutSubProperties(subject string) (string) {
 	//construct {<urn:ses:infai:concept:1a1a1a> ?p ?o .}
 	//where {<urn:ses:infai:concept:1a1a1a> ?p ?o .}
 	return url.QueryEscape(

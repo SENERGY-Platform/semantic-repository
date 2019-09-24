@@ -29,9 +29,9 @@ import (
 /////////////////////////
 
 func (this *Controller) GetAspects() (result []model.Aspect, err error, errCode int) {
-	aspects, err := this.db.GetConstructWithoutProperties("", model.RDF_TYPE, model.SES_ONTOLOGY_ASPECT)
+	aspects, err := this.db.GetListWithoutSubProperties(model.RDF_TYPE, model.SES_ONTOLOGY_ASPECT)
 	if err != nil {
-		log.Println("GetAspects ERROR: GetConstructWithoutProperties", err)
+		log.Println("GetAspects ERROR: GetListWithoutSubProperties", err)
 		return result, err, http.StatusInternalServerError
 	}
 

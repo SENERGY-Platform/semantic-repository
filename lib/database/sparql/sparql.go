@@ -90,22 +90,6 @@ func (this *Database) GetDeviceType(s string) (rdfxml string, err error) {
 	return string(byteArray), nil
 }
 
-func (this *Database) GetConcept(s string) (rdfxml string, err error) {
-	query := this.getSubjectWithoutSubProperties(s)
-	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
-	if err != nil {
-		log.Println("ERROR: GetConcept", err)
-		return "", err
-	}
-	defer resp.Body.Close()
-	byteArray, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Println("ERROR:", err)
-		return "", err
-	}
-	return string(byteArray), nil
-}
-
 func (this *Database) DeleteConcept(s string, deleteNested bool) (err error) {
 	query := ""
 	if deleteNested {
@@ -141,8 +125,8 @@ func (this *Database) DeleteCharacteristic(s string) (err error) {
 	}
 }
 
-func (this *Database) GetConstructWithoutProperties(s string, p string, o string) (rdfxml string, err error) {
-	query := this.getConstructQueryWithoutProperties(s, p, o)
+func (this *Database) GetListWithoutSubProperties(p string, o string) (rdfxml string, err error) {
+	query := this.getConstructListWithoutSubProperties(p, o)
 	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
 	if err != nil {
 		log.Println("ERROR: GetFunctions", err)
@@ -157,11 +141,27 @@ func (this *Database) GetConstructWithoutProperties(s string, p string, o string
 	return string(byteArray), nil
 }
 
-func (this *Database) GetConstructWithProperties(subject string) (rdfxml string, err error) {
-	query := this.getSubjectWithAllPropertiesQuery(subject)
+func (this *Database) GetWithAllSubProperties(subject string) (rdfxml string, err error) {
+	query := this.getConstructWithAllSubProperties(subject)
 	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
 	if err != nil {
 		log.Println("ERROR: GetFunctions", err)
+		return "", err
+	}
+	defer resp.Body.Close()
+	byteArray, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Println("ERROR:", err)
+		return "", err
+	}
+	return string(byteArray), nil
+}
+
+func (this *Database) GetWithoutSubProperties(s string) (rdfxml string, err error) {
+	query := this.getConstructWithoutSubProperties(s)
+	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
+	if err != nil {
+		log.Println("ERROR: GetConcept", err)
 		return "", err
 	}
 	defer resp.Body.Close()
