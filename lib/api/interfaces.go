@@ -33,6 +33,7 @@ type Controller interface {
 	GetAspects() (result []model.Aspect, err error, errCode int)
 
 	GetConcept(subject string) (result model.Concept, err error, errCode int)
+	GetConceptWithCharacteristics(subject string) (result model.ConceptWithCharacteristics, err error, errCode int)
 	ValidateConcept(concept model.Concept) (err error, code int)
 
 	GetCharacteristic(subject string) (result model.Characteristic, err error, errCode int)

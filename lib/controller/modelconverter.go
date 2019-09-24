@@ -102,6 +102,8 @@ func (*Controller) RdfXmlToSingleResult(rdfxml string, result interface{}, rootE
 		contextDoc = getConceptContext()
 	case *model.Characteristic:
 		contextDoc = getCharacteristicsContext()
+	case *model.ConceptWithCharacteristics:
+		contextDoc = getConceptCharacteristicContext()
 	default:
 		debug.PrintStack()
 		log.Println("Unknown model type:", reflect.TypeOf(result))
@@ -121,6 +123,9 @@ func (*Controller) RdfXmlToSingleResult(rdfxml string, result interface{}, rootE
 		cont["@type"] = model.SES_ONTOLOGY_CONCEPT
 	case *model.Characteristic:
 		cont["@type"] = model.SES_ONTOLOGY_CHARACTERISTIC
+		cont["@id"] = rootElement
+	case *model.ConceptWithCharacteristics:
+		cont["@type"] = model.SES_ONTOLOGY_CONCEPT
 		cont["@id"] = rootElement
 	default:
 		debug.PrintStack()
@@ -214,6 +219,30 @@ func getConceptContext() map[string]interface{} {
 			"@type":      "@id",
 			"@container": "@set",
 		},
+	}
+	return contextDoc
+}
+
+func getConceptCharacteristicContext() map[string]interface{} {
+	contextDoc := map[string]interface{}{
+		"id":       "@id",
+		"rdf_type": "@type",
+		"name":     model.RDFS_LABEL,
+		"characteristics": map[string]interface{}{
+			"@id":        model.SES_ONTOLOGY_HAS_CHARACTERISTIC,
+			"@container": "@set",
+		},
+		"type": map[string]interface{}{
+			"@id":   model.SES_ONTOLOGY_HAS_VALUE_TYPE,
+			"@type": "@id",
+		},
+		"sub_characteristics": map[string]interface{}{
+			"@id":        model.SES_ONTOLOGY_HAS_SUB_CHARACTERISTIC,
+			"@container": "@set",
+		},
+		"value": model.SES_ONTOLOGY_HAS_VALUE,
+		"min_value": model.SES_ONTOLOGY_HAS_MIN_VALUE,
+		"max_value": model.SES_ONTOLOGY_HAS_MAX_VALUE,
 	}
 	return contextDoc
 }

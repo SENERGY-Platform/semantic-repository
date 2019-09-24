@@ -30,6 +30,22 @@ import (
 //		api
 /////////////////////////
 
+func (this *Controller) GetConceptWithCharacteristics(subject string) (result model.ConceptWithCharacteristics, err error, errCode int) {
+	concept, err := this.db.GetConstructWithProperties(subject)
+	if err != nil {
+		log.Println("GetDeviceClasses ERROR: GetConstructWithProperties", err)
+		return result, err, http.StatusInternalServerError
+	}
+
+	err = this.RdfXmlToSingleResult(concept, &result, subject)
+	if err != nil {
+		log.Println("GetDeviceClasses ERROR: RdfXmlToModel", err)
+		return result, err, http.StatusInternalServerError
+	}
+
+	return result, nil, http.StatusOK
+}
+
 func (this *Controller) GetConcept(subject string) (result model.Concept, err error, errCode int) {
 	concept, err := this.db.GetConstructWithoutProperties(subject, "", "")
 	if err != nil {

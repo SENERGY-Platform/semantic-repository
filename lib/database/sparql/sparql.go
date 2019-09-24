@@ -113,6 +113,22 @@ func (this *Database) GetDeviceType(s string) (rdfxml string, err error) {
 	return string(byteArray), nil
 }
 
+func (this *Database) GetConcept(s string) (rdfxml string, err error) {
+	query := this.getConstructConcept(s)
+	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
+	if err != nil {
+		log.Println("ERROR: GetConcept", err)
+		return "", err
+	}
+	defer resp.Body.Close()
+	byteArray, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Println("ERROR:", err)
+		return "", err
+	}
+	return string(byteArray), nil
+}
+
 func (this *Database) DeleteConcept(s string, deleteNested bool) (err error) {
 	query := ""
 	if deleteNested {

@@ -36,13 +36,25 @@ func Concepts(config config.Config, control Controller, router *jwt_http_router.
 
 	router.GET(resource+"/:id", func(writer http.ResponseWriter, request *http.Request, params jwt_http_router.Params, jwt jwt_http_router.Jwt) {
 		id := params.ByName("id")
-		result, err, errCode := control.GetConcept(id)
+		subClass, err := strconv.ParseBool(request.URL.Query().Get("sub-class"))
+		resultConceptWithCharacteristics := model.ConceptWithCharacteristics{}
+		resultConcept := model.Concept{}
+		errCode := 0
+		if subClass {
+			resultConceptWithCharacteristics, err, errCode = control.GetConceptWithCharacteristics(id)
+		} else {
+			resultConcept, err, errCode = control.GetConcept(id)
+		}
 		if err != nil {
 			http.Error(writer, err.Error(), errCode)
 			return
 		}
 		writer.Header().Set("Content-Type", "application/json; charset=utf-8")
-		err = json.NewEncoder(writer).Encode(result)
+		if subClass {
+			err = json.NewEncoder(writer).Encode(resultConceptWithCharacteristics)
+		} else {
+			err = json.NewEncoder(writer).Encode(resultConcept)
+		}
 		if err != nil {
 			log.Println("ERROR: unable to encode response", err)
 		}

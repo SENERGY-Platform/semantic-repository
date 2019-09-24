@@ -25,6 +25,7 @@ type Database interface {
 	GetDeviceType(s string) (rdfxml string, err error)
 	DeleteConcept(s string, withNested bool) (err error)
 	DeleteCharacteristic(s string) (err error)
+	GetConcept(s string) (rdfxml string, err error)
 	GetConstructWithoutProperties(s string, p string, o string) (rdfxml string, err error)
 	GetConstructWithProperties(subject string) (rdfxml string, err error)
 }

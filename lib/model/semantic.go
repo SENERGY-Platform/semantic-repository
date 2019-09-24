@@ -52,3 +52,10 @@ type Characteristic struct {
 	SubCharacteristics []Characteristic `json:"sub_characteristics"`
 	RdfType            string           `json:"rdf_type"`
 }
+
+type ConceptWithCharacteristics struct {
+	Id                string           `json:"id"`
+	Name              string           `json:"name"`
+	Characteristics   []Characteristic `json:"characteristics"`
+	RdfType           string           `json:"rdf_type"`
+}
