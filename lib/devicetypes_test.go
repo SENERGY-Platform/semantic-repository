@@ -461,11 +461,11 @@ func StartUpScript(t *testing.T) (error, *controller.Controller, database.Databa
 	if err != nil {
 		t.Fatal(err)
 	}
-	producer, err := producer.New(conf)
+	_, err = producer.New(conf)
 	if err != nil {
 		t.Fatal(err)
 	}
-	con, err := controller.New(conf, db, producer)
+	con, err := controller.New(conf, db)
 	if err != nil {
 		t.Fatal(err)
 	}

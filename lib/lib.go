@@ -33,13 +33,13 @@ func Start(conf config.Config) (stop func(), err error) {
 		return stop, err
 	}
 
-	p, err := producer.New(conf)
+	_, err = producer.New(conf)
 	if err != nil {
 		log.Println("ERROR: unable to create producer", err)
 		return stop, err
 	}
 
-	ctrl, err := controller.New(conf, db, p)
+	ctrl, err := controller.New(conf, db)
 	if err != nil {
 		db.Disconnect()
 		log.Println("ERROR: unable to start control", err)

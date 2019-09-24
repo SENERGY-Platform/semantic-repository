@@ -18,13 +18,9 @@ package api
 
 import (
 	"github.com/SENERGY-Platform/semantic-repository/lib/model"
-	"github.com/SmartEnergyPlatform/jwt-http-router"
 )
 
 type Controller interface {
-	ReadDevice(id string, jwt jwt_http_router.Jwt) (result model.Device, err error, errCode int)
-	ValidateDevice(device model.Device) (err error, code int)
-
 	GetDeviceType(subject string) (result model.DeviceType, err error, errCode int)
 	ValidateDeviceType(deviceType model.DeviceType) (err error, code int)
 

@@ -19,8 +19,6 @@ package listener
 import "github.com/SENERGY-Platform/semantic-repository/lib/model"
 
 type Controller interface {
-	SetDevice(device model.Device, owner string) error
-	DeleteDevice(id string) error
 	SetDeviceType(deviceType model.DeviceType, owner string) error
 	DeleteDeviceType(id string) error
 

@@ -23,10 +23,9 @@ import (
 	"time"
 )
 
-func New(config config.Config, db database.Database, producer Producer) (ctrl *Controller, err error) {
+func New(config config.Config, db database.Database) (ctrl *Controller, err error) {
 	ctrl = &Controller{
 		db:       db,
-		producer: producer,
 		config:   config,
 	}
 	return
@@ -34,7 +33,6 @@ func New(config config.Config, db database.Database, producer Producer) (ctrl *C
 
 type Controller struct {
 	db       database.Database
-	producer Producer
 	config   config.Config
 }
 
