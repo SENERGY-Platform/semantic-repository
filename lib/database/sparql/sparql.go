@@ -9,7 +9,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"net/url"
 	"time"
 )
 
@@ -60,28 +59,6 @@ func (this *Database) InsertData(triples string) (err error) {
 	}
 }
 
-func (*Database) ReadData() (body []byte, err error) {
-	conf, err := config.Load("../config.json")
-	if err != nil {
-		log.Println("ERROR: unable to load to config", err)
-		return nil, err
-	}
-	query := url.QueryEscape("construct { ?s ?p ?o.} where { ?s ?p ?o. }")
-	resp, err := http.Get(conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
-	if err != nil {
-		log.Println("ERROR:", err)
-		return nil, err
-	}
-	defer resp.Body.Close()
-	body, err = ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Println("ERROR:", err)
-		return nil, err
-	}
-	return body, nil
-}
-
-
 func (this *Database) DeleteDeviceType(s string) (err error) {
 	query := this.getDeleteDeviceTypeQuery(s)
 	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
@@ -114,7 +91,7 @@ func (this *Database) GetDeviceType(s string) (rdfxml string, err error) {
 }
 
 func (this *Database) GetConcept(s string) (rdfxml string, err error) {
-	query := this.getConstructConcept(s)
+	query := this.getSubjectWithoutSubProperties(s)
 	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
 	if err != nil {
 		log.Println("ERROR: GetConcept", err)

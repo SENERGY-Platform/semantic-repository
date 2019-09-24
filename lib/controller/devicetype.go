@@ -34,13 +34,13 @@ import (
 func (this *Controller) GetDeviceType(subject string) (result model.DeviceType, err error, errCode int) {
 	deviceType, err := this.db.GetDeviceType(subject)
 	if err != nil {
-		log.Println("GetDeviceClasses ERROR: GetConstructWithoutProperties", err)
+		log.Println("GetDeviceType ERROR: GetDeviceType", err)
 		return result, err, http.StatusInternalServerError
 	}
 
 	err = this.RdfXmlToSingleResult(deviceType, &result, subject)
 	if err != nil {
-		log.Println("GetDeviceClasses ERROR: RdfXmlToModel", err)
+		log.Println("GetDeviceType ERROR: RdfXmlToSingleResult", err)
 		return result, err, http.StatusInternalServerError
 	}
 

@@ -28,7 +28,7 @@ type Controller interface {
 	GetDeviceClasses() (result []model.DeviceClass, err error, errCode int)
 	GetAspects() (result []model.Aspect, err error, errCode int)
 
-	GetConcept(subject string) (result model.Concept, err error, errCode int)
+	GetConceptWithoutCharacteristics(subject string) (result model.Concept, err error, errCode int)
 	GetConceptWithCharacteristics(subject string) (result model.ConceptWithCharacteristics, err error, errCode int)
 	ValidateConcept(concept model.Concept) (err error, code int)
 

@@ -43,7 +43,7 @@ func Concepts(config config.Config, control Controller, router *jwt_http_router.
 		if subClass {
 			resultConceptWithCharacteristics, err, errCode = control.GetConceptWithCharacteristics(id)
 		} else {
-			resultConcept, err, errCode = control.GetConcept(id)
+			resultConcept, err, errCode = control.GetConceptWithoutCharacteristics(id)
 		}
 		if err != nil {
 			http.Error(writer, err.Error(), errCode)

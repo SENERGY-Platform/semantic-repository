@@ -38,7 +38,7 @@ func (*Database) getSubjectWithAllPropertiesQuery(subject string) (string) {
 		"where {<" + subject + "> (x:|!x:)* ?s . ?s ?p ?o . }")
 }
 
-func (*Database) getConstructConcept(subject string) (string) {
+func (*Database) getSubjectWithoutSubProperties(subject string) (string) {
 	//construct {<urn:ses:infai:concept:1a1a1a> ?p ?o .}
 	//where {<urn:ses:infai:concept:1a1a1a> ?p ?o .}
 	return url.QueryEscape(

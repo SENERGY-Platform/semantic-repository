@@ -33,29 +33,29 @@ import (
 func (this *Controller) GetConceptWithCharacteristics(subject string) (result model.ConceptWithCharacteristics, err error, errCode int) {
 	concept, err := this.db.GetConstructWithProperties(subject)
 	if err != nil {
-		log.Println("GetDeviceClasses ERROR: GetConstructWithProperties", err)
+		log.Println("GetConceptWithCharacteristics ERROR: GetConstructWithProperties", err)
 		return result, err, http.StatusInternalServerError
 	}
 
 	err = this.RdfXmlToSingleResult(concept, &result, subject)
 	if err != nil {
-		log.Println("GetDeviceClasses ERROR: RdfXmlToModel", err)
+		log.Println("GetConceptWithCharacteristics ERROR: RdfXmlToModel", err)
 		return result, err, http.StatusInternalServerError
 	}
 
 	return result, nil, http.StatusOK
 }
 
-func (this *Controller) GetConcept(subject string) (result model.Concept, err error, errCode int) {
+func (this *Controller) GetConceptWithoutCharacteristics(subject string) (result model.Concept, err error, errCode int) {
 	concept, err := this.db.GetConstructWithoutProperties(subject, "", "")
 	if err != nil {
-		log.Println("GetDeviceClasses ERROR: GetConstructWithoutProperties", err)
+		log.Println("GetConceptWithoutCharacteristics ERROR: GetConstructWithoutProperties", err)
 		return result, err, http.StatusInternalServerError
 	}
 
 	err = this.RdfXmlToSingleResult(concept, &result, subject)
 	if err != nil {
-		log.Println("GetDeviceClasses ERROR: RdfXmlToModel", err)
+		log.Println("GetConceptWithoutCharacteristics ERROR: RdfXmlToModel", err)
 		return result, err, http.StatusInternalServerError
 	}
 
