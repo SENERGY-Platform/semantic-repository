@@ -105,7 +105,7 @@ func (*Controller) RdfXmlToSingleResult(rdfxml string, result interface{}, rootE
 	default:
 		debug.PrintStack()
 		log.Println("Unknown model type:", reflect.TypeOf(result))
-		return err
+		return errors.New("Unknown model type:" + reflect.TypeOf(result).String())
 	}
 
 	graph := map[string]interface{}{}
@@ -125,7 +125,7 @@ func (*Controller) RdfXmlToSingleResult(rdfxml string, result interface{}, rootE
 	default:
 		debug.PrintStack()
 		log.Println("Unknown model type:", reflect.TypeOf(result))
-		return err
+		return errors.New("Unknown model type:" + reflect.TypeOf(result).String())
 	}
 
 	cont["@embed"] = "@always"
