@@ -31,23 +31,43 @@ import (
 //		api
 /////////////////////////
 
-func (this *Controller) GetDeviceType(subject string) (result model.DeviceType, err error, errCode int) {
-	deviceType, err := this.db.GetDeviceType(subject)
+func (this *Controller) GetDeviceType(deviceTypeId string) (result model.DeviceType, err error, errCode int) {
+	deviceType, err := this.db.GetDeviceType(deviceTypeId, "", "", "")
 	if err != nil {
 		log.Println("GetDeviceType ERROR: GetDeviceType", err)
 		return result, err, http.StatusInternalServerError
 	}
 
-	err = this.RdfXmlToSingleResult(deviceType, &result, subject)
+	res := []model.DeviceType{}
+	err = this.RdfXmlFrame(deviceType, &res, deviceTypeId)
 	if err != nil {
-		log.Println("GetDeviceType ERROR: RdfXmlToSingleResult", err)
+		log.Println("GetDeviceType ERROR: RdfXmlFrame", err)
 		return result, err, http.StatusInternalServerError
 	}
 
-	sort.Slice(result.Services, func(i, j int) bool {
-		return result.Services[i].Name < result.Services[j].Name
+	sort.Slice(res[0].Services, func(i, j int) bool {
+		return res[0].Services[i].Name < res[0].Services[j].Name
 	})
 
+	return res[0], nil, http.StatusOK
+}
+
+func (this *Controller) GetDeviceTypesFiltered(deviceClassId string, functionId string, aspectId string) (result []model.DeviceType, err error, errCode int) {
+	deviceTypes, err := this.db.GetDeviceType("", deviceClassId, functionId, aspectId)
+	if err != nil {
+		log.Println("GetDeviceType ERROR: GetDeviceTypesFiltered", err)
+		return result, err, http.StatusInternalServerError
+	}
+
+	err = this.RdfXmlFrame(deviceTypes, &result, "")
+	if err != nil {
+		log.Println("GetDeviceType ERROR: RdfXmlFrame", err)
+		return result, err, http.StatusInternalServerError
+	}
+
+	sort.Slice(result, func(i, j int) bool {
+		return result[i].Name < result[j].Name
+	})
 
 	return result, nil, http.StatusOK
 }

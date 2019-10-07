@@ -21,7 +21,8 @@ import (
 )
 
 type Controller interface {
-	GetDeviceType(subject string) (result model.DeviceType, err error, errCode int)
+	GetDeviceType(deviceTypeId string) (result model.DeviceType, err error, errCode int)
+	GetDeviceTypesFiltered(deviceClassId string, functionId string, aspectId string) (result []model.DeviceType, err error, errCode int)
 	ValidateDeviceType(deviceType model.DeviceType) (err error, code int)
 
 	GetFunctions(funcType string) (result []model.Function, err error, errCode int)

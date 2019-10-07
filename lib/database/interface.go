@@ -25,7 +25,7 @@ type Database interface {
 	DeleteConcept(s string, withNested bool) (err error)
 	DeleteCharacteristic(s string) (err error)
 
-	GetDeviceType(s string) (rdfxml string, err error)
+	GetDeviceType(deviceTypeId string, deviceClassId string, functionId string, aspectId string) (rdfxml string, err error)
 	GetDeviceClassesFunctions(s string) (rdfxml string, err error)
 	GetWithoutSubProperties(s string) (rdfxml string, err error)
 	GetListWithoutSubProperties(p string, o string) (rdfxml string, err error)

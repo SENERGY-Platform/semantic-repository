@@ -37,13 +37,14 @@ func (this *Controller) GetCharacteristic(subject string) (result model.Characte
 		return result, err, http.StatusInternalServerError
 	}
 
-	err = this.RdfXmlToSingleResult(characteristic, &result, subject)
+	res := []model.Characteristic{}
+	err = this.RdfXmlFrame(characteristic, &res, subject)
 	if err != nil {
-		log.Println("GetCharacteristic ERROR: RdfXmlToSingleResult", err)
+		log.Println("GetCharacteristic ERROR: RdfXmlFrame", err)
 		return result, err, http.StatusInternalServerError
 	}
 
-	return result, nil, http.StatusOK
+	return res[0], nil, http.StatusOK
 }
 
 func (this *Controller) ValidateCharacteristics(characteristic model.Characteristic) (error, int) {
@@ -149,7 +150,7 @@ func (this *Controller) SetCharacteristic(conceptId string, characteristic model
 		return err
 	}
 
-	err = this.db.InsertData("<" + conceptId +"> <" + model.SES_ONTOLOGY_HAS_CHARACTERISTIC + "> <" + characteristic.Id +"> .")
+	err = this.db.InsertData("<" + conceptId + "> <" + model.SES_ONTOLOGY_HAS_CHARACTERISTIC + "> <" + characteristic.Id + "> .")
 	if err != nil {
 		debug.PrintStack()
 		log.Println("Error insert hasCharacteristics:", err)

@@ -17,7 +17,7 @@
  *
  */
 
- package controller
+package controller
 
 import (
 	"encoding/json"
@@ -92,7 +92,7 @@ func (*Controller) RdfXmlToModel(rdfxml string, result interface{}) (err error) 
 	return nil
 }
 
-func (*Controller) RdfXmlToSingleResult(rdfxml string, result interface{}, rootElement string) (err error) {
+func (*Controller) RdfXmlFrame(rdfxml string, result interface{}, rootElement string) (err error) {
 	turtle, err := rdfxmlToTurtle(rdfxml)
 	if len(turtle) == 0 {
 		return nil
@@ -115,13 +115,13 @@ func (*Controller) RdfXmlToSingleResult(rdfxml string, result interface{}, rootE
 	}
 	contextDoc := map[string]interface{}{}
 	switch result.(type) {
-	case *model.DeviceType:
+	case *[]model.DeviceType:
 		contextDoc = getDeviceTypeContext()
-	case *model.Concept:
+	case *[]model.Concept:
 		contextDoc = getConceptContext()
-	case *model.Characteristic:
+	case *[]model.Characteristic:
 		contextDoc = getCharacteristicsContext()
-	case *model.ConceptWithCharacteristics:
+	case *[]model.ConceptWithCharacteristics:
 		contextDoc = getConceptCharacteristicContext()
 	default:
 		debug.PrintStack()
@@ -136,14 +136,14 @@ func (*Controller) RdfXmlToSingleResult(rdfxml string, result interface{}, rootE
 	cont := map[string]interface{}{}
 	cont["@context"] = contextDoc
 	switch result.(type) {
-	case *model.DeviceType:
+	case *[]model.DeviceType:
 		cont["@type"] = model.SES_ONTOLOGY_DEVICE_TYPE
-	case *model.Concept:
+	case *[]model.Concept:
 		cont["@type"] = model.SES_ONTOLOGY_CONCEPT
-	case *model.Characteristic:
+	case *[]model.Characteristic:
 		cont["@type"] = model.SES_ONTOLOGY_CHARACTERISTIC
 		cont["@id"] = rootElement
-	case *model.ConceptWithCharacteristics:
+	case *[]model.ConceptWithCharacteristics:
 		cont["@type"] = model.SES_ONTOLOGY_CONCEPT
 		cont["@id"] = rootElement
 	default:
@@ -168,7 +168,7 @@ func (*Controller) RdfXmlToSingleResult(rdfxml string, result interface{}, rootE
 		return errors.New("Error casting")
 	}
 
-	b, err := json.Marshal(frameDocGraph[0])
+	b, err := json.Marshal(frameDocGraph)
 	if err != nil {
 		debug.PrintStack()
 		log.Println("Error: Marshal()", err)
@@ -259,7 +259,7 @@ func getConceptCharacteristicContext() map[string]interface{} {
 			"@id":        model.SES_ONTOLOGY_HAS_SUB_CHARACTERISTIC,
 			"@container": "@set",
 		},
-		"value": model.SES_ONTOLOGY_HAS_VALUE,
+		"value":     model.SES_ONTOLOGY_HAS_VALUE,
 		"min_value": model.SES_ONTOLOGY_HAS_MIN_VALUE,
 		"max_value": model.SES_ONTOLOGY_HAS_MAX_VALUE,
 	}
@@ -279,7 +279,7 @@ func getCharacteristicsContext() map[string]interface{} {
 			"@id":        model.SES_ONTOLOGY_HAS_SUB_CHARACTERISTIC,
 			"@container": "@set",
 		},
-		"value": model.SES_ONTOLOGY_HAS_VALUE,
+		"value":     model.SES_ONTOLOGY_HAS_VALUE,
 		"min_value": model.SES_ONTOLOGY_HAS_MIN_VALUE,
 		"max_value": model.SES_ONTOLOGY_HAS_MAX_VALUE,
 	}

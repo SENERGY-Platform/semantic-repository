@@ -17,7 +17,7 @@
  *
  */
 
- package controller
+package controller
 
 import (
 	"github.com/SENERGY-Platform/semantic-repository/lib/model"
@@ -46,7 +46,7 @@ func TestNoData_RdfXmlToSingleResult(t *testing.T) {
 	rdfxml := `<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:sesame="http://www.openrdf.org/schema/sesame#" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:xsd="http://www.w3.org/2001/XMLSchema#" xmlns:fn="http://www.w3.org/2005/xpath-functions#"> </rdf:RDF>`
 
 	controller := Controller{}
-	err := controller.RdfXmlToSingleResult(rdfxml, &deviceType, "")
+	err := controller.RdfXmlFrame(rdfxml, &deviceType, "")
 	if err == nil {
 		if deviceType.RdfType != "" {
 			t.Fatal("wrong response")
@@ -195,7 +195,7 @@ func TestDeviceType(t *testing.T) {
 `
 
 	controller := Controller{}
-	err := controller.RdfXmlToSingleResult(rdfxml, &deviceType, "urn:infai:ses:devicetype:1111")
+	err := controller.RdfXmlFrame(rdfxml, &deviceType, "urn:infai:ses:devicetype:1111")
 	if err == nil {
 		if deviceType.Id != "urn:infai:ses:devicetype:1111" {
 			t.Fatal("wrong id")
@@ -298,7 +298,7 @@ func TestConcept(t *testing.T) {
 `
 
 	controller := Controller{}
-	err := controller.RdfXmlToSingleResult(rdfxml, &concept, "urn:ses:infai:concept:1a1a1a")
+	err := controller.RdfXmlFrame(rdfxml, &concept, "urn:ses:infai:concept:1a1a1a")
 	if err == nil {
 		if concept.Id != "urn:ses:infai:concept:1a1a1a" {
 			t.Fatal("wrong id")

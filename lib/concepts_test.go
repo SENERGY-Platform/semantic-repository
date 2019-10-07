@@ -47,10 +47,35 @@ func TestProduceValidConcept1withCharId(t *testing.T) {
 	producer, _ := producer.New(conf)
 	concept := model.Concept{}
 	concept.Id = "urn:ses:infai:concept:1a1a1a"
-	concept.Name = "color11"
+	concept.Name = "color1"
 	concept.RdfType = "xxx"
-	concept.CharacteristicIds = []string{"urn:ses:infai:characteristic:1d1e1f"}
+	concept.CharacteristicIds = []string{"urn:ses:infai:characteristic:544433333"}
 	producer.PublishConcept(concept, "sdfdsfsf")
+}
+
+func TestProduceValidCharacteristicDependencie(t *testing.T) {
+	conf, err := config.Load("../config.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	producer, _ := producer.New(conf)
+	characteristic := model.Characteristic{}
+	characteristic.Id = "urn:ses:infai:characteristic:544433333"
+	characteristic.Name = "struct1"
+	characteristic.RdfType = "xxx"
+	characteristic.Type = model.Structure
+	characteristic.SubCharacteristics = []model.Characteristic{{
+		Id:                 "urn:infai:ses:characteristic:123456789999",
+		RdfType:            "",
+		MinValue:           -2,
+		MaxValue:           3,
+		Value:              2.2,
+		Type:               model.Float,
+		Name:               "charFloat",
+		SubCharacteristics: nil,
+	}}
+	producer.PublishCharacteristic("urn:ses:infai:concept:1a1a1a", characteristic, "sdfdsfsf")
 }
 
 func TestReadConcept1WithoutSubClass(t *testing.T) {
@@ -67,7 +92,7 @@ func TestReadConcept1WithoutSubClass(t *testing.T) {
 		if concept.RdfType != model.SES_ONTOLOGY_CONCEPT {
 			t.Fatal("wrong rdf_type")
 		}
-		if concept.CharacteristicIds[0] != "urn:ses:infai:characteristic:1d1e1f" {
+		if concept.CharacteristicIds[0] != "urn:ses:infai:characteristic:544433333" {
 			t.Fatal("wrong CharacteristicIds")
 		}
 		t.Log(concept)
@@ -90,22 +115,13 @@ func TestReadConcept1WithSubClass(t *testing.T) {
 		if concept.RdfType != model.SES_ONTOLOGY_CONCEPT {
 			t.Fatal("wrong rdf_type")
 		}
-		if concept.Characteristics[0].Id != "urn:ses:infai:characteristic:1d1e1f" {
+		if concept.Characteristics[0].Id != "urn:ses:infai:characteristic:544433333" {
 			t.Fatal("wrong Characteristics")
 		}
-		if concept.Characteristics[0].SubCharacteristics[0].Id != "urn:infai:ses:characteristic:2r2r2r" {
+		if concept.Characteristics[0].SubCharacteristics[0].Id != "urn:infai:ses:characteristic:123456789999" {
 			t.Fatal("wrong SubCharacteristics")
 		}
 		if concept.Characteristics[0].SubCharacteristics[0].Name != "charFloat" {
-			t.Fatal("wrong SubCharacteristics")
-		}
-		if concept.Characteristics[0].SubCharacteristics[1].Id != "urn:infai:ses:characteristic:3t3t3t" {
-			t.Fatal("wrong SubCharacteristics")
-		}
-		if concept.Characteristics[0].SubCharacteristics[1].Name != "charInnerStructure1" {
-			t.Fatal("wrong SubCharacteristics")
-		}
-		if concept.Characteristics[0].SubCharacteristics[1].SubCharacteristics[0].Id != "urn:infai:ses:characteristic:4z4z4z" {
 			t.Fatal("wrong SubCharacteristics")
 		}
 		t.Log(concept)
@@ -125,5 +141,3 @@ func TestDeleteConcept1(t *testing.T) {
 		t.Fatal(err)
 	}
 }
-
-

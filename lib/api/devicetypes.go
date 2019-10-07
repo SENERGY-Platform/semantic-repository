@@ -49,6 +49,28 @@ func DeviceTypeEndpoints(config config.Config, control Controller, router *jwt_h
 		return
 	})
 
+	router.GET(resource, func(writer http.ResponseWriter, request *http.Request, params jwt_http_router.Params, jwt jwt_http_router.Jwt) {
+		filter := request.URL.Query().Get("filter")
+		deviceTypesFilter := []model.DeviceTypesFilter{}
+		err := json.Unmarshal([]byte(filter), &deviceTypesFilter)
+		if err != nil {
+			http.Error(writer, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		result, err, errCode := control.GetDeviceTypesFiltered(deviceTypesFilter[0].DeviceClassId, deviceTypesFilter[0].FunctionId, "")
+		if err != nil {
+			http.Error(writer, err.Error(), errCode)
+			return
+		}
+		writer.Header().Set("Content-Type", "application/json; charset=utf-8")
+		err = json.NewEncoder(writer).Encode(result)
+		if err != nil {
+			log.Println("ERROR: unable to encode response", err)
+		}
+		return
+	})
+
 	router.PUT(resource, func(writer http.ResponseWriter, request *http.Request, params jwt_http_router.Params, jwt jwt_http_router.Jwt) {
 		dryRun, err := strconv.ParseBool(request.URL.Query().Get("dry-run"))
 		if err != nil {

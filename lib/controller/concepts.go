@@ -37,13 +37,14 @@ func (this *Controller) GetConceptWithCharacteristics(subject string) (result mo
 		return result, err, http.StatusInternalServerError
 	}
 
-	err = this.RdfXmlToSingleResult(concept, &result, subject)
+	res := []model.ConceptWithCharacteristics{}
+	err = this.RdfXmlFrame(concept, &res, subject)
 	if err != nil {
-		log.Println("GetConceptWithCharacteristics ERROR: RdfXmlToSingleResult", err)
+		log.Println("GetConceptWithCharacteristics ERROR: RdfXmlFrame", err)
 		return result, err, http.StatusInternalServerError
 	}
 
-	return result, nil, http.StatusOK
+	return res[0], nil, http.StatusOK
 }
 
 func (this *Controller) GetConceptWithoutCharacteristics(subject string) (result model.Concept, err error, errCode int) {
@@ -53,13 +54,14 @@ func (this *Controller) GetConceptWithoutCharacteristics(subject string) (result
 		return result, err, http.StatusInternalServerError
 	}
 
-	err = this.RdfXmlToSingleResult(concept, &result, subject)
+	res := []model.Concept{}
+	err = this.RdfXmlFrame(concept, &res, subject)
 	if err != nil {
-		log.Println("GetConceptWithoutCharacteristics ERROR: RdfXmlToSingleResult", err)
+		log.Println("GetConceptWithoutCharacteristics ERROR: RdfXmlFrame", err)
 		return result, err, http.StatusInternalServerError
 	}
 
-	return result, nil, http.StatusOK
+	return res[0], nil, http.StatusOK
 }
 
 func (this *Controller) ValidateConcept(concept model.Concept) (err error, code int) {

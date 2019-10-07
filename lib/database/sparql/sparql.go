@@ -17,7 +17,7 @@
  *
  */
 
- package sparql
+package sparql
 
 import (
 	"bytes"
@@ -83,7 +83,7 @@ func (this *Database) DeleteDeviceType(s string) (err error) {
 	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
 	if err != nil {
 		log.Println("ERROR:", err)
-		return  err
+		return err
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode == 200 {
@@ -93,8 +93,8 @@ func (this *Database) DeleteDeviceType(s string) (err error) {
 	}
 }
 
-func (this *Database) GetDeviceType(s string) (rdfxml string, err error) {
-	query := this.getDeviceTypeQuery(s)
+func (this *Database) GetDeviceType(deviceTypeId string, deviceClassId string, functionId string, aspectId string) (rdfxml string, err error) {
+	query := this.getDeviceTypeQuery(deviceTypeId, deviceClassId, functionId, aspectId)
 	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
 	if err != nil {
 		log.Println("ERROR: GetFunctions", err)
@@ -135,7 +135,7 @@ func (this *Database) DeleteConcept(s string, deleteNested bool) (err error) {
 	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
 	if err != nil {
 		log.Println("ERROR:", err)
-		return  err
+		return err
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode == 200 {
@@ -150,7 +150,7 @@ func (this *Database) DeleteCharacteristic(s string) (err error) {
 	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
 	if err != nil {
 		log.Println("ERROR:", err)
-		return  err
+		return err
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode == 200 {
