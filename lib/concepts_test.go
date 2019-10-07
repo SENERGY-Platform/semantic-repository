@@ -55,7 +55,7 @@ func TestProduceValidConcept1withCharId(t *testing.T) {
 
 func TestReadConcept1WithoutSubClass(t *testing.T) {
 	err, con, _ := StartUpScript(t)
-	concept, err, _ := con.GetConcept("urn:ses:infai:concept:1a1a1a")
+	concept, err, _ := con.GetConceptWithoutCharacteristics("urn:ses:infai:concept:1a1a1a")
 
 	if err == nil {
 		if concept.Id != "urn:ses:infai:concept:1a1a1a" {
