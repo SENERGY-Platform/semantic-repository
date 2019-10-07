@@ -26,6 +26,7 @@ type Database interface {
 	DeleteCharacteristic(s string) (err error)
 
 	GetDeviceType(s string) (rdfxml string, err error)
+	GetDeviceClassesFunctions(s string) (rdfxml string, err error)
 	GetWithoutSubProperties(s string) (rdfxml string, err error)
 	GetListWithoutSubProperties(p string, o string) (rdfxml string, err error)
 	GetWithAllSubProperties(s string) (rdfxml string, err error)

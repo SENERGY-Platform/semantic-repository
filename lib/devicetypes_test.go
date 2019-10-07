@@ -22,14 +22,8 @@ import (
 	"github.com/SENERGY-Platform/semantic-repository/lib/database"
 	"github.com/SENERGY-Platform/semantic-repository/lib/model"
 	"github.com/SENERGY-Platform/semantic-repository/lib/source/producer"
-	"github.com/satori/go.uuid"
 	"testing"
 )
-
-var devicetype1id = "urn:infai:ses:device-type:2cc43032-207e-494e-8de4-94784cd4961d"
-var devicetype1name = uuid.NewV4().String()
-var devicetype2id = uuid.NewV4().String()
-var devicetype2name = uuid.NewV4().String()
 
 func TestReadControllingFunction(t *testing.T) {
 	err, con, db := StartUpScript(t)
@@ -180,54 +174,6 @@ func TestReadAspect(t *testing.T) {
 		t.Fatal("error Name")
 	}
 
-
-}
-
-func TestReadDeviceClass(t *testing.T) {
-	err, con, db := StartUpScript(t)
-	/// DeviceClass Lightning
-	err = db.InsertData(
-		`<urn:infai:ses:device-class:123> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <` +  model.SES_ONTOLOGY_DEVICE_CLASS + `> .
-<urn:infai:ses:device-class:123> <http://www.w3.org/2000/01/rdf-schema#label> "Ventilator" .`)
-	if err != nil {
-		t.Fatal(err)
-	}
-	err = db.InsertData(
-		`<urn:infai:ses:device-class:234> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <` +  model.SES_ONTOLOGY_DEVICE_CLASS + `> .
-<urn:infai:ses:device-class:234> <http://www.w3.org/2000/01/rdf-schema#label> "ElectricityMeter" .`)
-	if err != nil {
-		t.Fatal(err)
-	}
-	err = db.InsertData(
-		`<urn:infai:ses:device-class:111> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <` +  model.SES_ONTOLOGY_DEVICE_CLASS + `> .
-<urn:infai:ses:device-class:111> <http://www.w3.org/2000/01/rdf-schema#label> "CarbonDioxideMeter" .`)
-	if err != nil {
-		t.Fatal(err)
-	}
-	res, err, code := con.GetDeviceClasses()
-	if err != nil {
-		t.Fatal(res, err, code)
-	} else {
-		t.Log(res)
-	}
-	if res[0].Id != "urn:infai:ses:device-class:111" {
-		t.Fatal("error id")
-	}
-	if res[0].Name != "CarbonDioxideMeter" {
-		t.Fatal("error Name")
-	}
-	if res[1].Id != "urn:infai:ses:device-class:234" {
-		t.Fatal("error id")
-	}
-	if res[1].Name != "ElectricityMeter" {
-		t.Fatal("error Name")
-	}
-	if res[2].Id != "urn:infai:ses:device-class:123" {
-		t.Fatal("error id")
-	}
-	if res[2].Name != "Ventilator" {
-		t.Fatal("error Name")
-	}
 
 }
 

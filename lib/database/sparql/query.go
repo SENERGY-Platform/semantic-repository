@@ -144,6 +144,32 @@ func (*Database) getDeviceTypeQuery(subject string) (string) {
 			"}")
 }
 
+func (*Database) getDeviceClassesFunctions(subject string) (string) {
+
+	//PREFIX ses: <https://senergy.infai.org/ontology/>
+	//PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+	//construct {
+	//	?function ?p ?o
+	//} where {
+	//	?s ses:hasDeviceClass <urn:infai:ses:device-class:d8473e94-624e-4581-aafd-ff2962a4f81b>;
+	//	ses:hasService ?service .
+	//	?service ses:exposesFunction ?function.
+	//	?function ?p ?o
+	//}
+
+	return url.QueryEscape(
+		model.PREFIX_SES +
+			model.PREFIX_RDF +
+			"construct {" +
+			"?function ?p ?o" +
+			"} where {" +
+			"?s ses:hasDeviceClass <" + subject + ">;" +
+			"ses:hasService ?service ." +
+			"?service ses:exposesFunction ?function." +
+			"?function ?p ?o" +
+			"}")
+}
+
 func (*Database) getDeleteConceptWithNestedQuery(subject string) (string) {
 
 	return url.QueryEscape("prefix x: <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> " +
