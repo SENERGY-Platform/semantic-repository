@@ -337,7 +337,7 @@ func TestReadDeviceTypesWithDeviceClassIdAndFunctionId(t *testing.T) {
 
 func TestReadDeviceTypeWithId1(t *testing.T) {
 	err, con, _ := StartUpScript(t)
-	deviceType, err, code := con.GetDeviceType("urn:infai:ses:devicetype:1e1e", "", "", "")
+	deviceType, err, code := con.GetDeviceType("urn:infai:ses:devicetype:1e1e")
 
 	if deviceType.Id != "urn:infai:ses:devicetype:1e1e" {
 		t.Fatal("error id")
@@ -456,7 +456,7 @@ func TestReadDeviceTypeWithId1(t *testing.T) {
 
 func TestReadDeviceTypeWithId2(t *testing.T) {
 	err, con, _ := StartUpScript(t)
-	deviceType, err, code := con.GetDeviceType("urn:infai:ses:devicetype:1e1e_2", "", "", "")
+	deviceType, err, code := con.GetDeviceType("urn:infai:ses:devicetype:1e1e_2")
 
 	if deviceType.Id != "urn:infai:ses:devicetype:1e1e_2" {
 		t.Fatal("error id")

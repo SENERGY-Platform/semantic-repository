@@ -79,90 +79,6 @@ func (*Database) getDeleteDeviceTypeQuery(subject string) string {
 			"}")
 }
 
-//func (*Database) getDeviceTypeQuery(subject string) string {
-//
-//	//PREFIX ses: <https://senergy.infai.org/ontology/>
-//	//PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-//	//construct {
-//	//	<urn:infai:ses:device-type:8cb7bb2c-e661-42a3-b7d1-5e9fc6d60152>
-//	//	rdf:type ?type;
-//	//	rdfs:label ?label;
-//	//	ses:hasDeviceClass ?deviceclass;
-//	//	ses:hasService ?service .
-//	//	?service rdf:type ?s_type;
-//	//	rdfs:label ?s_label;
-//	//	ses:refersTo ?aspect;
-//	//	ses:exposesFunction ?function.
-//	//
-//	//	?function rdfs:label ?f_label;
-//	//	rdf:type ?f_type;
-//	//	ses:hasConcept ?concept_id.
-//	//	?aspect rdfs:label ?a_label;
-//	//	rdf:type ?a_type.
-//	//	?deviceclass rdfs:label ?dc_label;
-//	//	rdf:type ?dc_type.
-//	//} where {
-//	//	<urn:infai:ses:device-type:8cb7bb2c-e661-42a3-b7d1-5e9fc6d60152>
-//	//	rdf:type ?type;
-//	//	rdfs:label ?label;
-//	//	ses:hasDeviceClass ?deviceclass;
-//	//	ses:hasService ?service .
-//	//	?service rdf:type ?s_type;
-//	//	rdfs:label ?s_label;
-//	//	ses:refersTo ?aspect;
-//	//	ses:exposesFunction ?function.
-//	//
-//	//	?function rdfs:label ?f_label;
-//	//	rdf:type ?f_type;
-//	//	ses:hasConcept ?concept_id.
-//	//	?aspect rdfs:label ?a_label;
-//	//	rdf:type ?a_type.
-//	//	?deviceclass rdfs:label ?dc_label;
-//	//	rdf:type ?dc_type.
-//	//}
-//
-//	return url.QueryEscape(
-//		model.PREFIX_SES +
-//			model.PREFIX_RDF +
-//			"construct {" +
-//			"<" + subject + ">" +
-//			"rdf:type ?type;" +
-//			"rdfs:label ?label;" +
-//			"ses:hasDeviceClass ?deviceclass;" +
-//			"ses:hasService ?service ." +
-//			"?service rdf:type ?s_type;" +
-//			"rdfs:label ?s_label;" +
-//			"ses:refersTo ?aspect;" +
-//			"ses:exposesFunction ?function." +
-//
-//			"?function rdfs:label ?f_label;" +
-//			"rdf:type ?f_type;" +
-//			"ses:hasConcept ?concept_id." +
-//			"?aspect rdfs:label ?a_label;" +
-//			"rdf:type ?a_type." +
-//			"?deviceclass rdfs:label ?dc_label;" +
-//			"rdf:type ?dc_type." +
-//			"} where {" +
-//			"<" + subject + ">" +
-//			"rdf:type ?type;" +
-//			"rdfs:label ?label;" +
-//			"ses:hasDeviceClass ?deviceclass;" +
-//			"ses:hasService ?service ." +
-//			"?service rdf:type ?s_type;" +
-//			"rdfs:label ?s_label;" +
-//			"ses:refersTo ?aspect;" +
-//			"ses:exposesFunction ?function." +
-//
-//			"?function rdfs:label ?f_label;" +
-//			"rdf:type ?f_type;" +
-//			"ses:hasConcept ?concept_id." +
-//			"?aspect rdfs:label ?a_label;" +
-//			"rdf:type ?a_type." +
-//			"?deviceclass rdfs:label ?dc_label;" +
-//			"rdf:type ?dc_type." +
-//			"}")
-//}
-
 func (*Database) getDeviceTypeQuery(deviceTypeId string, deviceClassId string, functionId string, aspectId string) string {
 
 	if deviceTypeId == "" {
@@ -338,6 +254,34 @@ func (*Database) getDeviceClassesFunctions(subject string) string {
 			"ses:hasService ?service ." +
 			"?service ses:exposesFunction ?function." +
 			"?function ?p ?o" +
+			"}")
+}
+
+func (*Database) getDeviceClassesControllingFunctions(subject string) string {
+
+	//PREFIX ses: <https://senergy.infai.org/ontology/>
+	//PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+	//construct {
+	//	?function ?p ?o .
+	//} where {
+	//	?s ses:hasDeviceClass <urn:infai:ses:deviceclass:2e2e-DeviceClassTest>;
+	//	ses:hasService ?service .
+	//	?service ses:exposesFunction ?function.
+	//	?function rdf:type <https://senergy.infai.org/ontology/ControllingFunction>;
+	//	?p ?o .
+	//}
+
+	return url.QueryEscape(
+		model.PREFIX_SES +
+			model.PREFIX_RDF +
+			"construct {" +
+			"?function ?p ?o" +
+			"} where {" +
+			"?s ses:hasDeviceClass <" + subject + ">;" +
+			"ses:hasService ?service ." +
+			"?service ses:exposesFunction ?function." +
+			"?function rdf:type <" + model.SES_ONTOLOGY_CONTROLLING_FUNCTION + "> ;" +
+			"?p ?o" +
 			"}")
 }
 

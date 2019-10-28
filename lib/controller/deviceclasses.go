@@ -68,17 +68,37 @@ func (this *Controller) GetDeviceClassesFunctions(subject string) (result []mode
 	return result, nil, http.StatusOK
 }
 
+func (this *Controller) GetDeviceClassesControllingFunctions(subject string) (result []model.Function, err error, errCode int) {
+	functions, err := this.db.GetDeviceClassesControllingFunctions(subject)
+	if err != nil {
+		log.Println("GetDeviceClassesControllingFunctions ERROR: GetDeviceClassesControllingFunctions", err)
+		return result, err, http.StatusInternalServerError
+	}
+
+	err = this.RdfXmlToModel(functions, &result)
+	if err != nil {
+		log.Println("GetDeviceClassesControllingFunctions ERROR: RdfXmlToModel", err)
+		return result, err, http.StatusInternalServerError
+	}
+
+	sort.Slice(result, func(i, j int) bool {
+		return result[i].Name < result[j].Name
+	})
+
+	return result, nil, http.StatusOK
+}
+
 func (this *Controller) ValidateDeviceClass(deviceClass model.DeviceClass) (error, int) {
 
-		if deviceClass.Id == "" {
-			return errors.New("missing device class id"), http.StatusBadRequest
-		}
-		if deviceClass.Name == "" {
-			return errors.New("missing device class name"), http.StatusBadRequest
-		}
-		if deviceClass.RdfType != model.SES_ONTOLOGY_DEVICE_CLASS {
-			return errors.New("wrong device class type"), http.StatusBadRequest
-		}
+	if deviceClass.Id == "" {
+		return errors.New("missing device class id"), http.StatusBadRequest
+	}
+	if deviceClass.Name == "" {
+		return errors.New("missing device class name"), http.StatusBadRequest
+	}
+	if deviceClass.RdfType != model.SES_ONTOLOGY_DEVICE_CLASS {
+		return errors.New("wrong device class type"), http.StatusBadRequest
+	}
 
 	return nil, http.StatusOK
 }

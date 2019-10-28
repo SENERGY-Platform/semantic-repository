@@ -125,6 +125,22 @@ func (this *Database) GetDeviceClassesFunctions(s string) (rdfxml string, err er
 	return string(byteArray), nil
 }
 
+func (this *Database) GetDeviceClassesControllingFunctions(s string) (rdfxml string, err error) {
+	query := this.getDeviceClassesControllingFunctions(s)
+	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
+	if err != nil {
+		log.Println("ERROR: GetFunctions", err)
+		return "", err
+	}
+	defer resp.Body.Close()
+	byteArray, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Println("ERROR:", err)
+		return "", err
+	}
+	return string(byteArray), nil
+}
+
 func (this *Database) DeleteConcept(s string, deleteNested bool) (err error) {
 	query := ""
 	if deleteNested {
