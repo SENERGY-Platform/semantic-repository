@@ -20,6 +20,9 @@
 package lib
 
 import (
+	"github.com/SENERGY-Platform/semantic-repository/lib/config"
+	"github.com/SENERGY-Platform/semantic-repository/lib/model"
+	"github.com/SENERGY-Platform/semantic-repository/lib/source/producer"
 	"testing"
 )
 
@@ -72,6 +75,91 @@ func TestReadAspect(t *testing.T) {
 	}
 	if res[2].Name != "Lightning" {
 		t.Fatal("error Name")
+	}
+
+}
+
+func TestProduceDeviceTypeforAspectTest(t *testing.T) {
+	conf, err := config.Load("../config.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	producer, _ := producer.New(conf)
+	devicetype := model.DeviceType{}
+	devicetype.Id = "urn:infai:ses:devicetype:1e1e-AspectTest"
+	devicetype.Name = "Philips Hue Color"
+	devicetype.DeviceClass = model.DeviceClass{
+		Id:   "urn:infai:ses:deviceclass:2e2e-AspectTest",
+		Name: "Lamp",
+	}
+	devicetype.Description = "description"
+	devicetype.Image = "image"
+	devicetype.Services = []model.Service{}
+	devicetype.Services = append(devicetype.Services, model.Service{
+		"urn:infai:ses:service:3e3e-AspectTest",
+		"localId",
+		"setBrightness",
+		"",
+		[]model.Aspect{{Id: "urn:infai:ses:aspect:4e4e-AspectTest", Name: "Lighting", RdfType: "asasasdsadas"}},
+		"asdasda",
+		[]model.Content{},
+		[]model.Content{},
+		[]model.Function{{Id: "urn:infai:ses:function:5e5e1-AspectTest", Name: "brightnessAdjustment1", ConceptId: "urn:ses:infai:concept:1a1a1a", RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION},
+			{Id: "urn:infai:ses:function:5e5e2-AspectTest", Name: "brightnessAdjustment2", ConceptId: "urn:ses:infai:concept:1a1a1a", RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION}},
+		"asdasdsadsadasd",
+	})
+
+	devicetype.Services = append(devicetype.Services, model.Service{
+		"urn:infai:ses:service:3f3f-AspectTest",
+		"localId",
+		"getBrightness",
+		"",
+		[]model.Aspect{{Id: "urn:infai:ses:aspect:4e4e-AspectTest", Name: "Lighting", RdfType: "asasasdsadas"}},
+		"asdasda",
+		[]model.Content{},
+		[]model.Content{},
+		[]model.Function{{Id: "urn:infai:ses:function:5e5e3-AspectTest", Name: "brightnessFunction4", ConceptId: "urn:ses:infai:concept:1a1a1a", RdfType: model.SES_ONTOLOGY_MEASURING_FUNCTION},
+			{Id: "urn:infai:ses:function:5e5e4-AspectTest", Name: "brightnessFunction2", ConceptId: "urn:ses:infai:concept:1a1a1a", RdfType: model.SES_ONTOLOGY_MEASURING_FUNCTION}},
+		"asdasdsadsadasd",
+	})
+
+	producer.PublishDeviceType(devicetype, "sdfdsfsf")
+
+}
+
+func TestReadAspectMeasuringFunctions(t *testing.T) {
+	err, con, _ := StartUpScript(t)
+
+	res, err, code := con.GetAspectsMeasuringFunctions("urn:infai:ses:aspect:4e4e-AspectTest")
+	if err != nil {
+		t.Fatal(res, err, code)
+	} else {
+		t.Log(res)
+	}
+	if res[0].Id != "urn:infai:ses:function:5e5e4-AspectTest" {
+		t.Fatal("error id", res[0].Id)
+	}
+	if res[0].Name != "brightnessFunction2" {
+		t.Fatal("error Name")
+	}
+	if res[0].ConceptId != "urn:ses:infai:concept:1a1a1a" {
+		t.Fatal("error ConceptId")
+	}
+	if res[0].RdfType != model.SES_ONTOLOGY_MEASURING_FUNCTION {
+		t.Fatal("wrong RdfType")
+	}
+
+	if res[1].Id != "urn:infai:ses:function:5e5e3-AspectTest" {
+		t.Fatal("error id", res[1].Id)
+	}
+	if res[1].Name != "brightnessFunction4" {
+		t.Fatal("error Name")
+	}
+	if res[1].ConceptId != "urn:ses:infai:concept:1a1a1a" {
+		t.Fatal("error ConceptId")
+	}
+	if res[1].RdfType != model.SES_ONTOLOGY_MEASURING_FUNCTION {
+		t.Fatal("wrong RdfType")
 	}
 
 }

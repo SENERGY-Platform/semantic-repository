@@ -30,6 +30,7 @@ type Controller interface {
 	GetDeviceClassesFunctions(subject string) (result []model.Function, err error, errCode int)
 	GetDeviceClassesControllingFunctions(subject string) (result []model.Function, err error, errCode int)
 	GetAspects() (result []model.Aspect, err error, errCode int)
+	GetAspectsMeasuringFunctions(subject string) (result []model.Function, err error, errCode int)
 
 	GetConceptWithoutCharacteristics(subject string) (result model.Concept, err error, errCode int)
 	GetConceptWithCharacteristics(subject string) (result model.ConceptWithCharacteristics, err error, errCode int)

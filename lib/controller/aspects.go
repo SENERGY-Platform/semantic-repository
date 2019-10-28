@@ -48,6 +48,26 @@ func (this *Controller) GetAspects() (result []model.Aspect, err error, errCode 
 	return result, nil, http.StatusOK
 }
 
+func (this *Controller) GetAspectsMeasuringFunctions(subject string) (result []model.Function, err error, errCode int) {
+	functions, err := this.db.GetAspectsMeasuringFunctions(subject)
+	if err != nil {
+		log.Println("GetAspectMeasuringFunctions ERROR: GetAspectsMeasuringFunctions", err)
+		return result, err, http.StatusInternalServerError
+	}
+
+	err = this.RdfXmlToModel(functions, &result)
+	if err != nil {
+		log.Println("GetAspectMeasuringFunctions ERROR: RdfXmlToModel", err)
+		return result, err, http.StatusInternalServerError
+	}
+
+	sort.Slice(result, func(i, j int) bool {
+		return result[i].Name < result[j].Name
+	})
+
+	return result, nil, http.StatusOK
+}
+
 func (this *Controller) ValidateAspects(aspects []model.Aspect) (error, int) {
 	if (len(aspects)) == 0 {
 		return errors.New("expect at least one aspect"), http.StatusBadRequest
