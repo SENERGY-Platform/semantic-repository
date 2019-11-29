@@ -23,6 +23,22 @@ import (
 	"testing"
 )
 
+func TestProduceValidConcept1withCharIdAndBaseCharId(t *testing.T) {
+	conf, err := config.Load("../config.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	producer, _ := producer.New(conf)
+	concept := model.Concept{}
+	concept.Id = "urn:ses:infai:concept:1a1a1a1-28-11-2019"
+	concept.Name = "color1"
+	concept.RdfType = "xxx"
+	concept.BaseCharacteristicId = "urn:ses:infai:characteristic:544433333"
+	concept.CharacteristicIds = []string{"urn:ses:infai:characteristic:544433333"}
+	producer.PublishConcept(concept, "sdfdsfsf")
+}
+
 func TestProduceValidConcept1withNoCharId(t *testing.T) {
 	conf, err := config.Load("../config.json")
 	if err != nil {
@@ -50,22 +66,7 @@ func TestProduceValidConcept1withCharId(t *testing.T) {
 	concept.Name = "color1"
 	concept.RdfType = "xxx"
 	concept.CharacteristicIds = []string{"urn:ses:infai:characteristic:544433333"}
-	producer.PublishConcept(concept, "sdfdsfsf")
-}
-
-func TestProduceValidConcept1withCharIdAndBaseCharId(t *testing.T) {
-	conf, err := config.Load("../config.json")
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	producer, _ := producer.New(conf)
-	concept := model.Concept{}
-	concept.Id = "urn:ses:infai:concept:1a1a1a1-28-11-2019"
-	concept.Name = "color1"
-	concept.RdfType = "xxx"
 	concept.BaseCharacteristicId = "urn:ses:infai:characteristic:544433333"
-	concept.CharacteristicIds = []string{"urn:ses:infai:characteristic:544433333"}
 	producer.PublishConcept(concept, "sdfdsfsf")
 }
 
@@ -130,6 +131,9 @@ func TestReadConcept1WithSubClass(t *testing.T) {
 		}
 		if concept.RdfType != model.SES_ONTOLOGY_CONCEPT {
 			t.Fatal("wrong rdf_type")
+		}
+		if concept.BaseCharacteristicId != "urn:ses:infai:characteristic:544433333" {
+			t.Fatal("wrong BaseCharacteristicId")
 		}
 		if concept.Characteristics[0].Id != "urn:ses:infai:characteristic:544433333" {
 			t.Fatal("wrong Characteristics")
