@@ -17,7 +17,8 @@
  *
  */
 
- package model
+package model
+
 // Classes
 const SES_ONTOLOGY_CONTROLLING_FUNCTION = "https://senergy.infai.org/ontology/ControllingFunction"
 const SES_ONTOLOGY_MEASURING_FUNCTION = "https://senergy.infai.org/ontology/MeasuringFunction"
@@ -27,9 +28,11 @@ const SES_ONTOLOGY_DEVICE_TYPE = "https://senergy.infai.org/ontology/DeviceType"
 const SES_ONTOLOGY_SERVICE = "https://senergy.infai.org/ontology/Service"
 const SES_ONTOLOGY_CONCEPT = "https://senergy.infai.org/ontology/Concept"
 const SES_ONTOLOGY_CHARACTERISTIC = "https://senergy.infai.org/ontology/Characteristic"
+
 // Properties
 const SES_ONTOLOGY_HAS_CONCEPT = "https://senergy.infai.org/ontology/hasConcept"
 const SES_ONTOLOGY_HAS_CHARACTERISTIC = "https://senergy.infai.org/ontology/hasCharacteristic"
+const SES_ONTOLOGY_HAS_BASE_CHARACTERISTIC = "https://senergy.infai.org/ontology/hasBaseCharacteristic"
 const SES_ONTOLOGY_HAS_SUB_CHARACTERISTIC = "https://senergy.infai.org/ontology/hasSubCharacteristic"
 const SES_ONTOLOGY_HAS_VALUE_TYPE = "https://senergy.infai.org/ontology/hasValueType"
 const SES_ONTOLOGY_HAS_VALUE = "https://senergy.infai.org/ontology/hasValue"
@@ -46,5 +49,3 @@ const RDF_TYPE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
 // PREFIXES
 const PREFIX_SES = "PREFIX ses: <https://senergy.infai.org/ontology/> "
 const PREFIX_RDF = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"
-
-

@@ -23,23 +23,24 @@ type DeviceClass struct {
 }
 
 type Function struct {
-	Id         string   `json:"id"`
-	Name       string   `json:"name"`
-	ConceptId  string   `json:"concept_id"`
-	RdfType    string   `json:"rdf_type"`
+	Id        string `json:"id"`
+	Name      string `json:"name"`
+	ConceptId string `json:"concept_id"`
+	RdfType   string `json:"rdf_type"`
 }
 
 type Aspect struct {
-	Id         string `json:"id"`
-	Name       string `json:"name"`
-	RdfType    string `json:"rdf_type"`
+	Id      string `json:"id"`
+	Name    string `json:"name"`
+	RdfType string `json:"rdf_type"`
 }
 
 type Concept struct {
-	Id                string           `json:"id"`
-	Name              string           `json:"name"`
-	CharacteristicIds []string         `json:"characteristic_ids"`
-	RdfType           string           `json:"rdf_type"`
+	Id                   string   `json:"id"`
+	Name                 string   `json:"name"`
+	CharacteristicIds    []string `json:"characteristic_ids"`
+	BaseCharacteristicId string   `json:"base_characteristic_id"`
+	RdfType              string   `json:"rdf_type"`
 }
 
 type Characteristic struct {
@@ -54,8 +55,8 @@ type Characteristic struct {
 }
 
 type ConceptWithCharacteristics struct {
-	Id                string           `json:"id"`
-	Name              string           `json:"name"`
-	Characteristics   []Characteristic `json:"characteristics"`
-	RdfType           string           `json:"rdf_type"`
+	Id              string           `json:"id"`
+	Name            string           `json:"name"`
+	Characteristics []Characteristic `json:"characteristics"`
+	RdfType         string           `json:"rdf_type"`
 }

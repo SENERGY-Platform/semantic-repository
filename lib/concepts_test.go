@@ -53,6 +53,22 @@ func TestProduceValidConcept1withCharId(t *testing.T) {
 	producer.PublishConcept(concept, "sdfdsfsf")
 }
 
+func TestProduceValidConcept1withCharIdAndBaseCharId(t *testing.T) {
+	conf, err := config.Load("../config.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	producer, _ := producer.New(conf)
+	concept := model.Concept{}
+	concept.Id = "urn:ses:infai:concept:1a1a1a1-28-11-2019"
+	concept.Name = "color1"
+	concept.RdfType = "xxx"
+	concept.BaseCharacteristicId = "urn:ses:infai:characteristic:544433333"
+	concept.CharacteristicIds = []string{"urn:ses:infai:characteristic:544433333"}
+	producer.PublishConcept(concept, "sdfdsfsf")
+}
+
 func TestProduceValidCharacteristicDependencie(t *testing.T) {
 	conf, err := config.Load("../config.json")
 	if err != nil {

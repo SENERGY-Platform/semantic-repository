@@ -230,9 +230,10 @@ func getDeviceTypeContext() map[string]interface{} {
 
 func getConceptContext() map[string]interface{} {
 	contextDoc := map[string]interface{}{
-		"id":       "@id",
-		"rdf_type": "@type",
-		"name":     model.RDFS_LABEL,
+		"id":                     "@id",
+		"rdf_type":               "@type",
+		"name":                   model.RDFS_LABEL,
+		"base_characteristic_id": model.SES_ONTOLOGY_HAS_BASE_CHARACTERISTIC,
 		"characteristic_ids": map[string]interface{}{
 			"@id":        model.SES_ONTOLOGY_HAS_CHARACTERISTIC,
 			"@type":      "@id",
@@ -244,9 +245,10 @@ func getConceptContext() map[string]interface{} {
 
 func getConceptCharacteristicContext() map[string]interface{} {
 	contextDoc := map[string]interface{}{
-		"id":       "@id",
-		"rdf_type": "@type",
-		"name":     model.RDFS_LABEL,
+		"id":                     "@id",
+		"rdf_type":               "@type",
+		"name":                   model.RDFS_LABEL,
+		"base_characteristic_id": model.SES_ONTOLOGY_HAS_BASE_CHARACTERISTIC,
 		"characteristics": map[string]interface{}{
 			"@id":        model.SES_ONTOLOGY_HAS_CHARACTERISTIC,
 			"@container": "@set",
