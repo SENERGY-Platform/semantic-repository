@@ -55,8 +55,9 @@ type Characteristic struct {
 }
 
 type ConceptWithCharacteristics struct {
-	Id              string           `json:"id"`
-	Name            string           `json:"name"`
-	Characteristics []Characteristic `json:"characteristics"`
-	RdfType         string           `json:"rdf_type"`
+	Id                   string           `json:"id"`
+	Name                 string           `json:"name"`
+	BaseCharacteristicId string           `json:"base_characteristic_id"`
+	Characteristics      []Characteristic `json:"characteristics"`
+	RdfType              string           `json:"rdf_type"`
 }
