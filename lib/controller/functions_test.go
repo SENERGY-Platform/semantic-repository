@@ -17,7 +17,7 @@
  *
  */
 
- package controller
+package controller
 
 import (
 	"github.com/SENERGY-Platform/semantic-repository/lib/model"
@@ -25,7 +25,7 @@ import (
 	"testing"
 )
 
-func TestValidMeasuringFunction (t *testing.T) {
+func TestValidMeasuringFunction(t *testing.T) {
 	functions := []model.Function{}
 	functions = append(functions, model.Function{Id: "urn:infai:ses:function:122", Name: "Air", RdfType: model.SES_ONTOLOGY_MEASURING_FUNCTION, ConceptId: "urn:infai:ses:concept:1"})
 
@@ -38,7 +38,7 @@ func TestValidMeasuringFunction (t *testing.T) {
 	}
 }
 
-func TestValidControllingFunction (t *testing.T) {
+func TestValidControllingFunction(t *testing.T) {
 	functions := []model.Function{}
 	functions = append(functions, model.Function{Id: "urn:infai:ses:function:122", Name: "Air", RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION, ConceptId: "urn:infai:ses:concept:1"})
 
@@ -51,7 +51,20 @@ func TestValidControllingFunction (t *testing.T) {
 	}
 }
 
-func TestFunctionNoData (t *testing.T) {
+func TestValidControllingFunctionWithoutConceptId(t *testing.T) {
+	functions := []model.Function{}
+	functions = append(functions, model.Function{Id: "urn:infai:ses:function:122", Name: "Air", RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION})
+
+	controller := Controller{}
+	err, code := controller.ValidateFunctions(functions)
+	if err == nil && code == http.StatusOK {
+		t.Log(functions)
+	} else {
+		t.Fatal(err, code)
+	}
+}
+
+func TestFunctionNoData(t *testing.T) {
 	functions := []model.Function{}
 
 	controller := Controller{}
@@ -63,7 +76,7 @@ func TestFunctionNoData (t *testing.T) {
 	}
 }
 
-func TestFunctionMissingId (t *testing.T) {
+func TestFunctionMissingId(t *testing.T) {
 	functions := []model.Function{}
 	functions = append(functions, model.Function{Id: ""})
 
@@ -76,7 +89,7 @@ func TestFunctionMissingId (t *testing.T) {
 	}
 }
 
-func TestFunctionMissingName (t *testing.T) {
+func TestFunctionMissingName(t *testing.T) {
 	functions := []model.Function{}
 	functions = append(functions, model.Function{Id: "urn:infai:ses:function:122", Name: ""})
 
@@ -89,22 +102,9 @@ func TestFunctionMissingName (t *testing.T) {
 	}
 }
 
-func TestFunctionWrongType (t *testing.T) {
+func TestFunctionWrongType(t *testing.T) {
 	functions := []model.Function{}
 	functions = append(functions, model.Function{Id: "urn:infai:ses:function:122", Name: "Air", RdfType: "wrongType"})
-
-	controller := Controller{}
-	err, code := controller.ValidateFunctions(functions)
-	if err != nil && code == http.StatusBadRequest {
-		t.Log(err)
-	} else {
-		t.Fatal(err, code)
-	}
-}
-
-func TestFunctionMissingConceptId (t *testing.T) {
-	functions := []model.Function{}
-	functions = append(functions, model.Function{Id: "urn:infai:ses:function:122", Name: "Air", RdfType: model.SES_ONTOLOGY_MEASURING_FUNCTION, ConceptId: ""})
 
 	controller := Controller{}
 	err, code := controller.ValidateFunctions(functions)

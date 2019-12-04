@@ -65,14 +65,11 @@ func (this *Controller) ValidateFunctions(functions []model.Function) (error, in
 			return errors.New("wrong function type"), http.StatusBadRequest
 		}
 
-		if function.ConceptId == "" {
-			return errors.New("missing function concept id"), http.StatusBadRequest
-		}
-
 	}
 
 	return nil, http.StatusOK
 }
+
 /////////////////////////
 //		source
 /////////////////////////
