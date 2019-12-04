@@ -112,6 +112,8 @@ func TestReadDeviceTypesWithDeviceClassIdAndFunctionId(t *testing.T) {
 	err, con, _ := StartUpScript(t)
 	deviceType, err, code := con.GetDeviceTypesFiltered("urn:infai:ses:deviceclass:2e2e", "urn:infai:ses:function:5e5e", "")
 
+	t.Log(deviceType)
+
 	if deviceType[0].Id != "urn:infai:ses:devicetype:1e1e" {
 		t.Fatal("error id")
 	}
@@ -627,6 +629,120 @@ func TestCreateAndDeleteDeviceTypePart2(t *testing.T) {
 	err = producer.PublishDeviceTypeDelete("urn:infai:ses:devicetype:1", "sdfdsfsf")
 	if err != nil {
 		t.Fatal(err)
+	}
+}
+
+func TestProduceValidDeviceTypeWithoutConceptId(t *testing.T) {
+	conf, err := config.Load("../config.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	producer, _ := producer.New(conf)
+	devicetype := model.DeviceType{}
+	devicetype.Id = "urn:infai:ses:devicetype:1_4-12-2019"
+	devicetype.Name = "Philips Hue Color"
+	devicetype.DeviceClass = model.DeviceClass{
+		Id:   "urn:infai:ses:deviceclass:2_4-12-2019",
+		Name: "Lamp",
+	}
+	devicetype.Description = "description"
+	devicetype.Image = "image"
+	devicetype.Services = []model.Service{}
+	devicetype.Services = append(devicetype.Services, model.Service{
+		"urn:infai:ses:service:3_4-12-2019",
+		"localId",
+		"setBrightness2",
+		"",
+		[]model.Aspect{{Id: "urn:infai:ses:aspect:4_4-12-2019", Name: "Lighting", RdfType: "asasasdsadas"}},
+		"asdasda",
+		[]model.Content{},
+		[]model.Content{},
+		[]model.Function{{Id: "urn:infai:ses:function:5_4-12-2019", Name: "brightnessAdjustment", RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION}},
+		"asdasdsadsadasd",
+	})
+
+	producer.PublishDeviceType(devicetype, "sdfdsfsf")
+}
+
+func TestReadDeviceTypeWithoutConceptId(t *testing.T) {
+	err, con, _ := StartUpScript(t)
+	deviceType, err, code := con.GetDeviceType("urn:infai:ses:devicetype:1_4-12-2019")
+
+	t.Log(deviceType)
+
+	if deviceType.Id != "urn:infai:ses:devicetype:1_4-12-2019" {
+		t.Fatal("error id")
+	}
+
+	if deviceType.RdfType != model.SES_ONTOLOGY_DEVICE_TYPE {
+		t.Fatal("error model")
+	}
+
+	if deviceType.Name != "Philips Hue Color" {
+		t.Fatal("error name")
+	}
+
+	if deviceType.Description != "" {
+		t.Fatal("error description")
+	}
+
+	if deviceType.Image != "" {
+		t.Fatal("error image")
+	}
+	// DeviceClass
+	if deviceType.DeviceClass.Id != "urn:infai:ses:deviceclass:2_4-12-2019" {
+		t.Fatal("error deviceclass id")
+	}
+	if deviceType.DeviceClass.Name != "Lamp" {
+		t.Fatal("error deviceclass name")
+	}
+	if deviceType.DeviceClass.RdfType != model.SES_ONTOLOGY_DEVICE_CLASS {
+		t.Fatal("error deviceclass rdf type")
+	}
+	// Service
+	if deviceType.Services[0].Id != "urn:infai:ses:service:3_4-12-2019" {
+		t.Fatal("error service -> 0 -> id")
+	}
+	if deviceType.Services[0].RdfType != model.SES_ONTOLOGY_SERVICE {
+		t.Fatal("error service -> 0 -> RdfType")
+	}
+	if deviceType.Services[0].Name != "setBrightness2" {
+		t.Log(deviceType.Services[0].Name)
+		t.Fatal("error service -> 0 -> name")
+	}
+	if deviceType.Services[0].Description != "" {
+		t.Fatal("error service -> 0 -> description")
+	}
+	if deviceType.Services[0].LocalId != "" { // not stored as TRIPLE
+		t.Fatal("error service -> 0 -> LocalId")
+	}
+	if deviceType.Services[0].Aspects[0].Id != "urn:infai:ses:aspect:4_4-12-2019" {
+		t.Fatal("error aspect -> 0/0 -> id")
+	}
+	if deviceType.Services[0].Aspects[0].Name != "Lighting" {
+		t.Log(deviceType.Services[0].Aspects[0].Name)
+		t.Fatal("error aspect -> 0/0 -> Name")
+	}
+	if deviceType.Services[0].Aspects[0].RdfType != model.SES_ONTOLOGY_ASPECT {
+		t.Fatal("error aspect -> 0/0 -> RdfType")
+	}
+	if deviceType.Services[0].Functions[0].Id != "urn:infai:ses:function:5_4-12-2019" {
+		t.Fatal("error function -> 0/0 -> id")
+	}
+	if deviceType.Services[0].Functions[0].Name != "brightnessAdjustment" {
+		t.Fatal("error function -> 0/0 -> Name")
+	}
+	if deviceType.Services[0].Functions[0].RdfType != model.SES_ONTOLOGY_CONTROLLING_FUNCTION {
+		t.Fatal("error function -> 0/0 -> RdfType")
+	}
+	if deviceType.Services[0].Functions[0].ConceptId != "" {
+		t.Fatal("error function -> 0/0/0 -> ConceptIds", deviceType.Services[0].Functions[0].ConceptId)
+	}
+
+	if err != nil {
+		t.Fatal(deviceType, err, code)
+	} else {
+		t.Log(deviceType)
 	}
 }
 

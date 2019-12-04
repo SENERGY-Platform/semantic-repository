@@ -119,10 +119,9 @@ func (*Database) getDeviceTypeQuery(deviceTypeId string, deviceClassId string, f
 	//	rdfs:label ?s_label;
 	//	ses:refersTo ?aspect;
 	//	ses:exposesFunction ?function.
-	//
 	//	?function rdfs:label ?f_label;
-	//	rdf:type ?f_type;
-	//	ses:hasConcept ?concept_id.
+	//	rdf:type ?f_type.
+	//	?function ses:hasConcept ?concept_id.
 	//	?aspect rdfs:label ?a_label;
 	//	rdf:type ?a_type.
 	//	?deviceclass rdfs:label ?dc_label;
@@ -137,10 +136,9 @@ func (*Database) getDeviceTypeQuery(deviceTypeId string, deviceClassId string, f
 	//	rdfs:label ?s_label;
 	//	ses:refersTo ?aspect;
 	//	ses:exposesFunction ?function.
-	//
 	//	?function rdfs:label ?f_label;
-	//	rdf:type ?f_type;
-	//	ses:hasConcept ?concept_id.
+	//	rdf:type ?f_type.
+	//	OPTIONAL {?function ses:hasConcept ?concept_id.}
 	//	?aspect rdfs:label ?a_label;
 	//	rdf:type ?a_type.
 	//	?deviceclass rdfs:label ?dc_label;
@@ -163,8 +161,8 @@ func (*Database) getDeviceTypeQuery(deviceTypeId string, deviceClassId string, f
 	//	ses:exposesFunction <urn:infai:ses:function:04-11-2019_1>.
 	//
 	//	<urn:infai:ses:function:04-11-2019_1> rdfs:label ?f_label;
-	//	rdf:type ?f_type;
-	//	ses:hasConcept ?concept_id.
+	//	rdf:type ?f_type.
+	//	?function ses:hasConcept ?concept_id.
 	//	?aspect rdfs:label ?a_label;
 	//	rdf:type ?a_type.
 	//	<urn:infai:ses:deviceclass:04-11-2019> rdfs:label ?dc_label;
@@ -181,8 +179,8 @@ func (*Database) getDeviceTypeQuery(deviceTypeId string, deviceClassId string, f
 	//	ses:exposesFunction <urn:infai:ses:function:04-11-2019_1>.
 	//
 	//	<urn:infai:ses:function:04-11-2019_1> rdfs:label ?f_label;
-	//	rdf:type ?f_type;
-	//	ses:hasConcept ?concept_id.
+	//	rdf:type ?f_type.
+	//	OPTIONAL {?function ses:hasConcept ?concept_id.}
 	//	?aspect rdfs:label ?a_label;
 	//	rdf:type ?a_type.
 	//	<urn:infai:ses:deviceclass:04-11-2019> rdfs:label ?dc_label;
@@ -204,8 +202,8 @@ func (*Database) getDeviceTypeQuery(deviceTypeId string, deviceClassId string, f
 			"ses:exposesFunction " + functionId + "." +
 
 			functionId + " rdfs:label ?f_label;" +
-			"rdf:type ?f_type;" +
-			"ses:hasConcept ?concept_id." +
+			"rdf:type ?f_type." +
+			functionId + "ses:hasConcept ?concept_id." +
 			"?aspect rdfs:label ?a_label;" +
 			"rdf:type ?a_type." +
 			deviceClassId + " rdfs:label ?dc_label;" +
@@ -222,8 +220,10 @@ func (*Database) getDeviceTypeQuery(deviceTypeId string, deviceClassId string, f
 			"ses:exposesFunction " + functionId + "." +
 
 			functionId + " rdfs:label ?f_label;" +
-			"rdf:type ?f_type;" +
+			"rdf:type ?f_type." +
+			"OPTIONAL {" + functionId +
 			"ses:hasConcept ?concept_id." +
+			"}" +
 			"?aspect rdfs:label ?a_label;" +
 			"rdf:type ?a_type." +
 			deviceClassId + " rdfs:label ?dc_label;" +
