@@ -20,7 +20,7 @@
 package model
 
 type DeviceTypesFilter struct {
-	FunctionId    string `json:"function_id"`
-	DeviceClassId string `json:"device_class_id"`
-	AspectId      string `json:"aspect_id"`
+	FunctionIds   []string `json:"function_ids"`
+	DeviceClassId string   `json:"device_class_id"`
+	AspectIds     []string `json:"aspect_ids"`
 }

@@ -17,6 +17,8 @@
 package lib
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/SENERGY-Platform/semantic-repository/lib/config"
 	"github.com/SENERGY-Platform/semantic-repository/lib/controller"
 	"github.com/SENERGY-Platform/semantic-repository/lib/database"
@@ -32,8 +34,8 @@ func TestProduceValidDeviceType(t *testing.T) {
 	}
 	producer, _ := producer.New(conf)
 	devicetype := model.DeviceType{}
-	devicetype.Id = "urn:infai:ses:devicetype:1e1e"
-	devicetype.Name = "Philips Hue Color"
+	devicetype.Id = "urn:infai:ses:devicetype:device1"
+	devicetype.Name = "Device1"
 	devicetype.DeviceClass = model.DeviceClass{
 		Id:   "urn:infai:ses:deviceclass:2e2e",
 		Name: "Lamp",
@@ -42,36 +44,36 @@ func TestProduceValidDeviceType(t *testing.T) {
 	devicetype.Image = "image"
 	devicetype.Services = []model.Service{}
 	devicetype.Services = append(devicetype.Services, model.Service{
-		"urn:infai:ses:service:3e3e",
-		"localId",
-		"setBrightness2",
+		"urn:infai:ses:service:device-1-1",
+		"Device1.localId1",
+		"Device1.service1",
 		"",
 		[]model.Aspect{{Id: "urn:infai:ses:aspect:4e4e", Name: "Lighting", RdfType: "asasasdsadas"}},
 		"asdasda",
 		[]model.Content{},
 		[]model.Content{},
-		[]model.Function{{Id: "urn:infai:ses:function:5e5e", Name: "brightnessAdjustment", ConceptId: "urn:ses:infai:concept:1a1a1a", RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION}},
+		[]model.Function{{Id: "urn:infai:ses:function:5e5e-1", Name: "brightnessAdjustment1", ConceptId: "urn:ses:infai:concept:1a1a1a", RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION}},
 		"asdasdsadsadasd",
 	})
 
 	devicetype.Services = append(devicetype.Services, model.Service{
-		"urn:infai:ses:service:3f3f",
-		"localId",
-		"setBrightness1",
+		"urn:infai:ses:service:device-1-2",
+		"Device1.localId2",
+		"Device1.service2",
 		"",
 		[]model.Aspect{{Id: "urn:infai:ses:aspect:4e4e", Name: "Lighting", RdfType: "asasasdsadas"}},
 		"asdasda",
 		[]model.Content{},
 		[]model.Content{},
-		[]model.Function{{Id: "urn:infai:ses:function:5e5e", Name: "brightnessAdjustment", ConceptId: "urn:ses:infai:concept:1a1a1a", RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION}},
+		[]model.Function{{Id: "urn:infai:ses:function:5e5e-2", Name: "brightnessAdjustment2", ConceptId: "urn:ses:infai:concept:1a1a1a", RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION}},
 		"asdasdsadsadasd",
 	})
 
 	producer.PublishDeviceType(devicetype, "sdfdsfsf")
 
 	devicetype1 := model.DeviceType{}
-	devicetype1.Id = "urn:infai:ses:devicetype:1e1e_2"
-	devicetype1.Name = "Lifx"
+	devicetype1.Id = "urn:infai:ses:devicetype:device2"
+	devicetype1.Name = "Device2"
 	devicetype1.DeviceClass = model.DeviceClass{
 		Id:   "urn:infai:ses:deviceclass:2e2e",
 		Name: "Lamp",
@@ -80,41 +82,46 @@ func TestProduceValidDeviceType(t *testing.T) {
 	devicetype1.Image = "image"
 	devicetype1.Services = []model.Service{}
 	devicetype1.Services = append(devicetype1.Services, model.Service{
-		"urn:infai:ses:service:3e3e_2",
-		"localId",
-		"setBrightness2",
+		"urn:infai:ses:service:device-2-1",
+		"Device2.localId1",
+		"Device2.service1",
 		"",
 		[]model.Aspect{{Id: "urn:infai:ses:aspect:4e4e", Name: "Lighting", RdfType: "asasasdsadas"}},
 		"asdasda",
 		[]model.Content{},
 		[]model.Content{},
-		[]model.Function{{Id: "urn:infai:ses:function:5e5e", Name: "brightnessAdjustment", ConceptId: "urn:ses:infai:concept:1a1a1a", RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION}},
+		[]model.Function{{Id: "urn:infai:ses:function:5e5e-1", Name: "brightnessAdjustment1", ConceptId: "urn:ses:infai:concept:1a1a1a", RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION}},
 		"asdasdsadsadasd",
 	})
 
 	devicetype1.Services = append(devicetype1.Services, model.Service{
-		"urn:infai:ses:service:3f3f_2",
-		"localId",
-		"setBrightness1",
+		"urn:infai:ses:service:device-2-2",
+		"Device2.localId2",
+		"Device2.service2",
 		"",
 		[]model.Aspect{{Id: "urn:infai:ses:aspect:4e4e", Name: "Lighting", RdfType: "asasasdsadas"}},
 		"asdasda",
 		[]model.Content{},
 		[]model.Content{},
-		[]model.Function{{Id: "urn:infai:ses:function:5e5e", Name: "brightnessAdjustment", ConceptId: "urn:ses:infai:concept:1a1a1a", RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION}},
+		[]model.Function{{Id: "urn:infai:ses:function:5e5e-2", Name: "brightnessAdjustment2", ConceptId: "urn:ses:infai:concept:1a1a1a", RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION}},
 		"asdasdsadsadasd",
 	})
 
 	producer.PublishDeviceType(devicetype1, "sdfdsfsf")
 }
 
-func TestReadDeviceTypesWithDeviceClassIdAndFunctionId(t *testing.T) {
+func TestReadDeviceTypesWithDeviceClassIdAndOneFunctionId(t *testing.T) {
 	err, con, _ := StartUpScript(t)
-	deviceType, err, code := con.GetDeviceTypesFiltered("urn:infai:ses:deviceclass:2e2e", "urn:infai:ses:function:5e5e", "")
+	deviceType, err, code := con.GetDeviceTypesFiltered("urn:infai:ses:deviceclass:2e2e", []string{"urn:infai:ses:function:5e5e-1"}, []string{})
 
-	t.Log(deviceType)
+	b, err := json.Marshal(deviceType)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	t.Log(string(b))
 
-	if deviceType[0].Id != "urn:infai:ses:devicetype:1e1e" {
+	if deviceType[0].Id != "urn:infai:ses:devicetype:device1" {
 		t.Fatal("error id")
 	}
 
@@ -122,15 +129,15 @@ func TestReadDeviceTypesWithDeviceClassIdAndFunctionId(t *testing.T) {
 		t.Fatal("error model")
 	}
 
-	if deviceType[0].Name != "Philips Hue Color" {
+	if deviceType[0].Name != "Device1" {
 		t.Fatal("error name")
 	}
 
-	if deviceType[0].Description != "" {
+	if deviceType[0].Description != "" { // not stored as TRIPLE
 		t.Fatal("error description")
 	}
 
-	if deviceType[0].Image != "" {
+	if deviceType[0].Image != "" { // not stored as TRIPLE
 		t.Fatal("error image")
 	}
 	// DeviceClass
@@ -144,17 +151,17 @@ func TestReadDeviceTypesWithDeviceClassIdAndFunctionId(t *testing.T) {
 		t.Fatal("error deviceclass rdf type")
 	}
 	// Service
-	if deviceType[0].Services[0].Id != "urn:infai:ses:service:3f3f" {
-		t.Fatal("error service -> 0 -> id")
+	if deviceType[0].Services[0].Id != "urn:infai:ses:service:device-1-1" {
+		t.Fatal("error service -> 0 -> id", deviceType[0].Services[0].Id)
 	}
 	if deviceType[0].Services[0].RdfType != model.SES_ONTOLOGY_SERVICE {
 		t.Fatal("error service -> 0 -> RdfType")
 	}
-	if deviceType[0].Services[0].Name != "setBrightness1" {
+	if deviceType[0].Services[0].Name != "Device1.service1" {
 		t.Log(deviceType[0].Services[0].Name)
 		t.Fatal("error service -> 0 -> name")
 	}
-	if deviceType[0].Services[0].Description != "" {
+	if deviceType[0].Services[0].Description != "" { // not stored as TRIPLE
 		t.Fatal("error service -> 0 -> description")
 	}
 	if deviceType[0].Services[0].LocalId != "" { // not stored as TRIPLE
@@ -170,59 +177,8 @@ func TestReadDeviceTypesWithDeviceClassIdAndFunctionId(t *testing.T) {
 	if deviceType[0].Services[0].Aspects[0].RdfType != model.SES_ONTOLOGY_ASPECT {
 		t.Fatal("error aspect -> 0/0 -> RdfType")
 	}
-	if deviceType[0].Services[0].Functions[0].Id != "urn:infai:ses:function:5e5e" {
-		t.Fatal("error function -> 0/0 -> id")
-	}
-	if deviceType[0].Services[0].Functions[0].Name != "brightnessAdjustment" {
-		t.Fatal("error function -> 0/0 -> Name")
-	}
-	if deviceType[0].Services[0].Functions[0].RdfType != model.SES_ONTOLOGY_CONTROLLING_FUNCTION {
-		t.Fatal("error function -> 0/0 -> RdfType")
-	}
-	if deviceType[0].Services[0].Functions[0].ConceptId != "urn:ses:infai:concept:1a1a1a" {
-		t.Fatal("error function -> 0/0/0 -> ConceptIds")
-	}
-	/// service 2
-	if deviceType[0].Services[1].Id != "urn:infai:ses:service:3e3e" {
-		t.Fatal("error service -> 1 -> id")
-	}
-	if deviceType[0].Services[1].RdfType != model.SES_ONTOLOGY_SERVICE {
-		t.Fatal("error service -> 1 -> RdfType")
-	}
-	if deviceType[0].Services[1].Name != "setBrightness2" {
-		t.Log(deviceType[0].Services[1].Name)
-		t.Fatal("error service -> 1 -> name")
-	}
-	if deviceType[0].Services[1].Description != "" {
-		t.Fatal("error service -> 1 -> description")
-	}
-	if deviceType[0].Services[1].LocalId != "" { // not stored as TRIPLE
-		t.Fatal("error service -> 1 -> LocalId")
-	}
-	if deviceType[0].Services[1].Aspects[0].Id != "urn:infai:ses:aspect:4e4e" {
-		t.Fatal("error aspect -> 1/0 -> id")
-	}
-	if deviceType[0].Services[1].Aspects[0].Name != "Lighting" {
-		t.Log(deviceType[0].Services[1].Aspects[0].Name)
-		t.Fatal("error aspect -> 1/0 -> Name")
-	}
-	if deviceType[0].Services[1].Aspects[0].RdfType != model.SES_ONTOLOGY_ASPECT {
-		t.Fatal("error aspect -> 1/0 -> RdfType")
-	}
-	if deviceType[0].Services[1].Functions[0].Id != "urn:infai:ses:function:5e5e" {
-		t.Fatal("error function -> 1/0 -> id")
-	}
-	if deviceType[0].Services[1].Functions[0].Name != "brightnessAdjustment" {
-		t.Fatal("error function -> 1/0 -> Name")
-	}
-	if deviceType[0].Services[1].Functions[0].RdfType != model.SES_ONTOLOGY_CONTROLLING_FUNCTION {
-		t.Fatal("error function -> 1/0 -> RdfType")
-	}
-	if deviceType[0].Services[1].Functions[0].ConceptId != "urn:ses:infai:concept:1a1a1a" {
-		t.Fatal("error function -> 1/0/0 -> ConceptIds")
-	}
 
-	if deviceType[1].Id != "urn:infai:ses:devicetype:1e1e_2" {
+	if deviceType[1].Id != "urn:infai:ses:devicetype:device2" {
 		t.Fatal("error id")
 	}
 
@@ -230,15 +186,15 @@ func TestReadDeviceTypesWithDeviceClassIdAndFunctionId(t *testing.T) {
 		t.Fatal("error model")
 	}
 
-	if deviceType[1].Name != "Lifx" {
-		t.Fatal("error name")
+	if deviceType[1].Name != "Device2" {
+		t.Fatal("error name", deviceType[1].Name)
 	}
 
-	if deviceType[1].Description != "" {
+	if deviceType[1].Description != "" { // not stored as TRIPLE
 		t.Fatal("error description")
 	}
 
-	if deviceType[1].Image != "" {
+	if deviceType[1].Image != "" { // not stored as TRIPLE
 		t.Fatal("error image")
 	}
 	// DeviceClass
@@ -252,14 +208,13 @@ func TestReadDeviceTypesWithDeviceClassIdAndFunctionId(t *testing.T) {
 		t.Fatal("error deviceclass rdf type")
 	}
 	// Service
-	if deviceType[1].Services[0].Id != "urn:infai:ses:service:3f3f_2" {
+	if deviceType[1].Services[0].Id != "urn:infai:ses:service:device-2-1" {
 		t.Fatal("error service -> 0 -> id")
 	}
 	if deviceType[1].Services[0].RdfType != model.SES_ONTOLOGY_SERVICE {
 		t.Fatal("error service -> 0 -> RdfType")
 	}
-	if deviceType[1].Services[0].Name != "setBrightness1" {
-		t.Log(deviceType[0].Services[0].Name)
+	if deviceType[1].Services[0].Name != "Device2.service1" {
 		t.Fatal("error service -> 0 -> name")
 	}
 	if deviceType[1].Services[0].Description != "" {
@@ -278,10 +233,10 @@ func TestReadDeviceTypesWithDeviceClassIdAndFunctionId(t *testing.T) {
 	if deviceType[1].Services[0].Aspects[0].RdfType != model.SES_ONTOLOGY_ASPECT {
 		t.Fatal("error aspect -> 0/0 -> RdfType")
 	}
-	if deviceType[1].Services[0].Functions[0].Id != "urn:infai:ses:function:5e5e" {
+	if deviceType[1].Services[0].Functions[0].Id != "urn:infai:ses:function:5e5e-1" {
 		t.Fatal("error function -> 0/0 -> id")
 	}
-	if deviceType[1].Services[0].Functions[0].Name != "brightnessAdjustment" {
+	if deviceType[1].Services[0].Functions[0].Name != "brightnessAdjustment1" {
 		t.Fatal("error function -> 0/0 -> Name")
 	}
 	if deviceType[1].Services[0].Functions[0].RdfType != model.SES_ONTOLOGY_CONTROLLING_FUNCTION {
@@ -290,58 +245,458 @@ func TestReadDeviceTypesWithDeviceClassIdAndFunctionId(t *testing.T) {
 	if deviceType[1].Services[0].Functions[0].ConceptId != "urn:ses:infai:concept:1a1a1a" {
 		t.Fatal("error function -> 0/0/0 -> ConceptIds")
 	}
-	/// service 2
-	if deviceType[1].Services[1].Id != "urn:infai:ses:service:3e3e_2" {
-		t.Fatal("error service -> 1 -> id", deviceType[1].Services[1].Id)
+
+	if err != nil {
+		t.Fatal(deviceType, err, code)
+	} else {
+		b, err := json.Marshal(deviceType)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		t.Log(string(b))
+	}
+}
+
+func TestReadDeviceTypesWithDeviceClassIdAndTwoFunctionIds(t *testing.T) {
+	err, con, _ := StartUpScript(t)
+	deviceType, err, code := con.GetDeviceTypesFiltered("urn:infai:ses:deviceclass:2e2e", []string{"urn:infai:ses:function:5e5e-1", "urn:infai:ses:function:5e5e-2"}, []string{})
+
+	b, err := json.Marshal(deviceType)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	t.Log(string(b))
+
+	if deviceType[0].Id != "urn:infai:ses:devicetype:device1" {
+		t.Fatal("error id")
+	}
+
+	if deviceType[0].RdfType != model.SES_ONTOLOGY_DEVICE_TYPE {
+		t.Fatal("error model")
+	}
+
+	if deviceType[0].Name != "Device1" {
+		t.Fatal("error name")
+	}
+
+	if deviceType[0].Description != "" { // not stored as TRIPLE
+		t.Fatal("error description")
+	}
+
+	if deviceType[0].Image != "" { // not stored as TRIPLE
+		t.Fatal("error image")
+	}
+	// DeviceClass
+	if deviceType[0].DeviceClass.Id != "urn:infai:ses:deviceclass:2e2e" {
+		t.Fatal("error deviceclass id")
+	}
+	if deviceType[0].DeviceClass.Name != "Lamp" {
+		t.Fatal("error deviceclass name")
+	}
+	if deviceType[0].DeviceClass.RdfType != model.SES_ONTOLOGY_DEVICE_CLASS {
+		t.Fatal("error deviceclass rdf type")
+	}
+	// Service 0
+	if deviceType[0].Services[0].Id != "urn:infai:ses:service:device-1-2" {
+		t.Fatal("error service -> 0 -> id", deviceType[0].Services[0].Id)
+	}
+	if deviceType[0].Services[0].RdfType != model.SES_ONTOLOGY_SERVICE {
+		t.Fatal("error service -> 0 -> RdfType")
+	}
+	if deviceType[0].Services[0].Name != "Device1.service2" {
+		t.Log(deviceType[0].Services[0].Name)
+		t.Fatal("error service -> 0 -> name")
+	}
+	if deviceType[0].Services[0].Description != "" { // not stored as TRIPLE
+		t.Fatal("error service -> 0 -> description")
+	}
+	if deviceType[0].Services[0].LocalId != "" { // not stored as TRIPLE
+		t.Fatal("error service -> 0 -> LocalId")
+	}
+	if deviceType[0].Services[0].Aspects[0].Id != "urn:infai:ses:aspect:4e4e" {
+		t.Fatal("error aspect -> 0/0 -> id")
+	}
+	if deviceType[0].Services[0].Aspects[0].Name != "Lighting" {
+		t.Log(deviceType[0].Services[0].Aspects[0].Name)
+		t.Fatal("error aspect -> 0/0 -> Name")
+	}
+	if deviceType[0].Services[0].Aspects[0].RdfType != model.SES_ONTOLOGY_ASPECT {
+		t.Fatal("error aspect -> 0/0 -> RdfType")
+	}
+
+	// Service 0
+	if deviceType[0].Services[1].Id != "urn:infai:ses:service:device-1-1" {
+		t.Fatal("error service -> 0 -> id", deviceType[0].Services[0].Id)
+	}
+	if deviceType[0].Services[1].RdfType != model.SES_ONTOLOGY_SERVICE {
+		t.Fatal("error service -> 0 -> RdfType")
+	}
+	if deviceType[0].Services[1].Name != "Device1.service1" {
+		t.Log(deviceType[0].Services[1].Name)
+		t.Fatal("error service -> 0 -> name")
+	}
+	if deviceType[0].Services[1].Description != "" { // not stored as TRIPLE
+		t.Fatal("error service -> 0 -> description")
+	}
+	if deviceType[0].Services[1].LocalId != "" { // not stored as TRIPLE
+		t.Fatal("error service -> 0 -> LocalId")
+	}
+	if deviceType[0].Services[1].Aspects[0].Id != "urn:infai:ses:aspect:4e4e" {
+		t.Fatal("error aspect -> 0/0 -> id")
+	}
+	if deviceType[0].Services[1].Aspects[0].Name != "Lighting" {
+		t.Log(deviceType[0].Services[1].Aspects[0].Name)
+		t.Fatal("error aspect -> 0/0 -> Name")
+	}
+	if deviceType[0].Services[1].Aspects[0].RdfType != model.SES_ONTOLOGY_ASPECT {
+		t.Fatal("error aspect -> 0/0 -> RdfType")
+	}
+
+	// deviceType 1
+
+	if deviceType[1].Id != "urn:infai:ses:devicetype:device2" {
+		t.Fatal("error id")
+	}
+
+	if deviceType[1].RdfType != model.SES_ONTOLOGY_DEVICE_TYPE {
+		t.Fatal("error model")
+	}
+
+	if deviceType[1].Name != "Device2" {
+		t.Fatal("error name", deviceType[1].Name)
+	}
+
+	if deviceType[1].Description != "" { // not stored as TRIPLE
+		t.Fatal("error description")
+	}
+
+	if deviceType[1].Image != "" { // not stored as TRIPLE
+		t.Fatal("error image")
+	}
+	// DeviceClass
+	if deviceType[1].DeviceClass.Id != "urn:infai:ses:deviceclass:2e2e" {
+		t.Fatal("error deviceclass id")
+	}
+	if deviceType[1].DeviceClass.Name != "Lamp" {
+		t.Fatal("error deviceclass name")
+	}
+	if deviceType[1].DeviceClass.RdfType != model.SES_ONTOLOGY_DEVICE_CLASS {
+		t.Fatal("error deviceclass rdf type")
+	}
+	// Service 0
+	if deviceType[1].Services[0].Id != "urn:infai:ses:service:device-2-1" {
+		t.Fatal("error service -> 0 -> id")
+	}
+	if deviceType[1].Services[0].RdfType != model.SES_ONTOLOGY_SERVICE {
+		t.Fatal("error service -> 0 -> RdfType")
+	}
+	if deviceType[1].Services[0].Name != "Device2.service1" {
+		t.Fatal("error service -> 0 -> name")
+	}
+	if deviceType[1].Services[0].Description != "" {
+		t.Fatal("error service -> 0 -> description")
+	}
+	if deviceType[1].Services[0].LocalId != "" { // not stored as TRIPLE
+		t.Fatal("error service -> 0 -> LocalId")
+	}
+	if deviceType[1].Services[0].Aspects[0].Id != "urn:infai:ses:aspect:4e4e" {
+		t.Fatal("error aspect -> 0/0 -> id")
+	}
+	if deviceType[1].Services[0].Aspects[0].Name != "Lighting" {
+		t.Log(deviceType[0].Services[0].Aspects[0].Name)
+		t.Fatal("error aspect -> 0/0 -> Name")
+	}
+	if deviceType[1].Services[0].Aspects[0].RdfType != model.SES_ONTOLOGY_ASPECT {
+		t.Fatal("error aspect -> 0/0 -> RdfType")
+	}
+	if deviceType[1].Services[0].Functions[0].Id != "urn:infai:ses:function:5e5e-1" {
+		t.Fatal("error function -> 0/0 -> id")
+	}
+	if deviceType[1].Services[0].Functions[0].Name != "brightnessAdjustment1" {
+		t.Fatal("error function -> 0/0 -> Name")
+	}
+	if deviceType[1].Services[0].Functions[0].RdfType != model.SES_ONTOLOGY_CONTROLLING_FUNCTION {
+		t.Fatal("error function -> 0/0 -> RdfType")
+	}
+	if deviceType[1].Services[0].Functions[0].ConceptId != "urn:ses:infai:concept:1a1a1a" {
+		t.Fatal("error function -> 0/0/0 -> ConceptIds")
+	}
+
+	// Service 1
+	if deviceType[1].Services[1].Id != "urn:infai:ses:service:device-2-2" {
+		t.Fatal("error service -> 0 -> id")
 	}
 	if deviceType[1].Services[1].RdfType != model.SES_ONTOLOGY_SERVICE {
-		t.Fatal("error service -> 1 -> RdfType")
+		t.Fatal("error service -> 0 -> RdfType")
 	}
-	if deviceType[1].Services[1].Name != "setBrightness2" {
-		t.Log(deviceType[0].Services[1].Name)
-		t.Fatal("error service -> 1 -> name")
+	if deviceType[1].Services[1].Name != "Device2.service2" {
+		t.Fatal("error service -> 0 -> name")
 	}
 	if deviceType[1].Services[1].Description != "" {
-		t.Fatal("error service -> 1 -> description")
+		t.Fatal("error service -> 0 -> description")
 	}
 	if deviceType[1].Services[1].LocalId != "" { // not stored as TRIPLE
-		t.Fatal("error service -> 1 -> LocalId")
+		t.Fatal("error service -> 0 -> LocalId")
 	}
 	if deviceType[1].Services[1].Aspects[0].Id != "urn:infai:ses:aspect:4e4e" {
-		t.Fatal("error aspect -> 1/0 -> id")
+		t.Fatal("error aspect -> 0/0 -> id")
 	}
 	if deviceType[1].Services[1].Aspects[0].Name != "Lighting" {
 		t.Log(deviceType[0].Services[1].Aspects[0].Name)
-		t.Fatal("error aspect -> 1/0 -> Name")
+		t.Fatal("error aspect -> 0/0 -> Name")
 	}
 	if deviceType[1].Services[1].Aspects[0].RdfType != model.SES_ONTOLOGY_ASPECT {
-		t.Fatal("error aspect -> 1/0 -> RdfType")
+		t.Fatal("error aspect -> 0/0 -> RdfType")
 	}
-	if deviceType[1].Services[1].Functions[0].Id != "urn:infai:ses:function:5e5e" {
-		t.Fatal("error function -> 1/0 -> id")
+	if deviceType[1].Services[1].Functions[0].Id != "urn:infai:ses:function:5e5e-2" {
+		t.Fatal("error function -> 0/0 -> id")
 	}
-	if deviceType[1].Services[1].Functions[0].Name != "brightnessAdjustment" {
-		t.Fatal("error function -> 1/0 -> Name")
+	if deviceType[1].Services[1].Functions[0].Name != "brightnessAdjustment2" {
+		t.Fatal("error function -> 0/0 -> Name")
 	}
 	if deviceType[1].Services[1].Functions[0].RdfType != model.SES_ONTOLOGY_CONTROLLING_FUNCTION {
-		t.Fatal("error function -> 1/0 -> RdfType")
+		t.Fatal("error function -> 0/0 -> RdfType")
 	}
 	if deviceType[1].Services[1].Functions[0].ConceptId != "urn:ses:infai:concept:1a1a1a" {
-		t.Fatal("error function -> 1/0/0 -> ConceptIds")
+		t.Fatal("error function -> 0/0/0 -> ConceptIds")
 	}
 
 	if err != nil {
 		t.Fatal(deviceType, err, code)
 	} else {
-		t.Log(deviceType)
+		b, err := json.Marshal(deviceType)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		t.Log(string(b))
+	}
+}
+
+func TestReadDeviceTypesWithAspect(t *testing.T) {
+	err, con, _ := StartUpScript(t)
+	deviceType, err, code := con.GetDeviceTypesFiltered("", []string{}, []string{"urn:infai:ses:aspect:4e4e"})
+
+	b, err := json.Marshal(deviceType)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	t.Log(string(b))
+
+	if deviceType[0].Id != "urn:infai:ses:devicetype:device1" {
+		t.Fatal("error id")
+	}
+
+	if deviceType[0].RdfType != model.SES_ONTOLOGY_DEVICE_TYPE {
+		t.Fatal("error model")
+	}
+
+	if deviceType[0].Name != "Device1" {
+		t.Fatal("error name")
+	}
+
+	if deviceType[0].Description != "" { // not stored as TRIPLE
+		t.Fatal("error description")
+	}
+
+	if deviceType[0].Image != "" { // not stored as TRIPLE
+		t.Fatal("error image")
+	}
+	// DeviceClass
+	if deviceType[0].DeviceClass.Id != "urn:infai:ses:deviceclass:2e2e" {
+		t.Fatal("error deviceclass id")
+	}
+	if deviceType[0].DeviceClass.Name != "Lamp" {
+		t.Fatal("error deviceclass name")
+	}
+	if deviceType[0].DeviceClass.RdfType != model.SES_ONTOLOGY_DEVICE_CLASS {
+		t.Fatal("error deviceclass rdf type")
+	}
+	// Service 0
+	if deviceType[0].Services[0].Id != "urn:infai:ses:service:device-1-2" {
+		t.Fatal("error service -> 0 -> id", deviceType[0].Services[0].Id)
+	}
+	if deviceType[0].Services[0].RdfType != model.SES_ONTOLOGY_SERVICE {
+		t.Fatal("error service -> 0 -> RdfType")
+	}
+	if deviceType[0].Services[0].Name != "Device1.service2" {
+		t.Log(deviceType[0].Services[0].Name)
+		t.Fatal("error service -> 0 -> name")
+	}
+	if deviceType[0].Services[0].Description != "" { // not stored as TRIPLE
+		t.Fatal("error service -> 0 -> description")
+	}
+	if deviceType[0].Services[0].LocalId != "" { // not stored as TRIPLE
+		t.Fatal("error service -> 0 -> LocalId")
+	}
+	if deviceType[0].Services[0].Aspects[0].Id != "urn:infai:ses:aspect:4e4e" {
+		t.Fatal("error aspect -> 0/0 -> id")
+	}
+	if deviceType[0].Services[0].Aspects[0].Name != "Lighting" {
+		t.Log(deviceType[0].Services[0].Aspects[0].Name)
+		t.Fatal("error aspect -> 0/0 -> Name")
+	}
+	if deviceType[0].Services[0].Aspects[0].RdfType != model.SES_ONTOLOGY_ASPECT {
+		t.Fatal("error aspect -> 0/0 -> RdfType")
+	}
+
+	// Service 0
+	if deviceType[0].Services[1].Id != "urn:infai:ses:service:device-1-1" {
+		t.Fatal("error service -> 0 -> id", deviceType[0].Services[0].Id)
+	}
+	if deviceType[0].Services[1].RdfType != model.SES_ONTOLOGY_SERVICE {
+		t.Fatal("error service -> 0 -> RdfType")
+	}
+	if deviceType[0].Services[1].Name != "Device1.service1" {
+		t.Log(deviceType[0].Services[1].Name)
+		t.Fatal("error service -> 0 -> name")
+	}
+	if deviceType[0].Services[1].Description != "" { // not stored as TRIPLE
+		t.Fatal("error service -> 0 -> description")
+	}
+	if deviceType[0].Services[1].LocalId != "" { // not stored as TRIPLE
+		t.Fatal("error service -> 0 -> LocalId")
+	}
+	if deviceType[0].Services[1].Aspects[0].Id != "urn:infai:ses:aspect:4e4e" {
+		t.Fatal("error aspect -> 0/0 -> id")
+	}
+	if deviceType[0].Services[1].Aspects[0].Name != "Lighting" {
+		t.Log(deviceType[0].Services[1].Aspects[0].Name)
+		t.Fatal("error aspect -> 0/0 -> Name")
+	}
+	if deviceType[0].Services[1].Aspects[0].RdfType != model.SES_ONTOLOGY_ASPECT {
+		t.Fatal("error aspect -> 0/0 -> RdfType")
+	}
+
+	// deviceType 1
+
+	if deviceType[1].Id != "urn:infai:ses:devicetype:device2" {
+		t.Fatal("error id")
+	}
+
+	if deviceType[1].RdfType != model.SES_ONTOLOGY_DEVICE_TYPE {
+		t.Fatal("error model")
+	}
+
+	if deviceType[1].Name != "Device2" {
+		t.Fatal("error name", deviceType[1].Name)
+	}
+
+	if deviceType[1].Description != "" { // not stored as TRIPLE
+		t.Fatal("error description")
+	}
+
+	if deviceType[1].Image != "" { // not stored as TRIPLE
+		t.Fatal("error image")
+	}
+	// DeviceClass
+	if deviceType[1].DeviceClass.Id != "urn:infai:ses:deviceclass:2e2e" {
+		t.Fatal("error deviceclass id")
+	}
+	if deviceType[1].DeviceClass.Name != "Lamp" {
+		t.Fatal("error deviceclass name")
+	}
+	if deviceType[1].DeviceClass.RdfType != model.SES_ONTOLOGY_DEVICE_CLASS {
+		t.Fatal("error deviceclass rdf type")
+	}
+	// Service 0
+	if deviceType[1].Services[0].Id != "urn:infai:ses:service:device-2-1" {
+		t.Fatal("error service -> 0 -> id")
+	}
+	if deviceType[1].Services[0].RdfType != model.SES_ONTOLOGY_SERVICE {
+		t.Fatal("error service -> 0 -> RdfType")
+	}
+	if deviceType[1].Services[0].Name != "Device2.service1" {
+		t.Fatal("error service -> 0 -> name")
+	}
+	if deviceType[1].Services[0].Description != "" {
+		t.Fatal("error service -> 0 -> description")
+	}
+	if deviceType[1].Services[0].LocalId != "" { // not stored as TRIPLE
+		t.Fatal("error service -> 0 -> LocalId")
+	}
+	if deviceType[1].Services[0].Aspects[0].Id != "urn:infai:ses:aspect:4e4e" {
+		t.Fatal("error aspect -> 0/0 -> id")
+	}
+	if deviceType[1].Services[0].Aspects[0].Name != "Lighting" {
+		t.Log(deviceType[0].Services[0].Aspects[0].Name)
+		t.Fatal("error aspect -> 0/0 -> Name")
+	}
+	if deviceType[1].Services[0].Aspects[0].RdfType != model.SES_ONTOLOGY_ASPECT {
+		t.Fatal("error aspect -> 0/0 -> RdfType")
+	}
+	if deviceType[1].Services[0].Functions[0].Id != "urn:infai:ses:function:5e5e-1" {
+		t.Fatal("error function -> 0/0 -> id")
+	}
+	if deviceType[1].Services[0].Functions[0].Name != "brightnessAdjustment1" {
+		t.Fatal("error function -> 0/0 -> Name")
+	}
+	if deviceType[1].Services[0].Functions[0].RdfType != model.SES_ONTOLOGY_CONTROLLING_FUNCTION {
+		t.Fatal("error function -> 0/0 -> RdfType")
+	}
+	if deviceType[1].Services[0].Functions[0].ConceptId != "urn:ses:infai:concept:1a1a1a" {
+		t.Fatal("error function -> 0/0/0 -> ConceptIds")
+	}
+
+	// Service 1
+	if deviceType[1].Services[1].Id != "urn:infai:ses:service:device-2-2" {
+		t.Fatal("error service -> 0 -> id")
+	}
+	if deviceType[1].Services[1].RdfType != model.SES_ONTOLOGY_SERVICE {
+		t.Fatal("error service -> 0 -> RdfType")
+	}
+	if deviceType[1].Services[1].Name != "Device2.service2" {
+		t.Fatal("error service -> 0 -> name")
+	}
+	if deviceType[1].Services[1].Description != "" {
+		t.Fatal("error service -> 0 -> description")
+	}
+	if deviceType[1].Services[1].LocalId != "" { // not stored as TRIPLE
+		t.Fatal("error service -> 0 -> LocalId")
+	}
+	if deviceType[1].Services[1].Aspects[0].Id != "urn:infai:ses:aspect:4e4e" {
+		t.Fatal("error aspect -> 0/0 -> id")
+	}
+	if deviceType[1].Services[1].Aspects[0].Name != "Lighting" {
+		t.Log(deviceType[0].Services[1].Aspects[0].Name)
+		t.Fatal("error aspect -> 0/0 -> Name")
+	}
+	if deviceType[1].Services[1].Aspects[0].RdfType != model.SES_ONTOLOGY_ASPECT {
+		t.Fatal("error aspect -> 0/0 -> RdfType")
+	}
+	if deviceType[1].Services[1].Functions[0].Id != "urn:infai:ses:function:5e5e-2" {
+		t.Fatal("error function -> 0/0 -> id")
+	}
+	if deviceType[1].Services[1].Functions[0].Name != "brightnessAdjustment2" {
+		t.Fatal("error function -> 0/0 -> Name")
+	}
+	if deviceType[1].Services[1].Functions[0].RdfType != model.SES_ONTOLOGY_CONTROLLING_FUNCTION {
+		t.Fatal("error function -> 0/0 -> RdfType")
+	}
+	if deviceType[1].Services[1].Functions[0].ConceptId != "urn:ses:infai:concept:1a1a1a" {
+		t.Fatal("error function -> 0/0/0 -> ConceptIds")
+	}
+
+	if err != nil {
+		t.Fatal(deviceType, err, code)
+	} else {
+		b, err := json.Marshal(deviceType)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		t.Log(string(b))
 	}
 }
 
 func TestReadDeviceTypeWithId1(t *testing.T) {
 	err, con, _ := StartUpScript(t)
-	deviceType, err, code := con.GetDeviceType("urn:infai:ses:devicetype:1e1e")
+	deviceType, err, code := con.GetDeviceType("urn:infai:ses:devicetype:device1")
 
-	if deviceType.Id != "urn:infai:ses:devicetype:1e1e" {
+	if deviceType.Id != "urn:infai:ses:devicetype:device1" {
 		t.Fatal("error id")
 	}
 
@@ -349,7 +704,7 @@ func TestReadDeviceTypeWithId1(t *testing.T) {
 		t.Fatal("error model")
 	}
 
-	if deviceType.Name != "Philips Hue Color" {
+	if deviceType.Name != "Device1" {
 		t.Fatal("error name")
 	}
 
@@ -371,13 +726,13 @@ func TestReadDeviceTypeWithId1(t *testing.T) {
 		t.Fatal("error deviceclass rdf type")
 	}
 	// Service
-	if deviceType.Services[0].Id != "urn:infai:ses:service:3f3f" {
+	if deviceType.Services[0].Id != "urn:infai:ses:service:device-1-1" {
 		t.Fatal("error service -> 0 -> id")
 	}
 	if deviceType.Services[0].RdfType != model.SES_ONTOLOGY_SERVICE {
 		t.Fatal("error service -> 0 -> RdfType")
 	}
-	if deviceType.Services[0].Name != "setBrightness1" {
+	if deviceType.Services[0].Name != "Device1.service1" {
 		t.Log(deviceType.Services[0].Name)
 		t.Fatal("error service -> 0 -> name")
 	}
@@ -397,10 +752,10 @@ func TestReadDeviceTypeWithId1(t *testing.T) {
 	if deviceType.Services[0].Aspects[0].RdfType != model.SES_ONTOLOGY_ASPECT {
 		t.Fatal("error aspect -> 0/0 -> RdfType")
 	}
-	if deviceType.Services[0].Functions[0].Id != "urn:infai:ses:function:5e5e" {
+	if deviceType.Services[0].Functions[0].Id != "urn:infai:ses:function:5e5e-1" {
 		t.Fatal("error function -> 0/0 -> id")
 	}
-	if deviceType.Services[0].Functions[0].Name != "brightnessAdjustment" {
+	if deviceType.Services[0].Functions[0].Name != "brightnessAdjustment1" {
 		t.Fatal("error function -> 0/0 -> Name")
 	}
 	if deviceType.Services[0].Functions[0].RdfType != model.SES_ONTOLOGY_CONTROLLING_FUNCTION {
@@ -410,13 +765,13 @@ func TestReadDeviceTypeWithId1(t *testing.T) {
 		t.Fatal("error function -> 0/0/0 -> ConceptIds")
 	}
 	/// service 2
-	if deviceType.Services[1].Id != "urn:infai:ses:service:3e3e" {
+	if deviceType.Services[1].Id != "urn:infai:ses:service:device-1-2" {
 		t.Fatal("error service -> 1 -> id")
 	}
 	if deviceType.Services[1].RdfType != model.SES_ONTOLOGY_SERVICE {
 		t.Fatal("error service -> 1 -> RdfType")
 	}
-	if deviceType.Services[1].Name != "setBrightness2" {
+	if deviceType.Services[1].Name != "Device1.service2" {
 		t.Log(deviceType.Services[1].Name)
 		t.Fatal("error service -> 1 -> name")
 	}
@@ -436,10 +791,10 @@ func TestReadDeviceTypeWithId1(t *testing.T) {
 	if deviceType.Services[1].Aspects[0].RdfType != model.SES_ONTOLOGY_ASPECT {
 		t.Fatal("error aspect -> 1/0 -> RdfType")
 	}
-	if deviceType.Services[1].Functions[0].Id != "urn:infai:ses:function:5e5e" {
+	if deviceType.Services[1].Functions[0].Id != "urn:infai:ses:function:5e5e-2" {
 		t.Fatal("error function -> 1/0 -> id")
 	}
-	if deviceType.Services[1].Functions[0].Name != "brightnessAdjustment" {
+	if deviceType.Services[1].Functions[0].Name != "brightnessAdjustment2" {
 		t.Fatal("error function -> 1/0 -> Name")
 	}
 	if deviceType.Services[1].Functions[0].RdfType != model.SES_ONTOLOGY_CONTROLLING_FUNCTION {
@@ -458,9 +813,9 @@ func TestReadDeviceTypeWithId1(t *testing.T) {
 
 func TestReadDeviceTypeWithId2(t *testing.T) {
 	err, con, _ := StartUpScript(t)
-	deviceType, err, code := con.GetDeviceType("urn:infai:ses:devicetype:1e1e_2")
+	deviceType, err, code := con.GetDeviceType("urn:infai:ses:devicetype:device2")
 
-	if deviceType.Id != "urn:infai:ses:devicetype:1e1e_2" {
+	if deviceType.Id != "urn:infai:ses:devicetype:device2" {
 		t.Fatal("error id")
 	}
 
@@ -468,7 +823,7 @@ func TestReadDeviceTypeWithId2(t *testing.T) {
 		t.Fatal("error model")
 	}
 
-	if deviceType.Name != "Lifx" {
+	if deviceType.Name != "Device2" {
 		t.Fatal("error name")
 	}
 
@@ -490,13 +845,13 @@ func TestReadDeviceTypeWithId2(t *testing.T) {
 		t.Fatal("error deviceclass rdf type")
 	}
 	// Service
-	if deviceType.Services[0].Id != "urn:infai:ses:service:3f3f_2" {
+	if deviceType.Services[0].Id != "urn:infai:ses:service:device-2-1" {
 		t.Fatal("error service -> 0 -> id")
 	}
 	if deviceType.Services[0].RdfType != model.SES_ONTOLOGY_SERVICE {
 		t.Fatal("error service -> 0 -> RdfType")
 	}
-	if deviceType.Services[0].Name != "setBrightness1" {
+	if deviceType.Services[0].Name != "Device2.service1" {
 		t.Log(deviceType.Services[0].Name)
 		t.Fatal("error service -> 0 -> name")
 	}
@@ -516,10 +871,10 @@ func TestReadDeviceTypeWithId2(t *testing.T) {
 	if deviceType.Services[0].Aspects[0].RdfType != model.SES_ONTOLOGY_ASPECT {
 		t.Fatal("error aspect -> 0/0 -> RdfType")
 	}
-	if deviceType.Services[0].Functions[0].Id != "urn:infai:ses:function:5e5e" {
+	if deviceType.Services[0].Functions[0].Id != "urn:infai:ses:function:5e5e-1" {
 		t.Fatal("error function -> 0/0 -> id")
 	}
-	if deviceType.Services[0].Functions[0].Name != "brightnessAdjustment" {
+	if deviceType.Services[0].Functions[0].Name != "brightnessAdjustment1" {
 		t.Fatal("error function -> 0/0 -> Name")
 	}
 	if deviceType.Services[0].Functions[0].RdfType != model.SES_ONTOLOGY_CONTROLLING_FUNCTION {
@@ -529,13 +884,13 @@ func TestReadDeviceTypeWithId2(t *testing.T) {
 		t.Fatal("error function -> 0/0/0 -> ConceptIds")
 	}
 	/// service 2
-	if deviceType.Services[1].Id != "urn:infai:ses:service:3e3e_2" {
+	if deviceType.Services[1].Id != "urn:infai:ses:service:device-2-2" {
 		t.Fatal("error service -> 1 -> id")
 	}
 	if deviceType.Services[1].RdfType != model.SES_ONTOLOGY_SERVICE {
 		t.Fatal("error service -> 1 -> RdfType")
 	}
-	if deviceType.Services[1].Name != "setBrightness2" {
+	if deviceType.Services[1].Name != "Device2.service2" {
 		t.Log(deviceType.Services[1].Name)
 		t.Fatal("error service -> 1 -> name")
 	}
@@ -555,10 +910,10 @@ func TestReadDeviceTypeWithId2(t *testing.T) {
 	if deviceType.Services[1].Aspects[0].RdfType != model.SES_ONTOLOGY_ASPECT {
 		t.Fatal("error aspect -> 1/0 -> RdfType")
 	}
-	if deviceType.Services[1].Functions[0].Id != "urn:infai:ses:function:5e5e" {
+	if deviceType.Services[1].Functions[0].Id != "urn:infai:ses:function:5e5e-2" {
 		t.Fatal("error function -> 1/0 -> id")
 	}
-	if deviceType.Services[1].Functions[0].Name != "brightnessAdjustment" {
+	if deviceType.Services[1].Functions[0].Name != "brightnessAdjustment2" {
 		t.Fatal("error function -> 1/0 -> Name")
 	}
 	if deviceType.Services[1].Functions[0].RdfType != model.SES_ONTOLOGY_CONTROLLING_FUNCTION {

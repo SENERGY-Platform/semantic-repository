@@ -79,7 +79,7 @@ func (*Database) getDeleteDeviceTypeQuery(subject string) string {
 			"}")
 }
 
-func (*Database) getDeviceTypeQuery(deviceTypeId string, deviceClassId string, functionId string, aspectId string) string {
+func (*Database) getDeviceTypeQuery(deviceTypeId string, deviceClassId string, functionIds []string, aspectIds []string) string {
 
 	if deviceTypeId == "" {
 		deviceTypeId = " ?devicetype "
@@ -93,16 +93,28 @@ func (*Database) getDeviceTypeQuery(deviceTypeId string, deviceClassId string, f
 		deviceClassId = " <" + deviceClassId + "> "
 	}
 
-	if functionId == "" {
-		functionId = " ?function "
-	} else {
-		functionId = " <" + functionId + "> "
+	functionFilter := ""
+	if len(functionIds) > 0 {
+		functionFilter = " FILTER (?function IN ("
+		for index, functionId := range functionIds {
+			functionFilter = functionFilter + "<" + functionId + ">"
+			if index < len(functionIds)-1 {
+				functionFilter = functionFilter + ","
+			}
+		}
+		functionFilter = functionFilter + ")) "
 	}
 
-	if aspectId == "" {
-		aspectId = " ?aspect "
-	} else {
-		aspectId = " <" + aspectId + "> "
+	aspectFilter := ""
+	if len(aspectIds) > 0 {
+		aspectFilter = " FILTER (?aspect IN ("
+		for index, aspectId := range aspectIds {
+			aspectFilter = aspectFilter + "<" + aspectId + ">"
+			if index < len(aspectIds)-1 {
+				aspectFilter = aspectFilter + ","
+			}
+		}
+		aspectFilter = aspectFilter + ")) "
 	}
 
 	// Example Devicetype
@@ -150,42 +162,49 @@ func (*Database) getDeviceTypeQuery(deviceTypeId string, deviceClassId string, f
 	//PREFIX ses: <https://senergy.infai.org/ontology/>
 	//PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 	//construct {
-	//	?devicetype
-	//	rdf:type ?type;
+	//	?devicetype rdf:type ?type;
 	//	rdfs:label ?label;
-	//	ses:hasDeviceClass <urn:infai:ses:deviceclass:04-11-2019>;
+	//	ses:hasDeviceClass  <urn:infai:ses:deviceclass:2e2e> ;
 	//	ses:hasService ?service .
+	//
 	//	?service rdf:type ?s_type;
 	//	rdfs:label ?s_label;
 	//	ses:refersTo ?aspect;
-	//	ses:exposesFunction <urn:infai:ses:function:04-11-2019_1>.
+	//	ses:exposesFunction ?function.
 	//
-	//	<urn:infai:ses:function:04-11-2019_1> rdfs:label ?f_label;
+	//	?function rdfs:label ?f_label;
 	//	rdf:type ?f_type.
+	//
 	//	?function ses:hasConcept ?concept_id.
-	//	?aspect rdfs:label ?a_label;
-	//	rdf:type ?a_type.
-	//	<urn:infai:ses:deviceclass:04-11-2019> rdfs:label ?dc_label;
-	//	rdf:type ?dc_type.
-	//} where {
-	//	?devicetype
-	//	rdf:type ?type;
-	//	rdfs:label ?label;
-	//	ses:hasDeviceClass <urn:infai:ses:deviceclass:04-11-2019>;
-	//	ses:hasService ?service .
-	//	?service rdf:type ?s_type;
-	//	rdfs:label ?s_label;
-	//	ses:refersTo ?aspect;
-	//	ses:exposesFunction <urn:infai:ses:function:04-11-2019_1>.
 	//
-	//	<urn:infai:ses:function:04-11-2019_1> rdfs:label ?f_label;
-	//	rdf:type ?f_type.
-	//	OPTIONAL {?function ses:hasConcept ?concept_id.}
 	//	?aspect rdfs:label ?a_label;
 	//	rdf:type ?a_type.
-	//	<urn:infai:ses:deviceclass:04-11-2019> rdfs:label ?dc_label;
+	//
+	//	<urn:infai:ses:deviceclass:2e2e>  rdfs:label ?dc_label;
 	//	rdf:type ?dc_type.
 	//}
+	//where {
+	//
+	//	?devicetype rdf:type ?type;
+	//	rdfs:label ?label;
+	//	ses:hasDeviceClass  <urn:infai:ses:deviceclass:2e2e> ;
+	//	ses:hasService ?service .
+	//
+	//	?service rdf:type ?s_type;
+	//	rdfs:label ?s_label;
+	//	ses:refersTo ?aspect;
+	//	ses:exposesFunction ?function.
+	//
+	//	?function rdfs:label ?f_label;
+	//	rdf:type ?f_type.
+	//	FILTER (?function IN (<urn:infai:ses:function:5e5e-1>) )
+	//	OPTIONAL {?function ses:hasConcept ?concept_id.}
+	//
+	//	?aspect rdfs:label ?a_label;
+	//	rdf:type ?a_type.
+	//
+	//	<urn:infai:ses:deviceclass:2e2e>  rdfs:label ?dc_label;
+	//	rdf:type ?dc_type.}
 
 	return url.QueryEscape(
 		model.PREFIX_SES +
@@ -198,12 +217,12 @@ func (*Database) getDeviceTypeQuery(deviceTypeId string, deviceClassId string, f
 			"ses:hasService ?service ." +
 			"?service rdf:type ?s_type;" +
 			"rdfs:label ?s_label;" +
-			"ses:refersTo " + aspectId + ";" +
-			"ses:exposesFunction " + functionId + "." +
+			"ses:refersTo ?aspect;" +
+			"ses:exposesFunction ?function." +
 
-			functionId + " rdfs:label ?f_label;" +
+			"?function rdfs:label ?f_label;" +
 			"rdf:type ?f_type." +
-			functionId + "ses:hasConcept ?concept_id." +
+			"?function ses:hasConcept ?concept_id." +
 			"?aspect rdfs:label ?a_label;" +
 			"rdf:type ?a_type." +
 			deviceClassId + " rdfs:label ?dc_label;" +
@@ -216,16 +235,18 @@ func (*Database) getDeviceTypeQuery(deviceTypeId string, deviceClassId string, f
 			"ses:hasService ?service ." +
 			"?service rdf:type ?s_type;" +
 			"rdfs:label ?s_label;" +
-			"ses:refersTo " + aspectId + ";" +
-			"ses:exposesFunction " + functionId + "." +
+			"ses:refersTo ?aspect;" +
+			"ses:exposesFunction ?function." +
 
-			functionId + " rdfs:label ?f_label;" +
+			"?function rdfs:label ?f_label;" +
 			"rdf:type ?f_type." +
-			"OPTIONAL {" + functionId +
+			functionFilter +
+			"OPTIONAL {?function " +
 			"ses:hasConcept ?concept_id." +
 			"}" +
 			"?aspect rdfs:label ?a_label;" +
 			"rdf:type ?a_type." +
+			aspectFilter +
 			deviceClassId + " rdfs:label ?dc_label;" +
 			"rdf:type ?dc_type." +
 			"}")

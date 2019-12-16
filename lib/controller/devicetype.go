@@ -32,7 +32,7 @@ import (
 /////////////////////////
 
 func (this *Controller) GetDeviceType(deviceTypeId string) (result model.DeviceType, err error, errCode int) {
-	deviceType, err := this.db.GetDeviceType(deviceTypeId, "", "", "")
+	deviceType, err := this.db.GetDeviceType(deviceTypeId, "", []string{}, []string{})
 	if err != nil {
 		log.Println("GetDeviceType ERROR: GetDeviceType", err)
 		return result, err, http.StatusInternalServerError
@@ -52,8 +52,8 @@ func (this *Controller) GetDeviceType(deviceTypeId string) (result model.DeviceT
 	return res[0], nil, http.StatusOK
 }
 
-func (this *Controller) GetDeviceTypesFiltered(deviceClassId string, functionId string, aspectId string) (result []model.DeviceType, err error, errCode int) {
-	deviceTypes, err := this.db.GetDeviceType("", deviceClassId, functionId, aspectId)
+func (this *Controller) GetDeviceTypesFiltered(deviceClassId string, functionIds []string, aspectIds []string) (result []model.DeviceType, err error, errCode int) {
+	deviceTypes, err := this.db.GetDeviceType("", deviceClassId, functionIds, aspectIds)
 	if err != nil {
 		log.Println("GetDeviceType ERROR: GetDeviceTypesFiltered", err)
 		return result, err, http.StatusInternalServerError

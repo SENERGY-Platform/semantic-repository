@@ -51,14 +51,14 @@ func DeviceTypeEndpoints(config config.Config, control Controller, router *jwt_h
 
 	router.GET(resource, func(writer http.ResponseWriter, request *http.Request, params jwt_http_router.Params, jwt jwt_http_router.Jwt) {
 		filter := request.URL.Query().Get("filter")
-		deviceTypesFilter := []model.DeviceTypesFilter{}
+		deviceTypesFilter := model.DeviceTypesFilter{}
 		err := json.Unmarshal([]byte(filter), &deviceTypesFilter)
 		if err != nil {
 			http.Error(writer, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
-		result, err, errCode := control.GetDeviceTypesFiltered(deviceTypesFilter[0].DeviceClassId, deviceTypesFilter[0].FunctionId, "")
+		result, err, errCode := control.GetDeviceTypesFiltered(deviceTypesFilter.DeviceClassId, deviceTypesFilter.FunctionIds, deviceTypesFilter.AspectIds)
 		if err != nil {
 			http.Error(writer, err.Error(), errCode)
 			return
