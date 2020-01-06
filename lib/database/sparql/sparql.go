@@ -142,6 +142,22 @@ func (this *Database) GetDeviceClassesControllingFunctions(s string) (rdfxml str
 	return string(byteArray), nil
 }
 
+func (this *Database) GetDeviceClassesWithControllingFunctions() (rdfxml string, err error) {
+	query := this.getDeviceClassesWithControllingFunctions()
+	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
+	if err != nil {
+		log.Println("ERROR: GetFunctions", err)
+		return "", err
+	}
+	defer resp.Body.Close()
+	byteArray, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Println("ERROR:", err)
+		return "", err
+	}
+	return string(byteArray), nil
+}
+
 func (this *Database) GetAspectsMeasuringFunctions(s string) (rdfxml string, err error) {
 	query := this.getAspectsMeasuringFunctions(s)
 	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)

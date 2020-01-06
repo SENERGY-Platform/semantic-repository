@@ -48,6 +48,26 @@ func (this *Controller) GetDeviceClasses() (result []model.DeviceClass, err erro
 	return result, nil, http.StatusOK
 }
 
+func (this *Controller) GetDeviceClassesWithControllingFunctions() (result []model.DeviceClass, err error, errCode int) {
+	deviceClasses, err := this.db.GetDeviceClassesWithControllingFunctions()
+	if err != nil {
+		log.Println("GetDeviceClassesWithControllingFunctions ERROR: GetDeviceClassesWithControllingFunctions", err)
+		return result, err, http.StatusInternalServerError
+	}
+
+	err = this.RdfXmlToModel(deviceClasses, &result)
+	if err != nil {
+		log.Println("GetDeviceClassesWithControllingFunctions ERROR: RdfXmlToModel", err)
+		return result, err, http.StatusInternalServerError
+	}
+
+	sort.Slice(result, func(i, j int) bool {
+		return result[i].Name < result[j].Name
+	})
+
+	return result, nil, http.StatusOK
+}
+
 func (this *Controller) GetDeviceClassesFunctions(subject string) (result []model.Function, err error, errCode int) {
 	functions, err := this.db.GetDeviceClassesFunctions(subject)
 	if err != nil {

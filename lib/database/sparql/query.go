@@ -278,6 +278,41 @@ func (*Database) getDeviceClassesFunctions(subject string) string {
 			"}")
 }
 
+func (*Database) getDeviceClassesWithControllingFunctions() string {
+
+	//PREFIX ses: <https://senergy.infai.org/ontology/>
+	//PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+	//construct {
+	//	?deviceclass rdf:type ses:DeviceClass;
+	//	rdfs:label ?dc_name.
+	//} where {
+	//	?deviceclass rdf:type ses:DeviceClass;
+	//	rdfs:label ?dc_name.
+	//
+	//	?devicetype ses:hasDeviceClass ?deviceclass;
+	//	ses:hasService ?service.
+	//
+	//	?service ses:exposesFunction ?function.
+	//
+	//	?function rdf:type ses:ControllingFunction.
+	//}
+
+	return url.QueryEscape(
+		model.PREFIX_SES +
+			model.PREFIX_RDF +
+			"construct {" +
+			"?deviceclass rdf:type ses:DeviceClass;" +
+			"rdfs:label ?dc_name." +
+			"} where {" +
+			"?deviceclass rdf:type ses:DeviceClass;" +
+			"rdfs:label ?dc_name." +
+			"?devicetype ses:hasDeviceClass ?deviceclass;" +
+			"ses:hasService ?service." +
+			"?service ses:exposesFunction ?function." +
+			"?function rdf:type ses:ControllingFunction." +
+			"}")
+}
+
 func (*Database) getDeviceClassesControllingFunctions(subject string) string {
 
 	//PREFIX ses: <https://senergy.infai.org/ontology/>

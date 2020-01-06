@@ -217,3 +217,118 @@ func TestReadDeviceClassControllingFunctions(t *testing.T) {
 	}
 
 }
+
+func Test_2_ProduceDeviceTypeforDeviceClassTest(t *testing.T) {
+	conf, err := config.Load("../config.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	producer, _ := producer.New(conf)
+	devicetype := model.DeviceType{}
+	devicetype.Id = "urn:infai:ses:devicetype:test_2_06-01-2020"
+	devicetype.Name = "Philips Hue Color"
+	devicetype.DeviceClass = model.DeviceClass{
+		Id:   "urn:infai:ses:deviceclass:test_2_06-01-2020",
+		Name: "Lamp",
+	}
+	devicetype.Description = "description"
+	devicetype.Image = "image"
+	devicetype.Services = []model.Service{}
+	devicetype.Services = append(devicetype.Services, model.Service{
+		"urn:infai:ses:service:test_2_06-01-2020",
+		"localId",
+		"setBrightness",
+		"",
+		[]model.Aspect{{Id: "urn:infai:ses:aspect:test_2_06-01-2020", Name: "Lighting", RdfType: "asasasdsadas"}},
+		"asdasda",
+		[]model.Content{},
+		[]model.Content{},
+		[]model.Function{{Id: "urn:infai:ses:function:test_2_06-01-2020-f1", Name: "func1", ConceptId: "urn:ses:infai:concept:test_2_06-01-2020", RdfType: model.SES_ONTOLOGY_MEASURING_FUNCTION},
+			{Id: "urn:infai:ses:function:test_2_06-01-2020-f2", Name: "func2", ConceptId: "urn:ses:infai:concept:test_2_06-01-2020", RdfType: model.SES_ONTOLOGY_MEASURING_FUNCTION}},
+		"asdasdsadsadasd",
+	})
+
+	producer.PublishDeviceType(devicetype, "sdfdsfsf")
+
+	devicetype.Id = "urn:infai:ses:devicetype:test_2_06-01-2020-2"
+	devicetype.Name = "Philips Hue Color"
+	devicetype.DeviceClass = model.DeviceClass{
+		Id:   "urn:infai:ses:deviceclass:test_2_06-01-2020-2",
+		Name: "Lamp2",
+	}
+	devicetype.Description = "description"
+	devicetype.Image = "image"
+	devicetype.Services = []model.Service{}
+	devicetype.Services = append(devicetype.Services, model.Service{
+		"urn:infai:ses:service:test_2_06-01-2020-2",
+		"localId",
+		"setBrightness",
+		"",
+		[]model.Aspect{{Id: "urn:infai:ses:aspect:test_2_06-01-2020-2", Name: "Lighting", RdfType: "asasasdsadas"}},
+		"asdasda",
+		[]model.Content{},
+		[]model.Content{},
+		[]model.Function{{Id: "urn:infai:ses:function:test_2_06-01-2020-2-f1", Name: "func1", ConceptId: "urn:ses:infai:concept:test_2_06-01-2020-2", RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION},
+			{Id: "urn:infai:ses:function:test_2_06-01-2020-2-f2", Name: "func2", ConceptId: "urn:ses:infai:concept:test_2_06-01-2020-2", RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION}},
+		"asdasdsadsadasd",
+	})
+
+	producer.PublishDeviceType(devicetype, "sdfdsfsf")
+
+	devicetype.Id = "urn:infai:ses:devicetype:test_2_06-01-2020-3"
+	devicetype.Name = "Philips Hue Color"
+	devicetype.DeviceClass = model.DeviceClass{
+		Id:   "urn:infai:ses:deviceclass:test_2_06-01-2020-3",
+		Name: "Lamp3",
+	}
+	devicetype.Description = "description"
+	devicetype.Image = "image"
+	devicetype.Services = []model.Service{}
+	devicetype.Services = append(devicetype.Services, model.Service{
+		"urn:infai:ses:service:test_2_06-01-2020-3",
+		"localId",
+		"setBrightness",
+		"",
+		[]model.Aspect{{Id: "urn:infai:ses:aspect:test_2_06-01-2020-3", Name: "Lighting", RdfType: "asasasdsadas"}},
+		"asdasda",
+		[]model.Content{},
+		[]model.Content{},
+		[]model.Function{{Id: "urn:infai:ses:function:test_2_06-01-2020-3-f1", Name: "func1", ConceptId: "urn:ses:infai:concept:test_2_06-01-2020-3", RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION},
+			{Id: "urn:infai:ses:function:test_2_06-01-2020-3-f2", Name: "func2", ConceptId: "urn:ses:infai:concept:test_2_06-01-2020-3", RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION}},
+		"asdasdsadsadasd",
+	})
+
+	producer.PublishDeviceType(devicetype, "sdfdsfsf")
+
+}
+
+func Test_2_ReadDeviceClassesWithControllingFunctions(t *testing.T) {
+	err, con, _ := StartUpScript(t)
+
+	res, err, code := con.GetDeviceClassesWithControllingFunctions()
+	if err != nil {
+		t.Fatal(res, err, code)
+	} else {
+		//t.Log(res)
+	}
+	if res[0].Id != "urn:infai:ses:deviceclass:test_2_06-01-2020-2" {
+		t.Fatal("error id", res[0].Id)
+	}
+	if res[0].Name != "Lamp2" {
+		t.Fatal("error Name")
+	}
+	if res[0].RdfType != model.SES_ONTOLOGY_DEVICE_CLASS {
+		t.Fatal("wrong RdfType")
+	}
+
+	if res[1].Id != "urn:infai:ses:deviceclass:test_2_06-01-2020-3" {
+		t.Fatal("error id", res[0].Id)
+	}
+	if res[1].Name != "Lamp3" {
+		t.Fatal("error Name")
+	}
+	if res[1].RdfType != model.SES_ONTOLOGY_DEVICE_CLASS {
+		t.Fatal("wrong RdfType")
+	}
+
+}
