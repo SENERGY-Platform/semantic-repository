@@ -367,6 +367,38 @@ func (*Database) getAspectsMeasuringFunctions(subject string) string {
 			"}")
 }
 
+func (*Database) getAspectsWithMeasuringFunction() string {
+
+	//PREFIX ses: <https://senergy.infai.org/ontology/>
+	//PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+	//construct {
+	//	?aspect rdf:type ses:Aspect;
+	//	rdfs:label ?dc_name.
+	//} where {
+	//	?aspect rdf:type ses:Aspect;
+	//	rdfs:label ?dc_name.
+	//
+	//	?service ses:refersTo ?aspect;
+	//	ses:exposesFunction ?function.
+	//
+	//	?function rdf:type ses:MeasuringFunction.
+	//}
+
+	return url.QueryEscape(
+		model.PREFIX_SES +
+			model.PREFIX_RDF +
+			"construct {" +
+			"?aspect rdf:type ses:Aspect;" +
+			"rdfs:label ?dc_name." +
+			"} where {" +
+			"?aspect rdf:type ses:Aspect;" +
+			"rdfs:label ?dc_name." +
+			"?service ses:refersTo ?aspect;" +
+			"ses:exposesFunction ?function." +
+			"?function rdf:type ses:MeasuringFunction." +
+			"}")
+}
+
 func (*Database) getDeleteConceptWithNestedQuery(subject string) string {
 
 	return url.QueryEscape("prefix x: <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> " +

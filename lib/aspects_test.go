@@ -163,3 +163,72 @@ func TestReadAspectMeasuringFunctions(t *testing.T) {
 	}
 
 }
+
+func Test_2_ProduceDeviceTypeforAspectTest(t *testing.T) {
+	conf, err := config.Load("../config.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	producer, _ := producer.New(conf)
+	devicetype := model.DeviceType{}
+	devicetype.Id = "urn:infai:ses:devicetype:08-01-20"
+	devicetype.Name = "Philips Hue Color"
+	devicetype.DeviceClass = model.DeviceClass{
+		Id:   "urn:infai:ses:deviceclass:08-01-20",
+		Name: "Lamp",
+	}
+	devicetype.Description = "description"
+	devicetype.Image = "image"
+	devicetype.Services = []model.Service{}
+	devicetype.Services = append(devicetype.Services, model.Service{
+		"urn:infai:ses:service:08-01-20_1",
+		"localId",
+		"setBrightness",
+		"",
+		[]model.Aspect{{Id: "urn:infai:ses:aspect:08-01-20_1", Name: "aspect1", RdfType: "asasasdsadas"}},
+		"asdasda",
+		[]model.Content{},
+		[]model.Content{},
+		[]model.Function{{Id: "urn:infai:ses:08-01-20_1", Name: "func1", ConceptId: "urn:ses:infai:concept:08-01-20", RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION},
+			{Id: "urn:infai:ses:function:08-01-20_2", Name: "func1", ConceptId: "urn:ses:infai:concept:08-01-20", RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION}},
+		"asdasdsadsadasd",
+	})
+
+	devicetype.Services = append(devicetype.Services, model.Service{
+		"urn:infai:ses:service:08-01-20_2",
+		"localId",
+		"getBrightness",
+		"",
+		[]model.Aspect{{Id: "urn:infai:ses:aspect:08-01-20_2", Name: "aspect2", RdfType: "asasasdsadas"}},
+		"asdasda",
+		[]model.Content{},
+		[]model.Content{},
+		[]model.Function{{Id: "urn:infai:ses:function:08-01-20_3", Name: "func3", ConceptId: "urn:ses:infai:concept:08-01-20", RdfType: model.SES_ONTOLOGY_MEASURING_FUNCTION},
+			{Id: "urn:infai:ses:function:08-01-20_4", Name: "func4", ConceptId: "urn:ses:infai:concept:08-01-20", RdfType: model.SES_ONTOLOGY_MEASURING_FUNCTION}},
+		"asdasdsadsadasd",
+	})
+
+	producer.PublishDeviceType(devicetype, "sdfdsfsf")
+
+}
+
+func Test_2_ReadAspectsWithMeasuringFunctions(t *testing.T) {
+	err, con, _ := StartUpScript(t)
+
+	res, err, code := con.GetAspectsWithMeasuringFunction()
+	if err != nil {
+		t.Fatal(res, err, code)
+	} else {
+		t.Log(res)
+	}
+	if res[0].Id != "urn:infai:ses:aspect:08-01-20_2" {
+		t.Fatal("error id", res[0].Id)
+	}
+	if res[0].Name != "aspect2" {
+		t.Fatal("error Name")
+	}
+	if res[0].RdfType != model.SES_ONTOLOGY_ASPECT {
+		t.Fatal("wrong RdfType")
+	}
+
+}

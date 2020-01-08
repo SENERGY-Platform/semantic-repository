@@ -48,6 +48,26 @@ func (this *Controller) GetAspects() (result []model.Aspect, err error, errCode 
 	return result, nil, http.StatusOK
 }
 
+func (this *Controller) GetAspectsWithMeasuringFunction() (result []model.Aspect, err error, errCode int) {
+	aspects, err := this.db.GetAspectsWithMeasuringFunction()
+	if err != nil {
+		log.Println("GetAspects ERROR: GetListWithoutSubProperties", err)
+		return result, err, http.StatusInternalServerError
+	}
+
+	err = this.RdfXmlToModel(aspects, &result)
+	if err != nil {
+		log.Println("GetAspects ERROR: RdfXmlToModel", err)
+		return result, err, http.StatusInternalServerError
+	}
+
+	sort.Slice(result, func(i, j int) bool {
+		return result[i].Name < result[j].Name
+	})
+
+	return result, nil, http.StatusOK
+}
+
 func (this *Controller) GetAspectsMeasuringFunctions(subject string) (result []model.Function, err error, errCode int) {
 	functions, err := this.db.GetAspectsMeasuringFunctions(subject)
 	if err != nil {

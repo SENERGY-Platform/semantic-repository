@@ -30,6 +30,7 @@ type Database interface {
 	GetDeviceClassesControllingFunctions(s string) (rdfxml string, err error)
 	GetDeviceClassesWithControllingFunctions() (rdfxml string, err error)
 	GetAspectsMeasuringFunctions(s string) (rdfxml string, err error)
+	GetAspectsWithMeasuringFunction() (rdfxml string, err error)
 	GetWithoutSubProperties(s string) (rdfxml string, err error)
 	GetListWithoutSubProperties(p string, o string) (rdfxml string, err error)
 	GetWithAllSubProperties(s string) (rdfxml string, err error)
