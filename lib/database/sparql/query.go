@@ -415,12 +415,10 @@ func (*Database) getDeleteConceptWithouthNestedQuery(subject string) string {
 			"<" + subject + "> rdf:type ?type;" +
 			"ses:hasBaseCharacteristic ?baseCharacteristic;" +
 			"rdfs:label ?label." +
-			"<" + subject + "> ses:hasCharacteristic ?characteristic ." +
 			"} where {" +
 			"<" + subject + "> rdf:type ?type;" +
 			"ses:hasBaseCharacteristic ?baseCharacteristic;" +
 			"	rdfs:label ?label." +
-			" OPTIONAL {<" + subject + "> ses:hasCharacteristic ?characteristic .}" +
 			"}")
 }
 
