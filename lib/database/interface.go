@@ -34,4 +34,5 @@ type Database interface {
 	GetWithoutSubProperties(s string) (rdfxml string, err error)
 	GetListWithoutSubProperties(p string, o string) (rdfxml string, err error)
 	GetWithAllSubProperties(s string) (rdfxml string, err error)
+	GetCharacteristics() (rdfxml string, err error)
 }

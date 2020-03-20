@@ -142,7 +142,9 @@ func (*Controller) RdfXmlFrame(rdfxml string, result interface{}, rootElement st
 		cont["@type"] = model.SES_ONTOLOGY_CONCEPT
 	case *[]model.Characteristic:
 		cont["@type"] = model.SES_ONTOLOGY_CHARACTERISTIC
-		cont["@id"] = rootElement
+		if rootElement != "" {
+			cont["@id"] = rootElement
+		}
 	case *[]model.ConceptWithCharacteristics:
 		cont["@type"] = model.SES_ONTOLOGY_CONCEPT
 		cont["@id"] = rootElement

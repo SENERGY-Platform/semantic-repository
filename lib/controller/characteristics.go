@@ -47,6 +47,23 @@ func (this *Controller) GetCharacteristic(subject string) (result model.Characte
 	return res[0], nil, http.StatusOK
 }
 
+func (this *Controller) GetCharacteristics() (result []model.Characteristic, err error, errCode int) {
+	characteristics, err := this.db.GetCharacteristics()
+	if err != nil {
+		log.Println("GetCharacteristics ERROR: GetCharacteristics", err)
+		return result, err, http.StatusInternalServerError
+	}
+
+	res := []model.Characteristic{}
+	err = this.RdfXmlFrame(characteristics, &res, "")
+	if err != nil {
+		log.Println("GetCharacteristics ERROR: RdfXmlFrame", err)
+		return result, err, http.StatusInternalServerError
+	}
+
+	return res, nil, http.StatusOK
+}
+
 func (this *Controller) ValidateCharacteristics(characteristic model.Characteristic) (error, int) {
 	if characteristic.Id == "" {
 		return errors.New("missing characteristic id"), http.StatusBadRequest

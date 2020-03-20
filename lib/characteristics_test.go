@@ -61,8 +61,23 @@ func TestProduceValidCharacteristic1(t *testing.T) {
 				Value:              true,
 				Type:               model.Boolean,
 				Name:               "charBoolean",
-				SubCharacteristics: nil,}},
+				SubCharacteristics: nil}},
 	}}
+	producer.PublishCharacteristic("urn:ses:infai:concept:1a1a1a", characteristic, "sdfdsfsf")
+}
+
+func TestProduceValidCharacteristic2(t *testing.T) {
+	conf, err := config.Load("../config.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	producer, _ := producer.New(conf)
+	characteristic := model.Characteristic{}
+	characteristic.Id = "urn:ses:infai:characteristic:4711111-20.03.2020"
+	characteristic.Name = "bool"
+	characteristic.RdfType = "xxx"
+	characteristic.Type = model.Boolean
 	producer.PublishCharacteristic("urn:ses:infai:concept:1a1a1a", characteristic, "sdfdsfsf")
 }
 
@@ -162,6 +177,18 @@ func TestReadCharacteristic1(t *testing.T) {
 			t.Fatal("wrong MinValue")
 		}
 		t.Log(characteristic)
+	} else {
+		t.Fatal(err)
+	}
+}
+
+func TestReadAllCharacteristic(t *testing.T) {
+	err, con, _ := StartUpScript(t)
+	characteristics, err, _ := con.GetCharacteristics()
+
+	if err == nil {
+		t.Logf("%+v\n", characteristics)
+		t.Log(len(characteristics))
 	} else {
 		t.Fatal(err)
 	}

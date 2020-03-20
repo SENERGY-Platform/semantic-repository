@@ -39,5 +39,6 @@ type Controller interface {
 	ValidateConcept(concept model.Concept) (err error, code int)
 
 	GetCharacteristic(subject string) (result model.Characteristic, err error, errCode int)
+	GetCharacteristics() (result []model.Characteristic, err error, errCode int)
 	ValidateCharacteristics(concept model.Characteristic) (err error, code int)
 }

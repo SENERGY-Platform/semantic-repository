@@ -110,6 +110,23 @@ func (this *Database) GetDeviceType(deviceTypeId string, deviceClassId string, f
 	return string(byteArray), nil
 }
 
+func (this *Database) GetCharacteristics() (rdfxml string, err error) {
+
+	query := this.getAllCharacteristics()
+	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
+	if err != nil {
+		log.Println("ERROR: getAllCharacteristics", err)
+		return "", err
+	}
+	defer resp.Body.Close()
+	byteArray, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Println("ERROR:", err)
+		return "", err
+	}
+	return string(byteArray), nil
+}
+
 func (this *Database) GetDeviceClassesFunctions(s string) (rdfxml string, err error) {
 	query := this.getDeviceClassesFunctions(s)
 	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)

@@ -252,6 +252,26 @@ func (*Database) getDeviceTypeQuery(deviceTypeId string, deviceClassId string, f
 			"}")
 }
 
+func (*Database) getAllCharacteristics() string {
+
+	//PREFIX ses: <https://senergy.infai.org/ontology/>
+	//PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+	//
+	//construct {?characteristics ?p ?o} where {
+	//	?characteristics ?p ?o .
+	//	?characteristics rdf:type ses:Characteristic.}
+
+	return url.QueryEscape(
+		model.PREFIX_SES +
+			model.PREFIX_RDF +
+			"construct {" +
+			"?characteristics ?p ?o ." +
+			"} where {" +
+			"?characteristics ?p ?o ." +
+			"?characteristics rdf:type ses:Characteristic ." +
+			"}")
+}
+
 func (*Database) getDeviceClassesFunctions(subject string) string {
 
 	//PREFIX ses: <https://senergy.infai.org/ontology/>
