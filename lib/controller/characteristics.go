@@ -47,17 +47,17 @@ func (this *Controller) GetCharacteristic(subject string) (result model.Characte
 	return res[0], nil, http.StatusOK
 }
 
-func (this *Controller) GetCharacteristics() (result []model.Characteristic, err error, errCode int) {
-	characteristics, err := this.db.GetCharacteristics()
+func (this *Controller) GetLeafCharacteristics() (result []model.Characteristic, err error, errCode int) {
+	characteristics, err := this.db.GetLeafCharacteristics()
 	if err != nil {
-		log.Println("GetCharacteristics ERROR: GetCharacteristics", err)
+		log.Println("GetLeafCharacteristics ERROR: GetLeafCharacteristics", err)
 		return result, err, http.StatusInternalServerError
 	}
 
 	res := []model.Characteristic{}
 	err = this.RdfXmlFrame(characteristics, &res, "")
 	if err != nil {
-		log.Println("GetCharacteristics ERROR: RdfXmlFrame", err)
+		log.Println("GetLeafCharacteristics ERROR: RdfXmlFrame", err)
 		return result, err, http.StatusInternalServerError
 	}
 

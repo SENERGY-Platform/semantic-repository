@@ -252,14 +252,17 @@ func (*Database) getDeviceTypeQuery(deviceTypeId string, deviceClassId string, f
 			"}")
 }
 
-func (*Database) getAllCharacteristics() string {
+func (*Database) getLeafCharacteristics() string {
 
 	//PREFIX ses: <https://senergy.infai.org/ontology/>
 	//PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 	//
 	//construct {?characteristics ?p ?o} where {
 	//	?characteristics ?p ?o .
-	//	?characteristics rdf:type ses:Characteristic.}
+	//	?characteristics rdf:type ses:Characteristic.
+	//	OPTIONAL {?characteristics ses:hasSubCharacteristic ?subChar } .
+	//		FILTER ( !bound(?subChar) )
+	//}
 
 	return url.QueryEscape(
 		model.PREFIX_SES +
@@ -269,6 +272,8 @@ func (*Database) getAllCharacteristics() string {
 			"} where {" +
 			"?characteristics ?p ?o ." +
 			"?characteristics rdf:type ses:Characteristic ." +
+			"OPTIONAL {?characteristics ses:hasSubCharacteristic ?subChar } ." +
+			"FILTER ( !bound(?subChar) )" +
 			"}")
 }
 

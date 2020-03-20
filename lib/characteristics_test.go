@@ -184,9 +184,12 @@ func TestReadCharacteristic1(t *testing.T) {
 
 func TestReadAllCharacteristic(t *testing.T) {
 	err, con, _ := StartUpScript(t)
-	characteristics, err, _ := con.GetCharacteristics()
+	characteristics, err, _ := con.GetLeafCharacteristics()
 
 	if err == nil {
+		if len(characteristics) != 3 {
+			t.Fatal("wrong number of elements")
+		}
 		t.Logf("%+v\n", characteristics)
 		t.Log(len(characteristics))
 	} else {

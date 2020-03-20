@@ -110,12 +110,12 @@ func (this *Database) GetDeviceType(deviceTypeId string, deviceClassId string, f
 	return string(byteArray), nil
 }
 
-func (this *Database) GetCharacteristics() (rdfxml string, err error) {
+func (this *Database) GetLeafCharacteristics() (rdfxml string, err error) {
 
-	query := this.getAllCharacteristics()
+	query := this.getLeafCharacteristics()
 	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
 	if err != nil {
-		log.Println("ERROR: getAllCharacteristics", err)
+		log.Println("ERROR: getLeafCharacteristics", err)
 		return "", err
 	}
 	defer resp.Body.Close()
