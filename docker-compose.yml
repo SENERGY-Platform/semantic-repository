@@ -1,0 +1,31 @@
+version: '2'
+services:
+  mongo:
+    image: mongo:4.1.11
+  rya:
+    image: fgseitsrancher.wifa.intern.uni-leipzig.de:5000/rya:dev
+    environment:
+      MONGO_INSTANCE: mongo
+    ports:
+    - 8080:8080
+    depends_on:
+    - mongo
+  zookeeper:
+    image: quay.io/geodocker/zookeeper:latest
+    ports:
+    - 2181:2181
+    #  volumes:
+    #   - '/data/gt/hdfs:/data/hdfs'
+  kafka:
+    image: bitnami/kafka:latest
+    ports:
+    - 9092:9092
+    depends_on:
+    - zookeeper
+    environment:
+      ALLOW_PLAINTEXT_LISTENER: "yes"
+      KAFKA_LISTENERS: "OUTSIDE://:9092"
+      KAFKA_ADVERTISED_LISTENERS: "OUTSIDE://localhost:9092"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "OUTSIDE:PLAINTEXT"
+      KAFKA_INTER_BROKER_LISTENER_NAME: "OUTSIDE"
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
