@@ -93,9 +93,9 @@ func (this *Database) DeleteDeviceType(s string) (err error) {
 	}
 }
 
-func (this *Database) GetDeviceType(deviceTypeId string, deviceClassId string, functionIds []string, aspectIds []string) (rdfxml string, err error) {
+func (this *Database) GetDeviceType(deviceTypeId string, filter []model.DeviceTypesFilter) (rdfxml string, err error) {
 
-	query := this.getDeviceTypeQuery(deviceTypeId, deviceClassId, functionIds, aspectIds)
+	query := this.getDeviceTypeQuery(deviceTypeId, filter)
 	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
 	if err != nil {
 		log.Println("ERROR: GetFunctions", err)

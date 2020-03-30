@@ -79,7 +79,7 @@ func (*Database) getDeleteDeviceTypeQuery(subject string) string {
 			"}")
 }
 
-func (*Database) getDeviceTypeQuery(deviceTypeId string, deviceClassId string, functionIds []string, aspectIds []string) string {
+func (*Database) getDeviceTypeQuery(deviceTypeId string, filters []model.DeviceTypesFilter) string {
 
 	if deviceTypeId == "" {
 		deviceTypeId = " ?devicetype "
@@ -87,34 +87,37 @@ func (*Database) getDeviceTypeQuery(deviceTypeId string, deviceClassId string, f
 		deviceTypeId = " <" + deviceTypeId + "> "
 	}
 
-	if deviceClassId == "" {
-		deviceClassId = " ?deviceclass "
-	} else {
-		deviceClassId = " <" + deviceClassId + "> "
-	}
-
-	functionFilter := ""
-	if len(functionIds) > 0 {
-		functionFilter = " FILTER (?function IN ("
-		for index, functionId := range functionIds {
-			functionFilter = functionFilter + "<" + functionId + ">"
-			if index < len(functionIds)-1 {
-				functionFilter = functionFilter + ","
+	valueFilter := ""
+	if len(filters) > 0 {
+		valueFilter = " VALUES (?function ?aspect ?deviceclass) {"
+		for _, filter := range filters {
+			valueFilter += "( "
+			if filter.FunctionId == "" {
+				valueFilter += " UNDEF "
+			} else {
+				valueFilter += "<"
+				valueFilter += filter.FunctionId
+				valueFilter += ">"
 			}
-		}
-		functionFilter = functionFilter + ")) "
-	}
 
-	aspectFilter := ""
-	if len(aspectIds) > 0 {
-		aspectFilter = " FILTER (?aspect IN ("
-		for index, aspectId := range aspectIds {
-			aspectFilter = aspectFilter + "<" + aspectId + ">"
-			if index < len(aspectIds)-1 {
-				aspectFilter = aspectFilter + ","
+			if filter.AspectId == "" {
+				valueFilter += " UNDEF "
+			} else {
+				valueFilter += "<"
+				valueFilter += filter.AspectId
+				valueFilter += ">"
 			}
+
+			if filter.DeviceClassId == "" {
+				valueFilter += " UNDEF "
+			} else {
+				valueFilter += "<"
+				valueFilter += filter.DeviceClassId
+				valueFilter += ">"
+			}
+			valueFilter = valueFilter + ")"
 		}
-		aspectFilter = aspectFilter + ")) "
+		valueFilter = valueFilter + "}"
 	}
 
 	// Example Devicetype
@@ -197,7 +200,7 @@ func (*Database) getDeviceTypeQuery(deviceTypeId string, deviceClassId string, f
 	//
 	//	?function rdfs:label ?f_label;
 	//	rdf:type ?f_type.
-	//	FILTER (?function IN (<urn:infai:ses:function:5e5e-1>) )
+	//	FILTER (?function = (<urn:infai:ses:function:5e5e-1>) )
 	//	OPTIONAL {?function ses:hasConcept ?concept_id.}
 	//
 	//	?aspect rdfs:label ?a_label;
@@ -206,50 +209,51 @@ func (*Database) getDeviceTypeQuery(deviceTypeId string, deviceClassId string, f
 	//	<urn:infai:ses:deviceclass:2e2e>  rdfs:label ?dc_label;
 	//	rdf:type ?dc_type.}
 
+	query := model.PREFIX_SES +
+		model.PREFIX_RDF +
+		"construct {" +
+		deviceTypeId +
+		"rdf:type ?type;" +
+		"rdfs:label ?label;" +
+		"ses:hasDeviceClass ?deviceclass;" +
+		"ses:hasService ?service ." +
+		"?service rdf:type ?s_type;" +
+		"rdfs:label ?s_label;" +
+		"ses:refersTo ?aspect;" +
+		"ses:exposesFunction ?function." +
+
+		"?function rdfs:label ?f_label;" +
+		"rdf:type ?f_type." +
+		"?function ses:hasConcept ?concept_id." +
+		"?aspect rdfs:label ?a_label;" +
+		"rdf:type ?a_type." +
+		"?deviceclass rdfs:label ?dc_label;" +
+		"rdf:type ?dc_type." +
+		"} where {" +
+		deviceTypeId +
+		"rdf:type ?type;" +
+		"rdfs:label ?label;" +
+		"ses:hasDeviceClass ?deviceclass;" +
+		"ses:hasService ?service ." +
+		"?service rdf:type ?s_type;" +
+		"rdfs:label ?s_label;" +
+		"ses:refersTo ?aspect;" +
+		"ses:exposesFunction ?function." +
+
+		"?function rdfs:label ?f_label;" +
+		"rdf:type ?f_type." +
+
+		"OPTIONAL {?function " +
+		"ses:hasConcept ?concept_id." +
+		"}" +
+		"?aspect rdfs:label ?a_label;" +
+		"rdf:type ?a_type." +
+		"?deviceclass rdfs:label ?dc_label;" +
+		"rdf:type ?dc_type." +
+		valueFilter +
+		"}"
 	return url.QueryEscape(
-		model.PREFIX_SES +
-			model.PREFIX_RDF +
-			"construct {" +
-			deviceTypeId +
-			"rdf:type ?type;" +
-			"rdfs:label ?label;" +
-			"ses:hasDeviceClass " + deviceClassId + ";" +
-			"ses:hasService ?service ." +
-			"?service rdf:type ?s_type;" +
-			"rdfs:label ?s_label;" +
-			"ses:refersTo ?aspect;" +
-			"ses:exposesFunction ?function." +
-
-			"?function rdfs:label ?f_label;" +
-			"rdf:type ?f_type." +
-			"?function ses:hasConcept ?concept_id." +
-			"?aspect rdfs:label ?a_label;" +
-			"rdf:type ?a_type." +
-			deviceClassId + " rdfs:label ?dc_label;" +
-			"rdf:type ?dc_type." +
-			"} where {" +
-			deviceTypeId +
-			"rdf:type ?type;" +
-			"rdfs:label ?label;" +
-			"ses:hasDeviceClass " + deviceClassId + ";" +
-			"ses:hasService ?service ." +
-			"?service rdf:type ?s_type;" +
-			"rdfs:label ?s_label;" +
-			"ses:refersTo ?aspect;" +
-			"ses:exposesFunction ?function." +
-
-			"?function rdfs:label ?f_label;" +
-			"rdf:type ?f_type." +
-			functionFilter +
-			"OPTIONAL {?function " +
-			"ses:hasConcept ?concept_id." +
-			"}" +
-			"?aspect rdfs:label ?a_label;" +
-			"rdf:type ?a_type." +
-			aspectFilter +
-			deviceClassId + " rdfs:label ?dc_label;" +
-			"rdf:type ?dc_type." +
-			"}")
+		query)
 }
 
 func (*Database) getLeafCharacteristics() string {

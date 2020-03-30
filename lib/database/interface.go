@@ -16,6 +16,8 @@
 
 package database
 
+import "github.com/SENERGY-Platform/semantic-repository/lib/model"
+
 type Database interface {
 	Disconnect()
 
@@ -25,7 +27,7 @@ type Database interface {
 	DeleteConcept(s string, withNested bool) (err error)
 	DeleteCharacteristic(s string) (err error)
 
-	GetDeviceType(deviceTypeId string, deviceClassId string, functionIds []string, aspectIds []string) (rdfxml string, err error)
+	GetDeviceType(deviceTypeId string, filter []model.DeviceTypesFilter) (rdfxml string, err error)
 	GetDeviceClassesFunctions(s string) (rdfxml string, err error)
 	GetDeviceClassesControllingFunctions(s string) (rdfxml string, err error)
 	GetDeviceClassesWithControllingFunctions() (rdfxml string, err error)

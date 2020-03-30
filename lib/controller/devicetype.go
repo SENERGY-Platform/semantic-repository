@@ -32,7 +32,7 @@ import (
 /////////////////////////
 
 func (this *Controller) GetDeviceType(deviceTypeId string) (result model.DeviceType, err error, errCode int) {
-	deviceType, err := this.db.GetDeviceType(deviceTypeId, "", []string{}, []string{})
+	deviceType, err := this.db.GetDeviceType(deviceTypeId, []model.DeviceTypesFilter{})
 	if err != nil {
 		log.Println("GetDeviceType ERROR: GetDeviceType", err)
 		return result, err, http.StatusInternalServerError
@@ -52,8 +52,8 @@ func (this *Controller) GetDeviceType(deviceTypeId string) (result model.DeviceT
 	return res[0], nil, http.StatusOK
 }
 
-func (this *Controller) GetDeviceTypesFiltered(deviceClassId string, functionIds []string, aspectIds []string) (result []model.DeviceType, err error, errCode int) {
-	deviceTypes, err := this.db.GetDeviceType("", deviceClassId, functionIds, aspectIds)
+func (this *Controller) GetDeviceTypesFiltered(filter []model.DeviceTypesFilter) (result []model.DeviceType, err error, errCode int) {
+	deviceTypes, err := this.db.GetDeviceType("", filter)
 	if err != nil {
 		log.Println("GetDeviceType ERROR: GetDeviceTypesFiltered", err)
 		return result, err, http.StatusInternalServerError
@@ -68,6 +68,18 @@ func (this *Controller) GetDeviceTypesFiltered(deviceClassId string, functionIds
 	sort.Slice(result, func(i, j int) bool {
 		return result[i].Name < result[j].Name
 	})
+
+	// check if more than one DeviceClass exits -> Lane restriction
+	multipleDeviceClasses := false
+	for _, value := range result {
+		if result[0].DeviceClass != value.DeviceClass && multipleDeviceClasses == false {
+			multipleDeviceClasses = true
+		}
+	}
+
+	if multipleDeviceClasses {
+		result = nil
+	}
 
 	return result, nil, http.StatusOK
 }
