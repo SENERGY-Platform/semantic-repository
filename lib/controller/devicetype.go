@@ -32,7 +32,7 @@ import (
 /////////////////////////
 
 func (this *Controller) GetDeviceType(deviceTypeId string) (result model.DeviceType, err error, errCode int) {
-	deviceType, err := this.db.GetDeviceType(deviceTypeId, []model.DeviceTypesFilter{})
+	deviceType, err := this.db.GetDeviceType(deviceTypeId, []model.DeviceTypesFilter{{FunctionId: "", AspectId: "", DeviceClassId: ""}})
 	if err != nil {
 		log.Println("GetDeviceType ERROR: GetDeviceType", err)
 		return result, err, http.StatusInternalServerError
@@ -68,18 +68,6 @@ func (this *Controller) GetDeviceTypesFiltered(filter []model.DeviceTypesFilter)
 	sort.Slice(result, func(i, j int) bool {
 		return result[i].Name < result[j].Name
 	})
-
-	// check if more than one DeviceClass exits -> Lane restriction
-	multipleDeviceClasses := false
-	for _, value := range result {
-		if result[0].DeviceClass != value.DeviceClass && multipleDeviceClasses == false {
-			multipleDeviceClasses = true
-		}
-	}
-
-	if multipleDeviceClasses {
-		result = nil
-	}
 
 	return result, nil, http.StatusOK
 }

@@ -101,6 +101,35 @@ func TestProduceValidDeviceTypes(t *testing.T) {
 	producer.PublishDeviceType(devicetype, "sdfdsfsf")
 
 	////////////////////////////////
+	/// CYRUS MULTISENSOR        ///
+	////////////////////////////////
+
+	devicetype = model.DeviceType{}
+	devicetype.Id = "urn:infai:ses:device-type:3cc09a10-1feb-4f8b-9390-8d08bf3ba22d"
+	devicetype.Name = "Cyrus 4-in-1 Multisensor"
+	devicetype.DeviceClass = model.DeviceClass{
+		Id:   "urn:infai:ses:device-class:ff64280a-58e6-4cf9-9a44-e70d3831a79d",
+		Name: "MultiSensor",
+	}
+	devicetype.Description = ""
+	devicetype.Image = ""
+	devicetype.Services = []model.Service{}
+	devicetype.Services = append(devicetype.Services, model.Service{
+		"urn:infai:ses:service:d3dba284-ef6d-4f12-81df-ed11506702b2",
+		"get_level:49-1",
+		"getTemperatureService",
+		"",
+		[]model.Aspect{{Id: "urn:infai:ses:aspect:a14c5efb-b0b6-46c3-982e-9fded75b5ab6", Name: "Air", RdfType: "https://senergy.infai.org/ontology/Aspect"}},
+		"urn:infai:ses:protocol:f3a63aeb-187e-4dd9-9ef5-d97a6eb6292b",
+		[]model.Content{},
+		[]model.Content{},
+		[]model.Function{{Id: "urn:infai:ses:measuring-function:f2769eb9-b6ad-4f7e-bd28-e4ea043d2f8b", Name: "getTemperatureFunction", ConceptId: "urn:infai:ses:concept:0bc81398-3ed6-4e2b-a6c4-b754583aac37", RdfType: model.SES_ONTOLOGY_MEASURING_FUNCTION}},
+		"asdasdsadsadasd",
+	})
+
+	producer.PublishDeviceType(devicetype, "sdfdsfsf")
+
+	////////////////////////////////
 	/// BLEBOX                   ///
 	////////////////////////////////
 
@@ -201,6 +230,32 @@ func TestReadDeviceType_1MF(t *testing.T) {
 	deviceType, err, code := con.GetDeviceTypesFiltered([]model.DeviceTypesFilter{{FunctionId: "urn:infai:ses:measuring-function:f2c1a22f-a49e-4549-9833-62f0994afec0", DeviceClassId: "", AspectId: "urn:infai:ses:aspect:a14c5efb-b0b6-46c3-982e-9fded75b5ab6"}})
 
 	deviceTypeStringified := `[{"id":"urn:infai:ses:device-type:a8cbd322-9d8c-4f4c-afec-ae4b7986b6ed","name":"Blebox-Air-Sensor","description":"","image":"","services":[{"id":"urn:infai:ses:service:422fd899-a2cc-4e43-8d81-4e330a7ca8ab","local_id":"","name":"getParticleAmountPM10Service","description":"","aspects":[{"id":"urn:infai:ses:aspect:a14c5efb-b0b6-46c3-982e-9fded75b5ab6","name":"Air","rdf_type":"https://senergy.infai.org/ontology/Aspect"}],"protocol_id":"","inputs":null,"outputs":null,"functions":[{"id":"urn:infai:ses:measuring-function:f2c1a22f-a49e-4549-9833-62f0994afec0","name":"getParticleAmountPM10","concept_id":"urn:infai:ses:concept:a63a960d-1f36-4d95-ad5b-dfb4a7fe3b5b","rdf_type":"https://senergy.infai.org/ontology/MeasuringFunction"}],"rdf_type":"https://senergy.infai.org/ontology/Service"}],"device_class":{"id":"urn:infai:ses:device-class:8bd38ea2-1835-4a1e-ac02-6b3169513fd3","name":"AirQualityMeter","rdf_type":"https://senergy.infai.org/ontology/DeviceClass"},"rdf_type":"https://senergy.infai.org/ontology/DeviceType"}]`
+
+	b, err := json.Marshal(deviceType)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	t.Log(string(b))
+
+	if err != nil {
+		t.Fatal(deviceType, err, code)
+	} else {
+		if string(b) != deviceTypeStringified {
+			t.Log("expected:", deviceTypeStringified)
+			t.Log("was:", string(b))
+			t.Fatal("error")
+		}
+	}
+}
+
+func TestReadDeviceType_1MF_variante2(t *testing.T) {
+	// 1 MeasuringFunctionId + Aspect
+	err, con, _ := StartUpScript(t)
+	//deviceType, err, code := con.GetDeviceTypesFiltered("", []string{"urn:infai:ses:measuring-function:f2c1a22f-a49e-4549-9833-62f0994afec0", "urn:infai:ses:measuring-function:0e19d094-70c6-402c-8523-3aaff2ce6dd9"}, []string{})
+	deviceType, err, code := con.GetDeviceTypesFiltered([]model.DeviceTypesFilter{{FunctionId: "urn:infai:ses:measuring-function:f2769eb9-b6ad-4f7e-bd28-e4ea043d2f8b", DeviceClassId: "", AspectId: "urn:infai:ses:aspect:a14c5efb-b0b6-46c3-982e-9fded75b5ab6"}})
+
+	deviceTypeStringified := `[{"id":"urn:infai:ses:device-type:3cc09a10-1feb-4f8b-9390-8d08bf3ba22d","name":"Cyrus 4-in-1 Multisensor","description":"","image":"","services":[{"id":"urn:infai:ses:service:d3dba284-ef6d-4f12-81df-ed11506702b2","local_id":"","name":"getTemperatureService","description":"","aspects":[{"id":"urn:infai:ses:aspect:a14c5efb-b0b6-46c3-982e-9fded75b5ab6","name":"Air","rdf_type":"https://senergy.infai.org/ontology/Aspect"}],"protocol_id":"","inputs":null,"outputs":null,"functions":[{"id":"urn:infai:ses:measuring-function:f2769eb9-b6ad-4f7e-bd28-e4ea043d2f8b","name":"getTemperatureFunction","concept_id":"urn:infai:ses:concept:0bc81398-3ed6-4e2b-a6c4-b754583aac37","rdf_type":"https://senergy.infai.org/ontology/MeasuringFunction"}],"rdf_type":"https://senergy.infai.org/ontology/Service"}],"device_class":{"id":"urn:infai:ses:device-class:ff64280a-58e6-4cf9-9a44-e70d3831a79d","name":"MultiSensor","rdf_type":"https://senergy.infai.org/ontology/DeviceClass"},"rdf_type":"https://senergy.infai.org/ontology/DeviceType"},{"id":"urn:infai:ses:device-type:662d9c9f-949d-4577-9485-9cb7255f547f","name":"Danfoss Radiator Thermostat","description":"","image":"","services":[{"id":"urn:infai:ses:service:f306de41-a55b-45ed-afc9-039bbe53db1b","local_id":"","name":"getTemperatureService","description":"","aspects":[{"id":"urn:infai:ses:aspect:a14c5efb-b0b6-46c3-982e-9fded75b5ab6","name":"Air","rdf_type":"https://senergy.infai.org/ontology/Aspect"}],"protocol_id":"","inputs":null,"outputs":null,"functions":[{"id":"urn:infai:ses:measuring-function:f2769eb9-b6ad-4f7e-bd28-e4ea043d2f8b","name":"getTemperatureFunction","concept_id":"urn:infai:ses:concept:0bc81398-3ed6-4e2b-a6c4-b754583aac37","rdf_type":"https://senergy.infai.org/ontology/MeasuringFunction"}],"rdf_type":"https://senergy.infai.org/ontology/Service"}],"device_class":{"id":"urn:infai:ses:device-class:997937d6-c5f3-4486-b67c-114675038393","name":"Thermostat","rdf_type":"https://senergy.infai.org/ontology/DeviceClass"},"rdf_type":"https://senergy.infai.org/ontology/DeviceType"}]`
 
 	b, err := json.Marshal(deviceType)
 	if err != nil {

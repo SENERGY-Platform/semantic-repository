@@ -22,6 +22,8 @@ package sparql
 import (
 	"github.com/SENERGY-Platform/semantic-repository/lib/model"
 	"net/url"
+	"strconv"
+	"strings"
 )
 
 func (*Database) getConstructListWithoutSubProperties(p string, o string) string {
@@ -81,176 +83,132 @@ func (*Database) getDeleteDeviceTypeQuery(subject string) string {
 
 func (*Database) getDeviceTypeQuery(deviceTypeId string, filters []model.DeviceTypesFilter) string {
 
-	if deviceTypeId == "" {
-		deviceTypeId = " ?devicetype "
-	} else {
-		deviceTypeId = " <" + deviceTypeId + "> "
-	}
-
-	valueFilter := ""
-	if len(filters) > 0 {
-		valueFilter = " VALUES (?function ?aspect ?deviceclass) {"
-		for _, filter := range filters {
-			valueFilter += "( "
-			if filter.FunctionId == "" {
-				valueFilter += " UNDEF "
-			} else {
-				valueFilter += "<"
-				valueFilter += filter.FunctionId
-				valueFilter += ">"
-			}
-
-			if filter.AspectId == "" {
-				valueFilter += " UNDEF "
-			} else {
-				valueFilter += "<"
-				valueFilter += filter.AspectId
-				valueFilter += ">"
-			}
-
-			if filter.DeviceClassId == "" {
-				valueFilter += " UNDEF "
-			} else {
-				valueFilter += "<"
-				valueFilter += filter.DeviceClassId
-				valueFilter += ">"
-			}
-			valueFilter = valueFilter + ")"
-		}
-		valueFilter = valueFilter + "}"
-	}
-
 	// Example Devicetype
 
-	//PREFIX ses: <https://senergy.infai.org/ontology/>
-	//PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-	//construct {
-	//	<urn:infai:ses:device-type:8cb7bb2c-e661-42a3-b7d1-5e9fc6d60152>
-	//	rdf:type ?type;
-	//	rdfs:label ?label;
-	//	ses:hasDeviceClass ?deviceclass;
-	//	ses:hasService ?service .
-	//	?service rdf:type ?s_type;
-	//	rdfs:label ?s_label;
-	//	ses:refersTo ?aspect;
-	//	ses:exposesFunction ?function.
-	//	?function rdfs:label ?f_label;
-	//	rdf:type ?f_type.
-	//	?function ses:hasConcept ?concept_id.
-	//	?aspect rdfs:label ?a_label;
-	//	rdf:type ?a_type.
-	//	?deviceclass rdfs:label ?dc_label;
-	//	rdf:type ?dc_type.
-	//} where {
-	//	<urn:infai:ses:device-type:8cb7bb2c-e661-42a3-b7d1-5e9fc6d60152>
-	//	rdf:type ?type;
-	//	rdfs:label ?label;
-	//	ses:hasDeviceClass ?deviceclass;
-	//	ses:hasService ?service .
-	//	?service rdf:type ?s_type;
-	//	rdfs:label ?s_label;
-	//	ses:refersTo ?aspect;
-	//	ses:exposesFunction ?function.
-	//	?function rdfs:label ?f_label;
-	//	rdf:type ?f_type.
-	//	OPTIONAL {?function ses:hasConcept ?concept_id.}
-	//	?aspect rdfs:label ?a_label;
-	//	rdf:type ?a_type.
-	//	?deviceclass rdfs:label ?dc_label;
-	//	rdf:type ?dc_type.
-	//}
+	//	PREFIX ses: <https://senergy.infai.org/ontology/> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>construct { <urn:infai:ses:device-type:eb4a3337-01a1-4434-9dcc-064b3955eeef>  rdf:type ?type;
+	//rdfs:label ?label;
+	//ses:hasDeviceClass  ?deviceclass ;
+	//ses:hasService ?service0 .
+	//	?deviceclass  rdfs:label ?dc_label;
+	//rdf:type ?dc_type.
+	//	?service0 rdf:type ?s_type0;
+	//rdfs:label ?s_label0;
+	//ses:refersTo ?aspect0;
+	//ses:exposesFunction ?function0 .
+	//	?function0 rdfs:label ?f_label0;
+	//rdf:type ?f_type0.
+	//	?aspect0 rdfs:label ?a_label0;
+	//rdf:type ?a_type0.
+	//	?function0 ses:hasConcept ?concept_id0.}
+	//where
+	//{ <urn:infai:ses:device-type:eb4a3337-01a1-4434-9dcc-064b3955eeef>  rdf:type ?type;
+	//rdfs:label ?label;
+	//ses:hasDeviceClass  ?deviceclass ;
+	//ses:hasService ?service0 .
+	//?deviceclass  rdfs:label ?dc_label;
+	//rdf:type ?dc_type.
+	//?service0 rdf:type ?s_type0;
+	//rdfs:label ?s_label0;
+	//ses:refersTo ?aspect0;
+	//ses:exposesFunction ?function0 .
+	//?function0 rdfs:label ?f_label0;
+	//rdf:type ?f_type0.
+	//?aspect0 rdfs:label ?a_label0;
+	//rdf:type ?a_type0.
+	//OPTIONAL {?function0 ses:hasConcept ?concept_id0.} }
 
 	// Example Deviceclass & Function
 
-	//PREFIX ses: <https://senergy.infai.org/ontology/>
-	//PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-	//construct {
-	//	?devicetype rdf:type ?type;
-	//	rdfs:label ?label;
-	//	ses:hasDeviceClass  <urn:infai:ses:deviceclass:2e2e> ;
-	//	ses:hasService ?service .
-	//
-	//	?service rdf:type ?s_type;
-	//	rdfs:label ?s_label;
-	//	ses:refersTo ?aspect;
-	//	ses:exposesFunction ?function.
-	//
-	//	?function rdfs:label ?f_label;
-	//	rdf:type ?f_type.
-	//
-	//	?function ses:hasConcept ?concept_id.
-	//
-	//	?aspect rdfs:label ?a_label;
-	//	rdf:type ?a_type.
-	//
-	//	<urn:infai:ses:deviceclass:2e2e>  rdfs:label ?dc_label;
-	//	rdf:type ?dc_type.
-	//}
-	//where {
-	//
-	//	?devicetype rdf:type ?type;
-	//	rdfs:label ?label;
-	//	ses:hasDeviceClass  <urn:infai:ses:deviceclass:2e2e> ;
-	//	ses:hasService ?service .
-	//
-	//	?service rdf:type ?s_type;
-	//	rdfs:label ?s_label;
-	//	ses:refersTo ?aspect;
-	//	ses:exposesFunction ?function.
-	//
-	//	?function rdfs:label ?f_label;
-	//	rdf:type ?f_type.
-	//	FILTER (?function = (<urn:infai:ses:function:5e5e-1>) )
-	//	OPTIONAL {?function ses:hasConcept ?concept_id.}
-	//
-	//	?aspect rdfs:label ?a_label;
-	//	rdf:type ?a_type.
-	//
-	//	<urn:infai:ses:deviceclass:2e2e>  rdfs:label ?dc_label;
-	//	rdf:type ?dc_type.}
+	//	PREFIX ses: <https://senergy.infai.org/ontology/> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>construct {?devicetype rdf:type ?type;
+	//rdfs:label ?label;
+	//ses:hasDeviceClass  ?deviceclass ;
+	//ses:hasService ?service0 .
+	//	?deviceclass  rdfs:label ?dc_label;
+	//rdf:type ?dc_type.
+	//	?service0 rdf:type ?s_type0;
+	//rdfs:label ?s_label0;
+	//ses:refersTo <urn:infai:ses:aspect:a14c5efb-b0b6-46c3-982e-9fded75b5ab6>;
+	//ses:exposesFunction <urn:infai:ses:measuring-function:f2c1a22f-a49e-4549-9833-62f0994afec0> .
+	//	<urn:infai:ses:measuring-function:f2c1a22f-a49e-4549-9833-62f0994afec0> rdfs:label ?f_label0;
+	//rdf:type ?f_type0.
+	//	<urn:infai:ses:aspect:a14c5efb-b0b6-46c3-982e-9fded75b5ab6> rdfs:label ?a_label0;
+	//rdf:type ?a_type0.
+	//	<urn:infai:ses:measuring-function:f2c1a22f-a49e-4549-9833-62f0994afec0> ses:hasConcept ?concept_id0.}
+	//where
+	//{?devicetype rdf:type ?type;
+	//rdfs:label ?label;
+	//ses:hasDeviceClass  ?deviceclass ;
+	//ses:hasService ?service0 .
+	//?deviceclass  rdfs:label ?dc_label;
+	//rdf:type ?dc_type.
+	//?service0 rdf:type ?s_type0;
+	//rdfs:label ?s_label0;
+	//ses:refersTo <urn:infai:ses:aspect:a14c5efb-b0b6-46c3-982e-9fded75b5ab6>;
+	//ses:exposesFunction <urn:infai:ses:measuring-function:f2c1a22f-a49e-4549-9833-62f0994afec0> .
+	//<urn:infai:ses:measuring-function:f2c1a22f-a49e-4549-9833-62f0994afec0> rdfs:label ?f_label0;
+	//rdf:type ?f_type0.
+	//<urn:infai:ses:aspect:a14c5efb-b0b6-46c3-982e-9fded75b5ab6> rdfs:label ?a_label0;
+	//rdf:type ?a_type0.
+	//OPTIONAL {<urn:infai:ses:measuring-function:f2c1a22f-a49e-4549-9833-62f0994afec0> ses:hasConcept ?concept_id0.} }
+
+	devicetype := "?devicetype"
+	if deviceTypeId != "" {
+		devicetype = " <" + deviceTypeId + "> "
+	}
+
+	// linebreak
+	lnb := "\n"
+	construct := ""
+	where := ""
+
+	construct +=
+		devicetype + " rdf:type ?type;" + lnb +
+			"rdfs:label ?label;" + lnb +
+			"ses:hasDeviceClass  ?deviceclass ;" + lnb +
+			"ses:hasService "
+
+	services := []string{}
+	for i := 0; i < len(filters); i++ {
+		services = append(services, "?service"+strconv.Itoa(i))
+	}
+	construct += strings.Join(services, ", ") + " ." + lnb
+
+	construct += "?deviceclass  rdfs:label ?dc_label;" + lnb +
+		"rdf:type ?dc_type." + lnb
+
+	where += construct
+	for index, filter := range filters {
+		convIndex := strconv.Itoa(index)
+		aspect := "?aspect" + convIndex
+		if filter.AspectId != "" {
+			aspect = "<" + filter.AspectId + ">"
+		}
+		function := "?function" + convIndex
+		if filter.FunctionId != "" {
+			function = "<" + filter.FunctionId + ">"
+		}
+
+		service :=
+			"?service" + convIndex + " rdf:type ?s_type" + convIndex + ";" + lnb +
+				"rdfs:label ?s_label" + convIndex + ";" + lnb +
+				"ses:refersTo " + aspect + ";" + lnb +
+				"ses:exposesFunction " + function + " ." + lnb +
+				function + " rdfs:label ?f_label" + convIndex + ";" + lnb +
+				"rdf:type ?f_type" + convIndex + ".	" + lnb +
+				aspect + " rdfs:label ?a_label" + convIndex + ";" + lnb +
+				"rdf:type ?a_type" + convIndex + "." + lnb
+		construct += service + function + " ses:hasConcept ?concept_id" + convIndex + "."
+		where += service + "OPTIONAL {" + function + " ses:hasConcept ?concept_id" + convIndex + ".} "
+	}
 
 	query := model.PREFIX_SES +
 		model.PREFIX_RDF +
 		"construct {" +
-		deviceTypeId +
-		"rdf:type ?type;" +
-		"rdfs:label ?label;" +
-		"ses:hasDeviceClass ?deviceclass;" +
-		"ses:hasService ?service ." +
-		"?service rdf:type ?s_type;" +
-		"rdfs:label ?s_label;" +
-		"ses:refersTo ?aspect;" +
-		"ses:exposesFunction ?function." +
-
-		"?function rdfs:label ?f_label;" +
-		"rdf:type ?f_type." +
-		"?function ses:hasConcept ?concept_id." +
-		"?aspect rdfs:label ?a_label;" +
-		"rdf:type ?a_type." +
-		"?deviceclass rdfs:label ?dc_label;" +
-		"rdf:type ?dc_type." +
-		"} where {" +
-		deviceTypeId +
-		"rdf:type ?type;" +
-		"rdfs:label ?label;" +
-		"ses:hasDeviceClass ?deviceclass;" +
-		"ses:hasService ?service ." +
-		"?service rdf:type ?s_type;" +
-		"rdfs:label ?s_label;" +
-		"ses:refersTo ?aspect;" +
-		"ses:exposesFunction ?function." +
-
-		"?function rdfs:label ?f_label;" +
-		"rdf:type ?f_type." +
-
-		"OPTIONAL {?function " +
-		"ses:hasConcept ?concept_id." +
-		"}" +
-		"?aspect rdfs:label ?a_label;" +
-		"rdf:type ?a_type." +
-		"?deviceclass rdfs:label ?dc_label;" +
-		"rdf:type ?dc_type." +
-		valueFilter +
+		construct +
+		"} " + lnb +
+		"where" + lnb +
+		" {" +
+		where +
 		"}"
 	return url.QueryEscape(
 		query)
