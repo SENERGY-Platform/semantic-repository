@@ -155,6 +155,20 @@ func (*Database) getDeviceTypeQuery(deviceTypeId string, filters []model.DeviceT
 	if deviceTypeId != "" {
 		devicetype = " <" + deviceTypeId + "> "
 	}
+	deviceclass := "?deviceclass"
+	for _, filter := range filters {
+		if filter.DeviceClassId != "" {
+			if deviceclass == "?deviceclass" {
+				deviceclass = "<" + filter.DeviceClassId + ">"
+			} else {
+				if deviceclass != "<"+filter.DeviceClassId+">" {
+					// error
+					return ""
+				}
+			}
+		}
+
+	}
 
 	// linebreak
 	lnb := "\n"
@@ -164,7 +178,7 @@ func (*Database) getDeviceTypeQuery(deviceTypeId string, filters []model.DeviceT
 	construct +=
 		devicetype + " rdf:type ?type;" + lnb +
 			"rdfs:label ?label;" + lnb +
-			"ses:hasDeviceClass  ?deviceclass ;" + lnb +
+			"ses:hasDeviceClass  " + deviceclass + " ;" + lnb +
 			"ses:hasService "
 
 	services := []string{}
@@ -173,7 +187,7 @@ func (*Database) getDeviceTypeQuery(deviceTypeId string, filters []model.DeviceT
 	}
 	construct += strings.Join(services, ", ") + " ." + lnb
 
-	construct += "?deviceclass  rdfs:label ?dc_label;" + lnb +
+	construct += deviceclass + "  rdfs:label ?dc_label;" + lnb +
 		"rdf:type ?dc_type." + lnb
 
 	where += construct
