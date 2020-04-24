@@ -67,7 +67,7 @@ func (this *Database) InsertData(triples string) (err error) {
 	requestBody := []byte(triples)
 	resp, err := http.Post(this.conf.RyaUrl+"/web.rya/loadrdf?format=N-Triples", "text/plain", bytes.NewBuffer(requestBody))
 	if err != nil {
-		log.Println("ERROR: ", err)
+		log.Println("ERROR: InsertData ", err)
 		return err
 	}
 	defer resp.Body.Close()
@@ -82,7 +82,7 @@ func (this *Database) DeleteDeviceType(s string) (err error) {
 	query := this.getDeleteDeviceTypeQuery(s)
 	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
 	if err != nil {
-		log.Println("ERROR:", err)
+		log.Println("ERROR: DeleteDeviceType", err)
 		return err
 	}
 	defer resp.Body.Close()
@@ -98,7 +98,7 @@ func (this *Database) GetDeviceType(deviceTypeId string, filter []model.DeviceTy
 	query := this.getDeviceTypeQuery(deviceTypeId, filter)
 	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
 	if err != nil {
-		log.Println("ERROR: GetFunctions", err)
+		log.Println("ERROR: GetDeviceType", err)
 		return "", err
 	}
 	defer resp.Body.Close()
@@ -115,7 +115,7 @@ func (this *Database) GetLeafCharacteristics() (rdfxml string, err error) {
 	query := this.getLeafCharacteristics()
 	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
 	if err != nil {
-		log.Println("ERROR: getLeafCharacteristics", err)
+		log.Println("ERROR: GetLeafCharacteristics", err)
 		return "", err
 	}
 	defer resp.Body.Close()
@@ -131,7 +131,7 @@ func (this *Database) GetDeviceClassesFunctions(s string) (rdfxml string, err er
 	query := this.getDeviceClassesFunctions(s)
 	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
 	if err != nil {
-		log.Println("ERROR: GetFunctions", err)
+		log.Println("ERROR: GetDeviceClassesFunctions", err)
 		return "", err
 	}
 	defer resp.Body.Close()
@@ -147,7 +147,7 @@ func (this *Database) GetDeviceClassesControllingFunctions(s string) (rdfxml str
 	query := this.getDeviceClassesControllingFunctions(s)
 	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
 	if err != nil {
-		log.Println("ERROR: GetFunctions", err)
+		log.Println("ERROR: GetDeviceClassesControllingFunctions", err)
 		return "", err
 	}
 	defer resp.Body.Close()
@@ -163,7 +163,7 @@ func (this *Database) GetDeviceClassesWithControllingFunctions() (rdfxml string,
 	query := this.getDeviceClassesWithControllingFunctions()
 	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
 	if err != nil {
-		log.Println("ERROR: GetFunctions", err)
+		log.Println("ERROR: GetDeviceClassesWithControllingFunctions", err)
 		return "", err
 	}
 	defer resp.Body.Close()
@@ -179,7 +179,7 @@ func (this *Database) GetAspectsMeasuringFunctions(s string) (rdfxml string, err
 	query := this.getAspectsMeasuringFunctions(s)
 	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
 	if err != nil {
-		log.Println("ERROR: GetFunctions", err)
+		log.Println("ERROR: GetAspectsMeasuringFunctions", err)
 		return "", err
 	}
 	defer resp.Body.Close()
@@ -195,7 +195,7 @@ func (this *Database) GetAspectsWithMeasuringFunction() (rdfxml string, err erro
 	query := this.getAspectsWithMeasuringFunction()
 	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
 	if err != nil {
-		log.Println("ERROR: GetFunctions", err)
+		log.Println("ERROR: GetAspectsWithMeasuringFunction", err)
 		return "", err
 	}
 	defer resp.Body.Close()
@@ -216,7 +216,7 @@ func (this *Database) DeleteConcept(s string, deleteNested bool) (err error) {
 	}
 	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
 	if err != nil {
-		log.Println("ERROR:", err)
+		log.Println("ERROR: DeleteConcept", err)
 		return err
 	}
 	defer resp.Body.Close()
@@ -231,7 +231,7 @@ func (this *Database) DeleteCharacteristic(s string) (err error) {
 	query := this.getDeleteCharacteristicQuery(s)
 	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
 	if err != nil {
-		log.Println("ERROR:", err)
+		log.Println("ERROR: DeleteCharacteristic", err)
 		return err
 	}
 	defer resp.Body.Close()
@@ -246,7 +246,7 @@ func (this *Database) GetListWithoutSubProperties(p string, o string) (rdfxml st
 	query := this.getConstructListWithoutSubProperties(p, o)
 	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
 	if err != nil {
-		log.Println("ERROR: GetFunctions", err)
+		log.Println("ERROR: GetListWithoutSubProperties", err)
 		return "", err
 	}
 	defer resp.Body.Close()
@@ -262,7 +262,7 @@ func (this *Database) GetWithAllSubProperties(subject string) (rdfxml string, er
 	query := this.getConstructWithAllSubProperties(subject)
 	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
 	if err != nil {
-		log.Println("ERROR: GetFunctions", err)
+		log.Println("ERROR: GetWithAllSubProperties", err)
 		return "", err
 	}
 	defer resp.Body.Close()
@@ -278,7 +278,7 @@ func (this *Database) GetWithoutSubProperties(s string) (rdfxml string, err erro
 	query := this.getConstructWithoutSubProperties(s)
 	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
 	if err != nil {
-		log.Println("ERROR: GetConcept", err)
+		log.Println("ERROR: GetWithoutSubProperties", err)
 		return "", err
 	}
 	defer resp.Body.Close()
