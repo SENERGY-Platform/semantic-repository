@@ -44,7 +44,12 @@ func TestReadControllingFunction(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	res, err, code := con.GetFunctions(model.SES_ONTOLOGY_CONTROLLING_FUNCTION)
+	err = db.InsertData(
+		`<urn:infai:ses:controlling-function:5467567> <https://senergy.infai.org/ontology/hasConcept> <urn:infai:ses:concept:12213s> .`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	res, err, code := con.GetFunctionsByType(model.SES_ONTOLOGY_CONTROLLING_FUNCTION)
 	if err != nil {
 		t.Fatal(res, err, code)
 	} else {
@@ -56,6 +61,9 @@ func TestReadControllingFunction(t *testing.T) {
 	}
 	if res[0].Name != "colorFunction" {
 		t.Fatal("error Name")
+	}
+	if res[0].ConceptId != "urn:infai:ses:concept:12213s" {
+		t.Fatal("error ConceptId")
 	}
 
 	if res[1].Id != "urn:infai:ses:controlling-function:2222" {
@@ -93,7 +101,7 @@ func TestReadMeasuringFunction(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	res, err, code := con.GetFunctions(model.SES_ONTOLOGY_MEASURING_FUNCTION)
+	res, err, code := con.GetFunctionsByType(model.SES_ONTOLOGY_MEASURING_FUNCTION)
 	if err != nil {
 		t.Fatal(res, err, code)
 	} else {
@@ -120,4 +128,110 @@ func TestReadMeasuringFunction(t *testing.T) {
 	if res[2].Name != "zzz" {
 		t.Fatal("error Name")
 	}
+}
+
+func TestReadFunctions(t *testing.T) {
+	err, con, _ := StartUpScript(t)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+	// test limit offset
+	res, err, code := con.GetFunctions(1, 0, "", "")
+	if err != nil {
+		t.Fatal(res, err, code)
+	} else {
+		t.Log(res)
+	}
+
+	if res[0].Id != "urn:infai:ses:measuring-function:23" ||
+		res[0].Name != "aaa" ||
+		res[0].ConceptId != "" ||
+		res[0].RdfType != model.SES_ONTOLOGY_MEASURING_FUNCTION {
+		t.Fatal("error ")
+	}
+
+	res, err, code = con.GetFunctions(1, 1, "", "")
+	if err != nil {
+		t.Fatal(res, err, code)
+	} else {
+		t.Log(res)
+	}
+
+	if res[0].Id != "urn:infai:ses:measuring-function:467" ||
+		res[0].Name != "bbb" ||
+		res[0].ConceptId != "" ||
+		res[0].RdfType != model.SES_ONTOLOGY_MEASURING_FUNCTION {
+		t.Fatal("error ")
+	}
+
+	res, err, code = con.GetFunctions(1, 2, "", "")
+	if err != nil {
+		t.Fatal(res, err, code)
+	} else {
+		t.Log(res)
+	}
+
+	if res[0].Id != "urn:infai:ses:controlling-function:5467567" ||
+		res[0].Name != "colorFunction" ||
+		res[0].ConceptId != "urn:infai:ses:concept:12213s" ||
+		res[0].RdfType != model.SES_ONTOLOGY_CONTROLLING_FUNCTION {
+		t.Fatal("error ")
+	}
+
+	// test direction
+	res, err, code = con.GetFunctions(1, 0, "", "asc")
+	if err != nil {
+		t.Fatal(res, err, code)
+	} else {
+		t.Log(res)
+	}
+
+	if res[0].Id != "urn:infai:ses:measuring-function:23" ||
+		res[0].Name != "aaa" ||
+		res[0].ConceptId != "" ||
+		res[0].RdfType != model.SES_ONTOLOGY_MEASURING_FUNCTION {
+		t.Fatal("error ")
+	}
+
+	res, err, code = con.GetFunctions(1, 0, "", "desc")
+	if err != nil {
+		t.Fatal(res, err, code)
+	} else {
+		t.Log(res)
+	}
+
+	if res[0].Id != "urn:infai:ses:measuring-function:321" ||
+		res[0].Name != "zzz" ||
+		res[0].ConceptId != "" ||
+		res[0].RdfType != model.SES_ONTOLOGY_MEASURING_FUNCTION {
+		t.Fatal("error ")
+	}
+
+	// test search
+	res, err, code = con.GetFunctions(1, 0, "aaa", "asc")
+	if err != nil {
+		t.Fatal(res, err, code)
+	} else {
+		t.Log(res)
+	}
+
+	if res[0].Id != "urn:infai:ses:measuring-function:23" ||
+		res[0].Name != "aaa" ||
+		res[0].ConceptId != "" ||
+		res[0].RdfType != model.SES_ONTOLOGY_MEASURING_FUNCTION {
+		t.Fatal("error ")
+	}
+
+	res, err, code = con.GetFunctions(10, 0, "unc", "desc")
+	if err != nil {
+		t.Fatal(res, err, code)
+	} else {
+		t.Log(res)
+	}
+
+	if len(res) != 3 {
+		t.Fatal("error ")
+	}
+
 }

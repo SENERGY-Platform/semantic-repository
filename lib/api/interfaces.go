@@ -25,7 +25,8 @@ type Controller interface {
 	GetDeviceTypesFiltered(filter []model.DeviceTypesFilter) (result []model.DeviceType, err error, errCode int)
 	ValidateDeviceType(deviceType model.DeviceType) (err error, code int)
 
-	GetFunctions(funcType string) (result []model.Function, err error, errCode int)
+	GetFunctionsByType(funcType string) (result []model.Function, err error, errCode int)
+	GetFunctions(limit int, offset int, search string, direction string) (result []model.Function, err error, errCode int)
 	GetDeviceClasses() (result []model.DeviceClass, err error, errCode int)
 	GetDeviceClassesWithControllingFunctions() (result []model.DeviceClass, err error, errCode int)
 	GetDeviceClassesFunctions(subject string) (result []model.Function, err error, errCode int)

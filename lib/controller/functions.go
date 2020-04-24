@@ -28,8 +28,29 @@ import (
 //		api
 /////////////////////////
 
-func (this *Controller) GetFunctions(funcType string) (result []model.Function, err error, errCode int) {
+func (this *Controller) GetFunctionsByType(funcType string) (result []model.Function, err error, errCode int) {
 	functions, err := this.db.GetListWithoutSubProperties(model.RDF_TYPE, funcType)
+	if err != nil {
+		log.Println("GetFunctionsByType ERROR: GetListWithoutSubProperties", err)
+		return result, err, http.StatusInternalServerError
+	}
+
+	err = this.RdfXmlToModel(functions, &result)
+	if err != nil {
+		log.Println("GetFunctionsByType ERROR: RdfXmlToModel", err)
+		return result, err, http.StatusInternalServerError
+	}
+
+	sort.Slice(result, func(i, j int) bool {
+		return result[i].Name < result[j].Name
+	})
+
+	return result, nil, http.StatusOK
+
+}
+
+func (this *Controller) GetFunctions(limit int, offset int, search string, direction string) (result []model.Function, err error, errCode int) {
+	functions, err := this.db.GetFunctionsWithoutSubPropertiesLimitOffsetSearch(limit, offset, search, direction)
 	if err != nil {
 		log.Println("GetFunctions ERROR: GetListWithoutSubProperties", err)
 		return result, err, http.StatusInternalServerError
@@ -42,7 +63,12 @@ func (this *Controller) GetFunctions(funcType string) (result []model.Function, 
 	}
 
 	sort.Slice(result, func(i, j int) bool {
-		return result[i].Name < result[j].Name
+		if direction == "desc" {
+			return result[i].Name > result[j].Name
+		} else {
+			return result[i].Name < result[j].Name
+		}
+
 	})
 
 	return result, nil, http.StatusOK

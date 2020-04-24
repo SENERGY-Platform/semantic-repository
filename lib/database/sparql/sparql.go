@@ -258,6 +258,22 @@ func (this *Database) GetListWithoutSubProperties(p string, o string) (rdfxml st
 	return string(byteArray), nil
 }
 
+func (this *Database) GetFunctionsWithoutSubPropertiesLimitOffsetSearch(limit int, offset int, search string, direction string) (rdfxml string, err error) {
+	query := this.getFunctionsWithoutSubPropertiesLimitOffsetSearch(limit, offset, search, direction)
+	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
+	if err != nil {
+		log.Println("ERROR: getFunctionsWithoutSubPropertiesLimitOffsetSearch", err)
+		return "", err
+	}
+	defer resp.Body.Close()
+	byteArray, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Println("ERROR:", err)
+		return "", err
+	}
+	return string(byteArray), nil
+}
+
 func (this *Database) GetWithAllSubProperties(subject string) (rdfxml string, err error) {
 	query := this.getConstructWithAllSubProperties(subject)
 	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)

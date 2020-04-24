@@ -46,6 +46,66 @@ func (*Database) getConstructListWithoutSubProperties(p string, o string) string
 		"ORDER BY ASC(?label)")
 }
 
+func (*Database) getFunctionsWithoutSubPropertiesLimitOffsetSearch(limit int, offset int, search string, direction string) string {
+	//PREFIX ses: <https://senergy.infai.org/ontology/>
+	//PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+	//
+	//CONSTRUCT {
+	//	?s rdfs:label ?label;
+	//	rdf:type ?type;
+	//	ses:hasConcept ?concept .
+	//}
+	//
+	//
+	//WHERE {
+	//	?s rdfs:label ?label;
+	//	rdf:type ?type.
+	//	OPTIONAL {?s ses:hasConcept ?concept .}
+	//
+	//	VALUES ?type { <https://senergy.infai.org/ontology/ControllingFunction> <https://senergy.infai.org/ontology/MeasuringFunction> }
+	//	FILTER CONTAINS (?label, 'Func')
+	//
+	//}
+	//ORDER BY desc(?label)
+	//LIMIT 6
+	//OFFSET 0
+
+	numberOfFields := 3
+	query := "PREFIX ses: <https://senergy.infai.org/ontology/> " +
+		"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
+
+		"CONSTRUCT {" +
+		"?s rdfs:label ?label;" +
+		"rdf:type ?type;" +
+		"ses:hasConcept ?concept ." +
+		"}" +
+
+		"WHERE {" +
+		"?s rdfs:label ?label;" +
+		"rdf:type ?type." +
+		"OPTIONAL {?s ses:hasConcept ?concept .}" +
+
+		"VALUES ?type { <" + model.SES_ONTOLOGY_CONTROLLING_FUNCTION + "> <" + model.SES_ONTOLOGY_MEASURING_FUNCTION + "> }"
+
+	if search != "" {
+		query += "FILTER CONTAINS (?label, '" + search + "')"
+	}
+
+	query += "}" +
+		"ORDER BY "
+	if direction == "asc" || direction == "desc" {
+		query += direction
+	} else {
+		query += "asc"
+	}
+
+	query += "(?label)" +
+		"LIMIT " + strconv.Itoa(numberOfFields*limit) + " " +
+		"OFFSET " + strconv.Itoa(numberOfFields*offset)
+
+	return url.QueryEscape(query)
+}
+
 func (*Database) getConstructWithAllSubProperties(subject string) string {
 
 	return url.QueryEscape("prefix x: <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> " +
