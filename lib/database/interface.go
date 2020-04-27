@@ -35,7 +35,7 @@ type Database interface {
 	GetAspectsWithMeasuringFunction() (rdfxml string, err error)
 	GetWithoutSubProperties(s string) (rdfxml string, err error)
 	GetListWithoutSubProperties(p string, o string) (rdfxml string, err error)
-	GetFunctionsWithoutSubPropertiesLimitOffsetSearch(limit int, offset int, search string, direction string) (rdfxml string, err error)
+	GetFunctionsWithoutSubPropertiesLimitOffsetSearch(limit int, offset int, search string, direction string) (rdfxml string, totalcount string, err error)
 	GetWithAllSubProperties(s string) (rdfxml string, err error)
 	GetLeafCharacteristics() (rdfxml string, err error)
 }

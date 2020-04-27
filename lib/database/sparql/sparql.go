@@ -258,20 +258,34 @@ func (this *Database) GetListWithoutSubProperties(p string, o string) (rdfxml st
 	return string(byteArray), nil
 }
 
-func (this *Database) GetFunctionsWithoutSubPropertiesLimitOffsetSearch(limit int, offset int, search string, direction string) (rdfxml string, err error) {
+func (this *Database) GetFunctionsWithoutSubPropertiesLimitOffsetSearch(limit int, offset int, search string, direction string) (rdfxml string, totalcount string, err error) {
 	query := this.getFunctionsWithoutSubPropertiesLimitOffsetSearch(limit, offset, search, direction)
 	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
 	if err != nil {
 		log.Println("ERROR: getFunctionsWithoutSubPropertiesLimitOffsetSearch", err)
-		return "", err
+		return "", "", err
 	}
 	defer resp.Body.Close()
 	byteArray, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Println("ERROR:", err)
-		return "", err
+		return "", "", err
 	}
-	return string(byteArray), nil
+
+	query = this.getFunctionsCount(search)
+	respCount, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
+	if err != nil {
+		log.Println("ERROR: getFunctionsCount", err)
+		return "", "", err
+	}
+	defer resp.Body.Close()
+	count, err := ioutil.ReadAll(respCount.Body)
+	if err != nil {
+		log.Println("ERROR:", err)
+		return "", "", err
+	}
+
+	return string(byteArray), string(count), nil
 }
 
 func (this *Database) GetWithAllSubProperties(subject string) (rdfxml string, err error) {

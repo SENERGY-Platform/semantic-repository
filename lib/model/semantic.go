@@ -29,6 +29,15 @@ type Function struct {
 	RdfType   string `json:"rdf_type"`
 }
 
+type FunctionList struct {
+	Functions  []Function `json:"functions"`
+	TotalCount int        `json:"total_count"`
+}
+
+type TotalCount struct {
+	TotalCount int `json:"total_count"`
+}
+
 type Aspect struct {
 	Id      string `json:"id"`
 	Name    string `json:"name"`

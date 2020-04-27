@@ -144,10 +144,11 @@ func TestReadFunctions(t *testing.T) {
 		t.Log(res)
 	}
 
-	if res[0].Id != "urn:infai:ses:measuring-function:23" ||
-		res[0].Name != "aaa" ||
-		res[0].ConceptId != "" ||
-		res[0].RdfType != model.SES_ONTOLOGY_MEASURING_FUNCTION {
+	if res.Functions[0].Id != "urn:infai:ses:measuring-function:23" ||
+		res.Functions[0].Name != "aaa" ||
+		res.Functions[0].ConceptId != "" ||
+		res.Functions[0].RdfType != model.SES_ONTOLOGY_MEASURING_FUNCTION ||
+		res.TotalCount != 6 {
 		t.Fatal("error ")
 	}
 
@@ -158,10 +159,11 @@ func TestReadFunctions(t *testing.T) {
 		t.Log(res)
 	}
 
-	if res[0].Id != "urn:infai:ses:measuring-function:467" ||
-		res[0].Name != "bbb" ||
-		res[0].ConceptId != "" ||
-		res[0].RdfType != model.SES_ONTOLOGY_MEASURING_FUNCTION {
+	if res.Functions[0].Id != "urn:infai:ses:measuring-function:467" ||
+		res.Functions[0].Name != "bbb" ||
+		res.Functions[0].ConceptId != "" ||
+		res.Functions[0].RdfType != model.SES_ONTOLOGY_MEASURING_FUNCTION ||
+		res.TotalCount != 6 {
 		t.Fatal("error ")
 	}
 
@@ -172,10 +174,11 @@ func TestReadFunctions(t *testing.T) {
 		t.Log(res)
 	}
 
-	if res[0].Id != "urn:infai:ses:controlling-function:5467567" ||
-		res[0].Name != "colorFunction" ||
-		res[0].ConceptId != "urn:infai:ses:concept:12213s" ||
-		res[0].RdfType != model.SES_ONTOLOGY_CONTROLLING_FUNCTION {
+	if res.Functions[0].Id != "urn:infai:ses:controlling-function:5467567" ||
+		res.Functions[0].Name != "colorFunction" ||
+		res.Functions[0].ConceptId != "urn:infai:ses:concept:12213s" ||
+		res.Functions[0].RdfType != model.SES_ONTOLOGY_CONTROLLING_FUNCTION ||
+		res.TotalCount != 6 {
 		t.Fatal("error ")
 	}
 
@@ -187,10 +190,11 @@ func TestReadFunctions(t *testing.T) {
 		t.Log(res)
 	}
 
-	if res[0].Id != "urn:infai:ses:measuring-function:23" ||
-		res[0].Name != "aaa" ||
-		res[0].ConceptId != "" ||
-		res[0].RdfType != model.SES_ONTOLOGY_MEASURING_FUNCTION {
+	if res.Functions[0].Id != "urn:infai:ses:measuring-function:23" ||
+		res.Functions[0].Name != "aaa" ||
+		res.Functions[0].ConceptId != "" ||
+		res.Functions[0].RdfType != model.SES_ONTOLOGY_MEASURING_FUNCTION ||
+		res.TotalCount != 6 {
 		t.Fatal("error ")
 	}
 
@@ -201,10 +205,11 @@ func TestReadFunctions(t *testing.T) {
 		t.Log(res)
 	}
 
-	if res[0].Id != "urn:infai:ses:measuring-function:321" ||
-		res[0].Name != "zzz" ||
-		res[0].ConceptId != "" ||
-		res[0].RdfType != model.SES_ONTOLOGY_MEASURING_FUNCTION {
+	if res.Functions[0].Id != "urn:infai:ses:measuring-function:321" ||
+		res.Functions[0].Name != "zzz" ||
+		res.Functions[0].ConceptId != "" ||
+		res.Functions[0].RdfType != model.SES_ONTOLOGY_MEASURING_FUNCTION ||
+		res.TotalCount != 6 {
 		t.Fatal("error ")
 	}
 
@@ -216,10 +221,11 @@ func TestReadFunctions(t *testing.T) {
 		t.Log(res)
 	}
 
-	if res[0].Id != "urn:infai:ses:measuring-function:23" ||
-		res[0].Name != "aaa" ||
-		res[0].ConceptId != "" ||
-		res[0].RdfType != model.SES_ONTOLOGY_MEASURING_FUNCTION {
+	if res.Functions[0].Id != "urn:infai:ses:measuring-function:23" ||
+		res.Functions[0].Name != "aaa" ||
+		res.Functions[0].ConceptId != "" ||
+		res.Functions[0].RdfType != model.SES_ONTOLOGY_MEASURING_FUNCTION ||
+		res.TotalCount != 1 {
 		t.Fatal("error ")
 	}
 
@@ -230,7 +236,8 @@ func TestReadFunctions(t *testing.T) {
 		t.Log(res)
 	}
 
-	if len(res) != 3 {
+	if len(res.Functions) != 3 ||
+		res.TotalCount != 3 {
 		t.Fatal("error ")
 	}
 

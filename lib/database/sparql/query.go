@@ -106,6 +106,52 @@ func (*Database) getFunctionsWithoutSubPropertiesLimitOffsetSearch(limit int, of
 	return url.QueryEscape(query)
 }
 
+func (*Database) getFunctionsCount(search string) string {
+	//PREFIX ses: <https://senergy.infai.org/ontology/>
+	//PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+	//
+	//CONSTRUCT
+	//{
+	//	ses:Count ses:totalCount ?cnt .
+	//}
+	//WHERE
+	//{
+	//	Select (count(*) as ?cnt)
+	//	{
+	//	?s rdfs:label ?label;
+	//	rdf:type ?type.
+	//	OPTIONAL {?s ses:hasConcept ?concept .}
+	//
+	//	VALUES ?type { <https://senergy.infai.org/ontology/ControllingFunction> <https://senergy.infai.org/ontology/MeasuringFunction>}
+	//	FILTER CONTAINS (?label, "")
+	//	}
+	//	}
+
+	query := "PREFIX ses: <https://senergy.infai.org/ontology/> " +
+		"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
+
+		"CONSTRUCT { " +
+		"ses:Count ses:totalCount ?cnt ." +
+		"}" +
+
+		"WHERE" +
+		"{" +
+		"Select (count(*) as ?cnt) " +
+		"{" +
+		"?s rdfs:label ?label;" +
+		"rdf:type ?type." +
+		"OPTIONAL {?s ses:hasConcept ?concept .}" +
+
+		"VALUES ?type { <" + model.SES_ONTOLOGY_CONTROLLING_FUNCTION + "> <" + model.SES_ONTOLOGY_MEASURING_FUNCTION + "> }"
+
+	if search != "" {
+		query += "FILTER CONTAINS (?label, '" + search + "')"
+	}
+
+	query += "}}"
+	return url.QueryEscape(query)
+}
+
 func (*Database) getConstructWithAllSubProperties(subject string) string {
 
 	return url.QueryEscape("prefix x: <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> " +

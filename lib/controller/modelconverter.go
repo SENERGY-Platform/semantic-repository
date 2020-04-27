@@ -123,6 +123,8 @@ func (*Controller) RdfXmlFrame(rdfxml string, result interface{}, rootElement st
 		contextDoc = getCharacteristicsContext()
 	case *[]model.ConceptWithCharacteristics:
 		contextDoc = getConceptCharacteristicContext()
+	case *[]model.TotalCount:
+		contextDoc = getTotalCountContext()
 	default:
 		debug.PrintStack()
 		log.Println("Unknown model type:", reflect.TypeOf(result))
@@ -147,6 +149,9 @@ func (*Controller) RdfXmlFrame(rdfxml string, result interface{}, rootElement st
 		}
 	case *[]model.ConceptWithCharacteristics:
 		cont["@type"] = model.SES_ONTOLOGY_CONCEPT
+		cont["@id"] = rootElement
+	case *[]model.TotalCount:
+		cont["@type"] = model.SES_ONTOLOGY_COUNT
 		cont["@id"] = rootElement
 	default:
 		debug.PrintStack()
@@ -266,6 +271,15 @@ func getConceptCharacteristicContext() map[string]interface{} {
 		"value":     model.SES_ONTOLOGY_HAS_VALUE,
 		"min_value": model.SES_ONTOLOGY_HAS_MIN_VALUE,
 		"max_value": model.SES_ONTOLOGY_HAS_MAX_VALUE,
+	}
+	return contextDoc
+}
+
+func getTotalCountContext() map[string]interface{} {
+	contextDoc := map[string]interface{}{
+		"id":          "@id",
+		"rdf_type":    "@type",
+		"total_count": model.SES_ONTOLOGY_TOTAL_COUNT,
 	}
 	return contextDoc
 }

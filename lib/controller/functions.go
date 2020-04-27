@@ -49,26 +49,33 @@ func (this *Controller) GetFunctionsByType(funcType string) (result []model.Func
 
 }
 
-func (this *Controller) GetFunctions(limit int, offset int, search string, direction string) (result []model.Function, err error, errCode int) {
-	functions, err := this.db.GetFunctionsWithoutSubPropertiesLimitOffsetSearch(limit, offset, search, direction)
+func (this *Controller) GetFunctions(limit int, offset int, search string, direction string) (result model.FunctionList, err error, errCode int) {
+	functions, totalcount, err := this.db.GetFunctionsWithoutSubPropertiesLimitOffsetSearch(limit, offset, search, direction)
 	if err != nil {
 		log.Println("GetFunctions ERROR: GetListWithoutSubProperties", err)
 		return result, err, http.StatusInternalServerError
 	}
 
-	err = this.RdfXmlToModel(functions, &result)
+	err = this.RdfXmlToModel(functions, &result.Functions)
 	if err != nil {
 		log.Println("GetFunctions ERROR: RdfXmlToModel", err)
 		return result, err, http.StatusInternalServerError
 	}
 
-	sort.Slice(result, func(i, j int) bool {
-		if direction == "desc" {
-			return result[i].Name > result[j].Name
-		} else {
-			return result[i].Name < result[j].Name
-		}
+	count := []model.TotalCount{}
+	err = this.RdfXmlFrame(totalcount, &count, model.SES_ONTOLOGY_COUNT)
+	if err != nil {
+		log.Println("GetFunctions ERROR: RdfXmlToModel", err)
+		return result, err, http.StatusInternalServerError
+	}
+	result.TotalCount = count[0].TotalCount
 
+	sort.Slice(result.Functions, func(i, j int) bool {
+		if direction == "desc" {
+			return result.Functions[i].Name > result.Functions[j].Name
+		} else {
+			return result.Functions[i].Name < result.Functions[j].Name
+		}
 	})
 
 	return result, nil, http.StatusOK
