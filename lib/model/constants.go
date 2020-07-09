@@ -41,6 +41,7 @@ const SES_ONTOLOGY_HAS_MIN_VALUE = "https://senergy.infai.org/ontology/hasMinVal
 const SES_ONTOLOGY_HAS_MAX_VALUE = "https://senergy.infai.org/ontology/hasMaxValue"
 const SES_ONTOLOGY_HAS_DEVICE_CLASS = "https://senergy.infai.org/ontology/hasDeviceClass"
 const SES_ONTOLOGY_HAS_SERVICE = "https://senergy.infai.org/ontology/hasService"
+const SES_ONTOLOGY_HAS_PROTOCOL = "https://senergy.infai.org/ontology/hasProtocol"
 const SES_ONTOLOGY_REFERS_TO = "https://senergy.infai.org/ontology/refersTo"
 const SES_ONTOLOGY_EXPOSES_FUNCTION = "https://senergy.infai.org/ontology/exposesFunction"
 const SES_ONTOLOGY_TOTAL_COUNT = "https://senergy.infai.org/ontology/totalCount"

@@ -32,7 +32,10 @@ func TestProduceValidDeviceTypes(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	producer, _ := producer.New(conf)
+	producer, err := producer.New(conf)
+	if err != nil {
+		t.Fatal(err)
+	}
 	devicetype := model.DeviceType{}
 	devicetype.Id = "urn:infai:ses:device-type:eb4a3337-01a1-4434-9dcc-064b3955eeef"
 	devicetype.Name = "Philips-Extended-Color-Light"
@@ -203,7 +206,7 @@ func TestReadDeviceTypeCF(t *testing.T) {
 	err, con, _ := StartUpScript(t)
 	deviceType, err, code := con.GetDeviceTypesFiltered([]model.DeviceTypesFilter{{FunctionId: "urn:infai:ses:controlling-function:c54e2a89-1fb8-4ecb-8993-a7b40b355599", DeviceClassId: "urn:infai:ses:device-class:14e56881-16f9-4120-bb41-270a43070c86", AspectId: ""}})
 
-	deviceTypeStringified := `[{"id":"urn:infai:ses:device-type:eb4a3337-01a1-4434-9dcc-064b3955eeef","name":"Philips-Extended-Color-Light","description":"","image":"","services":[{"id":"urn:infai:ses:service:1b0ef253-16f7-4b65-8a15-fe79fccf7e70","local_id":"","name":"setColorService","description":"","aspects":[{"id":"urn:infai:ses:aspect:a7470d73-dde3-41fc-92bd-f16bb28f2da6","name":"Lighting","rdf_type":"https://senergy.infai.org/ontology/Aspect"}],"protocol_id":"","inputs":null,"outputs":null,"functions":[{"id":"urn:infai:ses:controlling-function:c54e2a89-1fb8-4ecb-8993-a7b40b355599","name":"setColorFunction","concept_id":"urn:infai:ses:concept:8b1161d5-7878-4dd2-a36c-6f98f6b94bf8","rdf_type":"https://senergy.infai.org/ontology/ControllingFunction"}],"rdf_type":"https://senergy.infai.org/ontology/Service"}],"device_class":{"id":"urn:infai:ses:device-class:14e56881-16f9-4120-bb41-270a43070c86","name":"Lamp","rdf_type":"https://senergy.infai.org/ontology/DeviceClass"},"rdf_type":"https://senergy.infai.org/ontology/DeviceType"}]`
+	deviceTypeStringified := `[{"id":"urn:infai:ses:device-type:eb4a3337-01a1-4434-9dcc-064b3955eeef","name":"Philips-Extended-Color-Light","description":"","image":"","services":[{"id":"urn:infai:ses:service:1b0ef253-16f7-4b65-8a15-fe79fccf7e70","local_id":"","name":"setColorService","description":"","aspects":[{"id":"urn:infai:ses:aspect:a7470d73-dde3-41fc-92bd-f16bb28f2da6","name":"Lighting","rdf_type":"https://senergy.infai.org/ontology/Aspect"}],"protocol_id":"urn:infai:ses:protocol:f3a63aeb-187e-4dd9-9ef5-d97a6eb6292b","inputs":null,"outputs":null,"functions":[{"id":"urn:infai:ses:controlling-function:c54e2a89-1fb8-4ecb-8993-a7b40b355599","name":"setColorFunction","concept_id":"urn:infai:ses:concept:8b1161d5-7878-4dd2-a36c-6f98f6b94bf8","rdf_type":"https://senergy.infai.org/ontology/ControllingFunction"}],"rdf_type":"https://senergy.infai.org/ontology/Service"}],"device_class":{"id":"urn:infai:ses:device-class:14e56881-16f9-4120-bb41-270a43070c86","name":"Lamp","rdf_type":"https://senergy.infai.org/ontology/DeviceClass"},"rdf_type":"https://senergy.infai.org/ontology/DeviceType"}]`
 
 	b, err := json.Marshal(deviceType)
 	if err != nil {
@@ -412,7 +415,10 @@ func TestCreateAndDeleteDeviceTypePart1(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	producer, _ := producer.New(conf)
+	producer, err := producer.New(conf)
+	if err != nil {
+		t.Fatal(err)
+	}
 	devicetype := model.DeviceType{}
 	devicetype.Id = "urn:infai:ses:devicetype:1"
 	devicetype.Name = "Philips Hue Color"
@@ -457,7 +463,10 @@ func TestCreateAndDeleteDeviceTypePart2(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	producer, _ := producer.New(conf)
+	producer, err := producer.New(conf)
+	if err != nil {
+		t.Fatal(err)
+	}
 	err = producer.PublishDeviceTypeDelete("urn:infai:ses:devicetype:1", "sdfdsfsf")
 	if err != nil {
 		t.Fatal(err)
@@ -469,7 +478,10 @@ func TestProduceValidDeviceTypeWithoutConceptId(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	producer, _ := producer.New(conf)
+	producer, err := producer.New(conf)
+	if err != nil {
+		t.Fatal(err)
+	}
 	devicetype := model.DeviceType{}
 	devicetype.Id = "urn:infai:ses:devicetype:1_4-12-2019"
 	devicetype.Name = "Philips Hue Color"

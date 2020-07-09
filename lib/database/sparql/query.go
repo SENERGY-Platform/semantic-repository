@@ -311,6 +311,7 @@ func (*Database) getDeviceTypeQuery(deviceTypeId string, filters []model.DeviceT
 		service :=
 			"?service" + convIndex + " rdf:type ?s_type" + convIndex + ";" + lnb +
 				"rdfs:label ?s_label" + convIndex + ";" + lnb +
+				"ses:hasProtocol ?s_protocol" + convIndex + ";" + lnb +
 				"ses:refersTo " + aspect + ";" + lnb +
 				"ses:exposesFunction " + function + " ." + lnb +
 				function + " rdfs:label ?f_label" + convIndex + ";" + lnb +
