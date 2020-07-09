@@ -45,6 +45,10 @@ func (this *Controller) GetDeviceType(deviceTypeId string) (result model.DeviceT
 		return result, err, http.StatusInternalServerError
 	}
 
+	if len(res) == 0 {
+		return result, errors.New("not found"), http.StatusNotFound
+	}
+
 	sort.Slice(res[0].Services, func(i, j int) bool {
 		return res[0].Services[i].Name < res[0].Services[j].Name
 	})
