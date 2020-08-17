@@ -41,15 +41,12 @@ func Start(conf config.Config) (stop func(), err error) {
 
 	ctrl, err := controller.New(conf, db)
 	if err != nil {
-		db.Disconnect()
 		log.Println("ERROR: unable to start control", err)
 		return stop, err
 	}
 
 	sourceStop, err := consumer.Start(conf, ctrl)
 	if err != nil {
-		db.Disconnect()
-		ctrl.Stop()
 		log.Println("ERROR: unable to start source", err)
 		return stop, err
 	}
@@ -57,15 +54,11 @@ func Start(conf config.Config) (stop func(), err error) {
 	err = api.Start(conf, ctrl)
 	if err != nil {
 		sourceStop()
-		db.Disconnect()
-		ctrl.Stop()
 		log.Println("ERROR: unable to start api", err)
 		return stop, err
 	}
 
 	return func() {
 		sourceStop()
-		db.Disconnect()
-		ctrl.Stop()
 	}, err
 }

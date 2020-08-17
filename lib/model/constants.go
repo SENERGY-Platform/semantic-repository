@@ -46,9 +46,13 @@ const SES_ONTOLOGY_REFERS_TO = "https://senergy.infai.org/ontology/refersTo"
 const SES_ONTOLOGY_EXPOSES_FUNCTION = "https://senergy.infai.org/ontology/exposesFunction"
 const SES_ONTOLOGY_TOTAL_COUNT = "https://senergy.infai.org/ontology/totalCount"
 
+const SES_ONTOLOGY_HAS_INTERACTION = "https://senergy.infai.org/ontology/interaction"
+
 const RDFS_LABEL = "http://www.w3.org/2000/01/rdf-schema#label"
 const RDF_TYPE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
 
 // PREFIXES
 const PREFIX_SES = "PREFIX ses: <https://senergy.infai.org/ontology/> "
 const PREFIX_RDF = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"
+
+const URN_PREFIX = "urn:infai:ses:"

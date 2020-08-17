@@ -25,19 +25,15 @@ import (
 
 func New(config config.Config, db database.Database) (ctrl *Controller, err error) {
 	ctrl = &Controller{
-		db:       db,
-		config:   config,
+		db:     db,
+		config: config,
 	}
 	return
 }
 
 type Controller struct {
-	db       database.Database
-	config   config.Config
-}
-
-func (this *Controller) Stop() {
-	this.db.Disconnect()
+	db     database.Database
+	config config.Config
 }
 
 func getTimeoutContext() (context.Context, context.CancelFunc) {

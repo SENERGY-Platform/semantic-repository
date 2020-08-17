@@ -22,6 +22,7 @@ import (
 	"log"
 	"net/http"
 	"sort"
+	"strings"
 )
 
 /////////////////////////
@@ -109,9 +110,11 @@ func (this *Controller) GetDeviceClassesControllingFunctions(subject string) (re
 }
 
 func (this *Controller) ValidateDeviceClass(deviceClass model.DeviceClass) (error, int) {
-
 	if deviceClass.Id == "" {
 		return errors.New("missing device class id"), http.StatusBadRequest
+	}
+	if !strings.HasPrefix(deviceClass.Id, model.URN_PREFIX) {
+		return errors.New("invalid deviceClass id"), http.StatusBadRequest
 	}
 	if deviceClass.Name == "" {
 		return errors.New("missing device class name"), http.StatusBadRequest

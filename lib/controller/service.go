@@ -20,6 +20,7 @@ import (
 	"errors"
 	"github.com/SENERGY-Platform/semantic-repository/lib/model"
 	"net/http"
+	"strings"
 )
 
 func (this *Controller) ValidateService(services []model.Service) (error, int) {
@@ -31,6 +32,9 @@ func (this *Controller) ValidateService(services []model.Service) (error, int) {
 		if service.Id == "" {
 			return errors.New("missing service id"), http.StatusBadRequest
 		}
+		if !strings.HasPrefix(service.Id, model.URN_PREFIX) {
+			return errors.New("invalid service id"), http.StatusBadRequest
+		}
 		if service.LocalId == "" {
 			return errors.New("missing service local id"), http.StatusBadRequest
 		}
@@ -40,6 +44,9 @@ func (this *Controller) ValidateService(services []model.Service) (error, int) {
 
 		if service.ProtocolId == "" {
 			return errors.New("missing service protocol id"), http.StatusBadRequest
+		}
+		if !strings.HasPrefix(service.ProtocolId, model.URN_PREFIX) {
+			return errors.New("invalid service.protocol_id id"), http.StatusBadRequest
 		}
 
 		if service.RdfType != model.SES_ONTOLOGY_SERVICE {

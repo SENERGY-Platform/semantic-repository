@@ -215,6 +215,7 @@ func getDeviceTypeContext() map[string]interface{} {
 		"rdf_type":     "@type",
 		"name":         model.RDFS_LABEL,
 		"protocol_id":  model.SES_ONTOLOGY_HAS_PROTOCOL,
+		"interaction":  model.SES_ONTOLOGY_HAS_INTERACTION,
 		"device_class": model.SES_ONTOLOGY_HAS_DEVICE_CLASS,
 		"concept_id": map[string]interface{}{
 			"@id":   model.SES_ONTOLOGY_HAS_CONCEPT,

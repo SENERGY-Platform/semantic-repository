@@ -25,6 +25,7 @@ import (
 	"net/http"
 	"runtime/debug"
 	"sort"
+	"strings"
 )
 
 /////////////////////////
@@ -80,6 +81,11 @@ func (this *Controller) ValidateDeviceType(dt model.DeviceType) (err error, code
 	if dt.Id == "" {
 		return errors.New("missing device-type id"), http.StatusBadRequest
 	}
+
+	if !strings.HasPrefix(dt.Id, model.URN_PREFIX) {
+		return errors.New("invalid device-type id"), http.StatusBadRequest
+	}
+
 	if dt.Name == "" {
 		return errors.New("missing device-type name"), http.StatusBadRequest
 	}

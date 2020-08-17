@@ -39,10 +39,6 @@ func New(conf config.Config) (db *Database, err error) {
 	return &Database{conf: conf}, nil
 }
 
-func (*Database) Disconnect() {
-	panic("implement me")
-}
-
 func (*Database) GetDevice(ctx context.Context, id string) (device model.Device, exists bool, err error) {
 	panic("implement me")
 }
@@ -89,7 +85,8 @@ func (this *Database) DeleteDeviceType(s string) (err error) {
 	if resp.StatusCode == 200 {
 		return nil
 	} else {
-		return errors.New("ERROR: Statuscode " + string(resp.StatusCode))
+		temp, _ := ioutil.ReadAll(resp.Body)
+		return errors.New("ERROR: Statuscode " + resp.Status + ": " + string(temp))
 	}
 }
 

@@ -22,6 +22,7 @@ import (
 	"log"
 	"net/http"
 	"sort"
+	"strings"
 )
 
 /////////////////////////
@@ -96,6 +97,9 @@ func (this *Controller) ValidateAspects(aspects []model.Aspect) (error, int) {
 	for _, aspect := range aspects {
 		if aspect.Id == "" {
 			return errors.New("missing aspect id"), http.StatusBadRequest
+		}
+		if !strings.HasPrefix(aspect.Id, model.URN_PREFIX) {
+			return errors.New("invalid aspect id"), http.StatusBadRequest
 		}
 		if aspect.Name == "" {
 			return errors.New("missing aspect name"), http.StatusBadRequest

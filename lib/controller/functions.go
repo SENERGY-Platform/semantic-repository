@@ -22,6 +22,7 @@ import (
 	"log"
 	"net/http"
 	"sort"
+	"strings"
 )
 
 /////////////////////////
@@ -90,6 +91,9 @@ func (this *Controller) ValidateFunctions(functions []model.Function) (error, in
 	for _, function := range functions {
 		if function.Id == "" {
 			return errors.New("missing function id"), http.StatusBadRequest
+		}
+		if !strings.HasPrefix(function.Id, model.URN_PREFIX) {
+			return errors.New("invalid function id"), http.StatusBadRequest
 		}
 		if function.Name == "" {
 			return errors.New("missing function name"), http.StatusBadRequest

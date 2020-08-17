@@ -19,8 +19,6 @@ package database
 import "github.com/SENERGY-Platform/semantic-repository/lib/model"
 
 type Database interface {
-	Disconnect()
-
 	InsertData(triples string) (err error)
 
 	DeleteDeviceType(s string) (err error)

@@ -310,6 +310,7 @@ func (*Database) getDeviceTypeQuery(deviceTypeId string, filters []model.DeviceT
 
 		protocolInService := "?service" + convIndex + " ses:hasProtocol ?s_protocol" + convIndex + ". "
 		conceptInFunction := function + " ses:hasConcept ?concept_id" + convIndex + ". "
+		interactionInService := "?service" + convIndex + " ses:interaction ?s_interaction" + convIndex + ". "
 
 		service :=
 			"?service" + convIndex + " rdf:type ?s_type" + convIndex + ";" + lnb +
@@ -320,8 +321,8 @@ func (*Database) getDeviceTypeQuery(deviceTypeId string, filters []model.DeviceT
 				"rdf:type ?f_type" + convIndex + ".	" + lnb +
 				aspect + " rdfs:label ?a_label" + convIndex + ";" + lnb +
 				"rdf:type ?a_type" + convIndex + "." + lnb
-		construct += service + conceptInFunction + lnb + protocolInService
-		where += service + "OPTIONAL {" + conceptInFunction + lnb + protocolInService + "} "
+		construct += service + conceptInFunction + lnb + protocolInService + lnb + interactionInService
+		where += service + "OPTIONAL {" + conceptInFunction + lnb + protocolInService + lnb + interactionInService + "} "
 	}
 
 	query := model.PREFIX_SES +
