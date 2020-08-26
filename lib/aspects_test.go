@@ -26,55 +26,57 @@ import (
 	"testing"
 )
 
-func TestReadAspect(t *testing.T) {
-	err, con, db := StartUpScript(t)
-	/// Aspect Lightning
-	err = db.InsertData(
-		`<urn:infai:ses:aspect:4444> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://senergy.infai.org/ontology/Aspect> .
-<urn:infai:ses:aspect:4444> <http://www.w3.org/2000/01/rdf-schema#label> "Lightning" .`)
+func TestProduceAspect(t *testing.T) {
+	conf, err := config.Load("../config.json")
 	if err != nil {
 		t.Fatal(err)
 	}
-	/// Aspect Air
-	err = db.InsertData(
-		`<urn:infai:ses:aspect:2222> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://senergy.infai.org/ontology/Aspect> .
-<urn:infai:ses:aspect:2222> <http://www.w3.org/2000/01/rdf-schema#label> "Air" .`)
+	producer, err := producer.New(conf)
 	if err != nil {
 		t.Fatal(err)
 	}
-	/// Aspect Connectivity
-	err = db.InsertData(
-		`<urn:infai:ses:aspect:4545> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://senergy.infai.org/ontology/Aspect> .
-<urn:infai:ses:aspect:4545> <http://www.w3.org/2000/01/rdf-schema#label> "Connectivity" .`)
-	if err != nil {
-		t.Fatal(err)
-	}
+	aspect := model.Aspect{}
+	aspect.Id = "urn:infai:ses:aspect:eb4a4449-01a1-4434-9dcc-064b3955abcf"
+	aspect.Name = "Air"
+
+	producer.PublishAspect(aspect, "sdfdsfsf")
+
+}
+
+func TestAspectRead(t *testing.T) {
+	err, con, _ := StartUpScript(t)
+
 	res, err, code := con.GetAspects()
 	if err != nil {
 		t.Fatal(res, err, code)
 	} else {
-		t.Log(res)
+		//t.Log(res)
 	}
-
-	if res[0].Id != "urn:infai:ses:aspect:2222" {
-		t.Fatal("error id")
+	if res[0].Id != "urn:infai:ses:aspect:eb4a4449-01a1-4434-9dcc-064b3955abcf" {
+		t.Fatal("error id", res[0].Id)
 	}
 	if res[0].Name != "Air" {
 		t.Fatal("error Name")
 	}
 
-	if res[1].Id != "urn:infai:ses:aspect:4545" {
-		t.Fatal("error id")
-	}
-	if res[1].Name != "Connectivity" {
-		t.Fatal("error Name")
+	if res[0].RdfType != model.SES_ONTOLOGY_ASPECT {
+		t.Fatal("wrong RdfType")
 	}
 
-	if res[2].Id != "urn:infai:ses:aspect:4444" {
-		t.Fatal("error id")
+}
+
+func TestAspectDelete(t *testing.T) {
+	conf, err := config.Load("../config.json")
+	if err != nil {
+		t.Fatal(err)
 	}
-	if res[2].Name != "Lightning" {
-		t.Fatal("error Name")
+	producer, err := producer.New(conf)
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = producer.PublishAspectDelete("urn:infai:ses:aspect:eb4a4449-01a1-4434-9dcc-064b3955abcf", "sdfdsfsf")
+	if err != nil {
+		t.Fatal(err)
 	}
 
 }

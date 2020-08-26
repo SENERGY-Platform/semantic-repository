@@ -53,3 +53,10 @@ type DeviceClassCommand struct {
 	Owner       string            `json:"owner"`
 	DeviceClass model.DeviceClass `json:"device_class"`
 }
+
+type AspectCommand struct {
+	Command string       `json:"command"`
+	Id      string       `json:"id"`
+	Owner   string       `json:"owner"`
+	Aspect  model.Aspect `json:"aspect"`
+}

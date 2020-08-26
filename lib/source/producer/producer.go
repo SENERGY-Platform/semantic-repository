@@ -32,6 +32,7 @@ type Producer struct {
 	devicetypes     *kafka.Writer
 	concepts        *kafka.Writer
 	deviceclass     *kafka.Writer
+	aspect          *kafka.Writer
 	characteristics *kafka.Writer
 }
 
@@ -67,7 +68,12 @@ func New(conf config.Config) (*Producer, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Producer{config: conf, devices: devices, devicetypes: devicetypes, concepts: concepts, characteristics: characteristics, deviceclass: deviceclass}, nil
+
+	aspect, err := getProducer(broker, conf.AspectTopic, conf.LogLevel == "DEBUG")
+	if err != nil {
+		return nil, err
+	}
+	return &Producer{config: conf, devices: devices, devicetypes: devicetypes, concepts: concepts, characteristics: characteristics, deviceclass: deviceclass, aspect: aspect}, nil
 }
 
 func getProducer(broker []string, topic string, debug bool) (writer *kafka.Writer, err error) {

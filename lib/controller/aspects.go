@@ -17,10 +17,13 @@
 package controller
 
 import (
+	"encoding/json"
 	"github.com/SENERGY-Platform/semantic-repository/lib/model"
+	"github.com/piprate/json-gold/ld"
 	"github.com/pkg/errors"
 	"log"
 	"net/http"
+	"runtime/debug"
 	"sort"
 	"strings"
 )
@@ -112,6 +115,86 @@ func (this *Controller) ValidateAspects(aspects []model.Aspect) (error, int) {
 	return nil, http.StatusOK
 }
 
+func (this *Controller) ValidateAspect(aspect model.Aspect) (error, int) {
+
+	if aspect.Id == "" {
+		return errors.New("missing aspect id"), http.StatusBadRequest
+	}
+	if !strings.HasPrefix(aspect.Id, model.URN_PREFIX) {
+		return errors.New("invalid aspect id"), http.StatusBadRequest
+	}
+	if aspect.Name == "" {
+		return errors.New("missing aspect name"), http.StatusBadRequest
+	}
+	if aspect.RdfType != model.SES_ONTOLOGY_ASPECT {
+		return errors.New("wrong aspect type"), http.StatusBadRequest
+	}
+
+	return nil, http.StatusOK
+}
+
+func (this *Controller) SetAspect(aspect model.Aspect, owner string) (err error) {
+	SetAspectRdfType(&aspect)
+
+	err, code := this.ValidateAspect(aspect)
+	if err != nil {
+		debug.PrintStack()
+		log.Println("Error Validation:", err, code)
+		return
+	}
+
+	err = this.DeleteAspect(aspect.Id)
+	if err != nil {
+		debug.PrintStack()
+		log.Println("Error Delete Aspect:", err, code)
+		return
+	}
+
+	b, err := json.Marshal(aspect)
+	var deviceTypeJsonLd map[string]interface{}
+	err = json.Unmarshal(b, &deviceTypeJsonLd)
+
+	deviceTypeJsonLd["@context"] = getAspectContext()
+
+	proc := ld.NewJsonLdProcessor()
+	options := ld.NewJsonLdOptions("")
+	options.ProcessingMode = ld.JsonLd_1_1
+	options.Format = "application/n-quads"
+
+	triples, err := proc.ToRDF(deviceTypeJsonLd, options)
+	if err != nil {
+		debug.PrintStack()
+		log.Println("Error when transforming JSON-LD document to RDF:", err)
+		return err
+	}
+
+	err = this.db.InsertData(triples.(string))
+	if err != nil {
+		debug.PrintStack()
+		log.Println("Error insert Aspect:", err)
+		return err
+	}
+
+	return nil
+}
+
 /////////////////////////
 //		source
 /////////////////////////
+func SetAspectRdfType(aspect *model.Aspect) {
+	aspect.RdfType = model.SES_ONTOLOGY_ASPECT
+}
+
+func (this *Controller) DeleteAspect(id string) (err error) {
+	if id == "" {
+		debug.PrintStack()
+		return errors.New("missing aspect id")
+	}
+
+	err = this.db.DeleteSubject(id, model.SES_ONTOLOGY_ASPECT)
+	if err != nil {
+		debug.PrintStack()
+		return err
+	}
+	return nil
+}

@@ -30,4 +30,7 @@ type Controller interface {
 
 	SetDeviceClass(deviceclass model.DeviceClass, owner string) error
 	DeleteDeviceClass(id string) error
+
+	SetAspect(aspect model.Aspect, owner string) error
+	DeleteAspect(id string) error
 }

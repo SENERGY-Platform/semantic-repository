@@ -17,7 +17,7 @@
  *
  */
 
- package controller
+package controller
 
 import (
 	"github.com/SENERGY-Platform/semantic-repository/lib/model"
@@ -25,24 +25,23 @@ import (
 	"testing"
 )
 
-func TestValidAspect (t *testing.T) {
-	aspects := []model.Aspect{}
-	aspects = append(aspects, model.Aspect{Id: "urn:infai:ses:aspect:122", Name: "Air", RdfType: model.SES_ONTOLOGY_ASPECT})
+func TestValidAspect(t *testing.T) {
+	aspect := model.Aspect{Id: "urn:infai:ses:aspect:122", Name: "Air", RdfType: model.SES_ONTOLOGY_ASPECT}
 
 	controller := Controller{}
-	err, code := controller.ValidateAspects(aspects)
+	err, code := controller.ValidateAspect(aspect)
 	if err == nil && code == http.StatusOK {
-		t.Log(aspects)
+		t.Log(aspect)
 	} else {
 		t.Fatal(err, code)
 	}
 }
 
-func TestAspectNoData (t *testing.T) {
-	aspects := []model.Aspect{}
+func TestAspectNoData(t *testing.T) {
+	aspects := model.Aspect{}
 
 	controller := Controller{}
-	err, code := controller.ValidateAspects(aspects)
+	err, code := controller.ValidateAspect(aspects)
 	if err != nil && code == http.StatusBadRequest {
 		t.Log(err)
 	} else {
@@ -50,12 +49,11 @@ func TestAspectNoData (t *testing.T) {
 	}
 }
 
-func TestAspectMissingId (t *testing.T) {
-	aspects := []model.Aspect{}
-	aspects = append(aspects, model.Aspect{Id: ""})
+func TestAspectMissingId(t *testing.T) {
+	aspects := model.Aspect{Id: ""}
 
 	controller := Controller{}
-	err, code := controller.ValidateAspects(aspects)
+	err, code := controller.ValidateAspect(aspects)
 	if err != nil && code == http.StatusBadRequest {
 		t.Log(err)
 	} else {
@@ -63,12 +61,11 @@ func TestAspectMissingId (t *testing.T) {
 	}
 }
 
-func TestAspectMissingName (t *testing.T) {
-	aspects := []model.Aspect{}
-	aspects = append(aspects, model.Aspect{Id: "urn:infai:ses:aspect:122", Name: ""})
+func TestAspectMissingName(t *testing.T) {
+	aspects := model.Aspect{Id: "urn:infai:ses:aspect:122", Name: ""}
 
 	controller := Controller{}
-	err, code := controller.ValidateAspects(aspects)
+	err, code := controller.ValidateAspect(aspects)
 	if err != nil && code == http.StatusBadRequest {
 		t.Log(err)
 	} else {
@@ -76,12 +73,11 @@ func TestAspectMissingName (t *testing.T) {
 	}
 }
 
-func TestAspectWrongType (t *testing.T) {
-	aspects := []model.Aspect{}
-	aspects = append(aspects, model.Aspect{Id: "urn:infai:ses:aspect:122", Name: "Air", RdfType: "wrongType"})
+func TestAspectWrongType(t *testing.T) {
+	aspects := model.Aspect{Id: "urn:infai:ses:aspect:122", Name: "Air", RdfType: "wrongType"}
 
 	controller := Controller{}
-	err, code := controller.ValidateAspects(aspects)
+	err, code := controller.ValidateAspect(aspects)
 	if err != nil && code == http.StatusBadRequest {
 		t.Log(err)
 	} else {

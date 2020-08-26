@@ -246,6 +246,10 @@ func (this *Database) DeleteSubject(s string, rdftype string) (err error) {
 		{
 			query = this.getDeleteDeviceClassQuery(s)
 		}
+	case model.SES_ONTOLOGY_ASPECT:
+		{
+			query = this.getDeleteAspectQuery(s)
+		}
 	default:
 		return errors.New("ERROR: no matching rdf type")
 	}

@@ -261,6 +261,15 @@ func getDeviceClassContext() map[string]interface{} {
 	return contextDoc
 }
 
+func getAspectContext() map[string]interface{} {
+	contextDoc := map[string]interface{}{
+		"id":       "@id",
+		"rdf_type": "@type",
+		"name":     model.RDFS_LABEL,
+	}
+	return contextDoc
+}
+
 func getConceptCharacteristicContext() map[string]interface{} {
 	contextDoc := map[string]interface{}{
 		"id":                     "@id",
