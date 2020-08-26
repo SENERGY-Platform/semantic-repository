@@ -42,7 +42,7 @@ func (this *Producer) PublishAspectDelete(id string, userId string) error {
 
 func (this *Producer) PublishAspectCommand(cmd listener.AspectCommand) error {
 	if this.config.LogLevel == "DEBUG" {
-		log.Println("DEBUG: produce deviceclass", cmd)
+		log.Println("DEBUG: produce aspect", cmd)
 	}
 	message, err := json.Marshal(cmd)
 	if err != nil {
