@@ -33,16 +33,23 @@ type DeviceTypeCommand struct {
 }
 
 type ConceptCommand struct {
-	Command    string           `json:"command"`
-	Id         string           `json:"id"`
-	Owner      string           `json:"owner"`
-	Concept    model.Concept    `json:"concept"`
+	Command string        `json:"command"`
+	Id      string        `json:"id"`
+	Owner   string        `json:"owner"`
+	Concept model.Concept `json:"concept"`
 }
 
 type CharacteristicCommand struct {
-	Command           string           		`json:"command"`
-	ConceptId         string           		`json:"concept_id"`
-	Id                string           		`json:"id"`
-	Owner      		  string           		`json:"owner"`
-	Characteristic    model.Characteristic  `json:"characteristic"`
+	Command        string               `json:"command"`
+	ConceptId      string               `json:"concept_id"`
+	Id             string               `json:"id"`
+	Owner          string               `json:"owner"`
+	Characteristic model.Characteristic `json:"characteristic"`
+}
+
+type DeviceClassCommand struct {
+	Command     string            `json:"command"`
+	Id          string            `json:"id"`
+	Owner       string            `json:"owner"`
+	DeviceClass model.DeviceClass `json:"device_class"`
 }

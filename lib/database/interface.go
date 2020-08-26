@@ -24,6 +24,7 @@ type Database interface {
 	DeleteDeviceType(s string) (err error)
 	DeleteConcept(s string, withNested bool) (err error)
 	DeleteCharacteristic(s string) (err error)
+	DeleteSubject(s string, rdftype string) (err error)
 
 	GetDeviceType(deviceTypeId string, filter []model.DeviceTypesFilter) (rdfxml string, err error)
 	GetDeviceClassesFunctions(s string) (rdfxml string, err error)

@@ -549,3 +549,17 @@ func (*Database) getDeleteCharacteristicQuery(subject string) string {
 			"	}" +
 			"}")
 }
+
+func (*Database) getDeleteDeviceClassQuery(subject string) string {
+
+	return url.QueryEscape(
+		model.PREFIX_SES +
+			model.PREFIX_RDF +
+			"delete {" +
+			"<" + subject + "> rdf:type ?type;" +
+			"rdfs:label ?label;" +
+			"} where {" +
+			"<" + subject + "> rdf:type ?type;" +
+			"rdfs:label ?label;" +
+			"}")
+}

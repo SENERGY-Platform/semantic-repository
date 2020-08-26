@@ -27,4 +27,7 @@ type Controller interface {
 
 	SetCharacteristic(conceptId string, characteristic model.Characteristic, owner string) error
 	DeleteCharacteristic(id string) error
+
+	SetDeviceClass(deviceclass model.DeviceClass, owner string) error
+	DeleteDeviceClass(id string) error
 }

@@ -239,6 +239,29 @@ func (this *Database) DeleteCharacteristic(s string) (err error) {
 	}
 }
 
+func (this *Database) DeleteSubject(s string, rdftype string) (err error) {
+	query := ""
+	switch rdftype {
+	case model.SES_ONTOLOGY_DEVICE_CLASS:
+		{
+			query = this.getDeleteDeviceClassQuery(s)
+		}
+	default:
+		return errors.New("ERROR: no matching rdf type")
+	}
+	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
+	if err != nil {
+		log.Println("ERROR: DeleteSubject", err)
+		return err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode == 200 {
+		return nil
+	} else {
+		return errors.New("ERROR: Statuscode " + string(resp.StatusCode))
+	}
+}
+
 func (this *Database) GetListWithoutSubProperties(p string, o string) (rdfxml string, err error) {
 	query := this.getConstructListWithoutSubProperties(p, o)
 	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)

@@ -17,10 +17,13 @@
 package controller
 
 import (
+	"encoding/json"
 	"errors"
 	"github.com/SENERGY-Platform/semantic-repository/lib/model"
+	"github.com/piprate/json-gold/ld"
 	"log"
 	"net/http"
+	"runtime/debug"
 	"sort"
 	"strings"
 )
@@ -126,6 +129,68 @@ func (this *Controller) ValidateDeviceClass(deviceClass model.DeviceClass) (erro
 	return nil, http.StatusOK
 }
 
+func (this *Controller) SetDeviceClass(deviceclass model.DeviceClass, owner string) (err error) {
+	SetDeviceClassRdfType(&deviceclass)
+
+	err, code := this.ValidateDeviceClass(deviceclass)
+	if err != nil {
+		debug.PrintStack()
+		log.Println("Error Validation:", err, code)
+		return
+	}
+
+	err = this.DeleteDeviceClass(deviceclass.Id)
+	if err != nil {
+		debug.PrintStack()
+		log.Println("Error Delete DeviceClass:", err, code)
+		return
+	}
+
+	b, err := json.Marshal(deviceclass)
+	var deviceTypeJsonLd map[string]interface{}
+	err = json.Unmarshal(b, &deviceTypeJsonLd)
+
+	deviceTypeJsonLd["@context"] = getDeviceClassContext()
+
+	proc := ld.NewJsonLdProcessor()
+	options := ld.NewJsonLdOptions("")
+	options.ProcessingMode = ld.JsonLd_1_1
+	options.Format = "application/n-quads"
+
+	triples, err := proc.ToRDF(deviceTypeJsonLd, options)
+	if err != nil {
+		debug.PrintStack()
+		log.Println("Error when transforming JSON-LD document to RDF:", err)
+		return err
+	}
+
+	err = this.db.InsertData(triples.(string))
+	if err != nil {
+		debug.PrintStack()
+		log.Println("Error insert Deviceclass:", err)
+		return err
+	}
+
+	return nil
+}
+
 /////////////////////////
 //		source
 /////////////////////////
+func SetDeviceClassRdfType(deviceclass *model.DeviceClass) {
+	deviceclass.RdfType = model.SES_ONTOLOGY_DEVICE_CLASS
+}
+
+func (this *Controller) DeleteDeviceClass(id string) (err error) {
+	if id == "" {
+		debug.PrintStack()
+		return errors.New("missing deviceclass id")
+	}
+
+	err = this.db.DeleteSubject(id, model.SES_ONTOLOGY_DEVICE_CLASS)
+	if err != nil {
+		debug.PrintStack()
+		return err
+	}
+	return nil
+}
