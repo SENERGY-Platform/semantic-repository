@@ -577,3 +577,31 @@ func (*Database) getDeleteAspectQuery(subject string) string {
 			"rdfs:label ?label;" +
 			"}")
 }
+
+func (*Database) getDeleteFunctionQuery(subject string) string {
+
+	//PREFIX ses: <https://senergy.infai.org/ontology/>
+	//PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+	//delete {
+	//	<urn:infai:ses:measuring-function:321> rdf:type ?type;
+	//	rdfs:label ?label;
+	//	ses:hasConcept ?concept;
+	//} where {
+	//	<urn:infai:ses:measuring-function:321> rdf:type ?type;
+	//	rdfs:label ?label;
+	//	OPTIONAL {<urn:infai:ses:measuring-function:321> ses:hasConcept ?concept .}
+	//}
+
+	return url.QueryEscape(
+		model.PREFIX_SES +
+			model.PREFIX_RDF +
+			"delete {" +
+			"<" + subject + "> rdf:type ?type;" +
+			"rdfs:label ?label;" +
+			"ses:hasConcept ?concept;" +
+			"} where {" +
+			"<" + subject + "> rdf:type ?type;" +
+			"rdfs:label ?label;" +
+			"OPTIONAL {<" + subject + "> ses:hasConcept ?concept .}" +
+			"}")
+}

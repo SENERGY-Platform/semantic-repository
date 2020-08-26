@@ -60,3 +60,10 @@ type AspectCommand struct {
 	Owner   string       `json:"owner"`
 	Aspect  model.Aspect `json:"aspect"`
 }
+
+type FunctionCommand struct {
+	Command  string         `json:"command"`
+	Id       string         `json:"id"`
+	Owner    string         `json:"owner"`
+	Function model.Function `json:"function"`
+}

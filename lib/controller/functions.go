@@ -17,10 +17,13 @@
 package controller
 
 import (
+	"encoding/json"
 	"github.com/SENERGY-Platform/semantic-repository/lib/model"
+	"github.com/piprate/json-gold/ld"
 	"github.com/pkg/errors"
 	"log"
 	"net/http"
+	"runtime/debug"
 	"sort"
 	"strings"
 )
@@ -107,6 +110,102 @@ func (this *Controller) ValidateFunctions(functions []model.Function) (error, in
 	return nil, http.StatusOK
 }
 
+func (this *Controller) ValidateFunction(function model.Function) (error, int) {
+
+	if function.Id == "" {
+		return errors.New("missing function id"), http.StatusBadRequest
+	}
+	if !strings.HasPrefix(function.Id, model.URN_PREFIX) {
+		return errors.New("invalid function id"), http.StatusBadRequest
+	}
+	if function.Name == "" {
+		return errors.New("missing function name"), http.StatusBadRequest
+	}
+	if !(function.RdfType == model.SES_ONTOLOGY_CONTROLLING_FUNCTION || function.RdfType == model.SES_ONTOLOGY_MEASURING_FUNCTION) {
+		return errors.New("wrong function type"), http.StatusBadRequest
+	}
+
+	return nil, http.StatusOK
+}
+
+func (this *Controller) SetFunction(function model.Function, owner string) (err error) {
+	SetFunctionRdfType(&function)
+
+	err, code := this.ValidateFunction(function)
+	if err != nil {
+		debug.PrintStack()
+		log.Println("Error Validation:", err, code)
+		return
+	}
+
+	err = this.DeleteFunction(function.Id)
+	if err != nil {
+		debug.PrintStack()
+		log.Println("Error Delete Functions:", err, code)
+		return
+	}
+
+	b, err := json.Marshal(function)
+	var deviceTypeJsonLd map[string]interface{}
+	err = json.Unmarshal(b, &deviceTypeJsonLd)
+
+	deviceTypeJsonLd["@context"] = getFunctionContext()
+
+	proc := ld.NewJsonLdProcessor()
+	options := ld.NewJsonLdOptions("")
+	options.ProcessingMode = ld.JsonLd_1_1
+	options.Format = "application/n-quads"
+
+	triples, err := proc.ToRDF(deviceTypeJsonLd, options)
+	if err != nil {
+		debug.PrintStack()
+		log.Println("Error when transforming JSON-LD document to RDF:", err)
+		return err
+	}
+
+	err = this.db.InsertData(triples.(string))
+	if err != nil {
+		debug.PrintStack()
+		log.Println("Error insert Functions:", err)
+		return err
+	}
+
+	return nil
+}
+
 /////////////////////////
 //		source
 /////////////////////////
+func SetFunctionRdfType(function *model.Function) {
+	if strings.HasPrefix(function.Id, model.URN_PREFIX+"controlling-function:") {
+		function.RdfType = model.SES_ONTOLOGY_CONTROLLING_FUNCTION
+	}
+
+	if strings.HasPrefix(function.Id, model.URN_PREFIX+"measuring-function:") {
+		function.RdfType = model.SES_ONTOLOGY_MEASURING_FUNCTION
+	}
+
+}
+
+func (this *Controller) DeleteFunction(id string) (err error) {
+	if id == "" {
+		debug.PrintStack()
+		return errors.New("missing functions id")
+	}
+
+	rdftype := ""
+	if strings.HasPrefix(id, model.URN_PREFIX+"controlling-function:") {
+		rdftype = model.SES_ONTOLOGY_CONTROLLING_FUNCTION
+	}
+
+	if strings.HasPrefix(id, model.URN_PREFIX+"measuring-function:") {
+		rdftype = model.SES_ONTOLOGY_MEASURING_FUNCTION
+	}
+
+	err = this.db.DeleteSubject(id, rdftype)
+	if err != nil {
+		debug.PrintStack()
+		return err
+	}
+	return nil
+}

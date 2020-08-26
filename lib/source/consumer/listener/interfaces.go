@@ -33,4 +33,7 @@ type Controller interface {
 
 	SetAspect(aspect model.Aspect, owner string) error
 	DeleteAspect(id string) error
+
+	SetFunction(function model.Function, owner string) error
+	DeleteFunction(id string) error
 }

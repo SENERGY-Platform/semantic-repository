@@ -270,6 +270,19 @@ func getAspectContext() map[string]interface{} {
 	return contextDoc
 }
 
+func getFunctionContext() map[string]interface{} {
+	contextDoc := map[string]interface{}{
+		"id":       "@id",
+		"rdf_type": "@type",
+		"name":     model.RDFS_LABEL,
+		"concept_id": map[string]interface{}{
+			"@id":   model.SES_ONTOLOGY_HAS_CONCEPT,
+			"@type": "@id",
+		},
+	}
+	return contextDoc
+}
+
 func getConceptCharacteristicContext() map[string]interface{} {
 	contextDoc := map[string]interface{}{
 		"id":                     "@id",
