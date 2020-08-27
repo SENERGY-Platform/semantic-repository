@@ -86,6 +86,35 @@ func (this *Controller) GetFunctions(limit int, offset int, search string, direc
 
 }
 
+func (this *Controller) GetFunction(id string) (result model.Function, err error, errCode int) {
+	rdftype := ""
+	if strings.HasPrefix(id, model.URN_PREFIX+"controlling-function:") {
+		rdftype = model.SES_ONTOLOGY_CONTROLLING_FUNCTION
+	}
+
+	if strings.HasPrefix(id, model.URN_PREFIX+"measuring-function:") {
+		rdftype = model.SES_ONTOLOGY_MEASURING_FUNCTION
+	}
+	function, err := this.db.GetSubject(id, rdftype)
+	if err != nil {
+		log.Println("GetFunction ERROR: GetSubject", err)
+		return result, err, http.StatusInternalServerError
+	}
+
+	res := []model.Function{}
+	err = this.RdfXmlToModel(function, &res)
+	if err != nil {
+		log.Println("GetFunction ERROR: RdfXmlToModel", err)
+		return result, err, http.StatusInternalServerError
+	}
+
+	if len(res) == 0 {
+		return result, errors.New("not found"), http.StatusNotFound
+	}
+
+	return res[0], nil, http.StatusOK
+}
+
 func (this *Controller) ValidateFunctions(functions []model.Function) (error, int) {
 	if (len(functions)) == 0 {
 		return errors.New("expect at least one function"), http.StatusBadRequest

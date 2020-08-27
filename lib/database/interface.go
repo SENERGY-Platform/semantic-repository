@@ -37,4 +37,5 @@ type Database interface {
 	GetFunctionsWithoutSubPropertiesLimitOffsetSearch(limit int, offset int, search string, direction string) (rdfxml string, totalcount string, err error)
 	GetWithAllSubProperties(s string) (rdfxml string, err error)
 	GetLeafCharacteristics() (rdfxml string, err error)
+	GetSubject(s string, rdftype string) (rdfxml string, err error)
 }

@@ -72,6 +72,27 @@ func (this *Controller) GetDeviceClassesWithControllingFunctions() (result []mod
 	return result, nil, http.StatusOK
 }
 
+func (this *Controller) GetDeviceClass(id string) (result model.DeviceClass, err error, errCode int) {
+	deviceclass, err := this.db.GetSubject(id, model.SES_ONTOLOGY_DEVICE_CLASS)
+	if err != nil {
+		log.Println("GetDeviceClass ERROR: GetSubject", err)
+		return result, err, http.StatusInternalServerError
+	}
+
+	res := []model.DeviceClass{}
+	err = this.RdfXmlToModel(deviceclass, &res)
+	if err != nil {
+		log.Println("GetDeviceClass ERROR: RdfXmlToModel", err)
+		return result, err, http.StatusInternalServerError
+	}
+
+	if len(res) == 0 {
+		return result, errors.New("not found"), http.StatusNotFound
+	}
+
+	return res[0], nil, http.StatusOK
+}
+
 func (this *Controller) GetDeviceClassesFunctions(subject string) (result []model.Function, err error, errCode int) {
 	functions, err := this.db.GetDeviceClassesFunctions(subject)
 	if err != nil {

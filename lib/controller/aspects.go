@@ -52,6 +52,27 @@ func (this *Controller) GetAspects() (result []model.Aspect, err error, errCode 
 	return result, nil, http.StatusOK
 }
 
+func (this *Controller) GetAspect(id string) (result model.Aspect, err error, errCode int) {
+	aspects, err := this.db.GetSubject(id, model.SES_ONTOLOGY_ASPECT)
+	if err != nil {
+		log.Println("GetAspect ERROR: GetSubject", err)
+		return result, err, http.StatusInternalServerError
+	}
+
+	res := []model.Aspect{}
+	err = this.RdfXmlToModel(aspects, &res)
+	if err != nil {
+		log.Println("GetAspect ERROR: RdfXmlToModel", err)
+		return result, err, http.StatusInternalServerError
+	}
+
+	if len(res) == 0 {
+		return result, errors.New("not found"), http.StatusNotFound
+	}
+
+	return res[0], nil, http.StatusOK
+}
+
 func (this *Controller) GetAspectsWithMeasuringFunction() (result []model.Aspect, err error, errCode int) {
 	aspects, err := this.db.GetAspectsWithMeasuringFunction()
 	if err != nil {

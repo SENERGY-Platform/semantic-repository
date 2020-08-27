@@ -241,18 +241,19 @@ func (this *Database) DeleteCharacteristic(s string) (err error) {
 
 func (this *Database) DeleteSubject(s string, rdftype string) (err error) {
 	query := ""
+	queryform := "delete"
 	switch rdftype {
 	case model.SES_ONTOLOGY_DEVICE_CLASS:
 		{
-			query = this.getDeleteDeviceClassQuery(s)
+			query = this.getDeviceClassQuery(s, queryform)
 		}
 	case model.SES_ONTOLOGY_ASPECT:
 		{
-			query = this.getDeleteAspectQuery(s)
+			query = this.getAspectQuery(s, queryform)
 		}
 	case model.SES_ONTOLOGY_CONTROLLING_FUNCTION, model.SES_ONTOLOGY_MEASURING_FUNCTION:
 		{
-			query = this.getDeleteFunctionQuery(s)
+			query = this.getFunctionQuery(s, queryform)
 		}
 	default:
 		return errors.New("ERROR: no matching rdf type")
@@ -275,6 +276,39 @@ func (this *Database) GetListWithoutSubProperties(p string, o string) (rdfxml st
 	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
 	if err != nil {
 		log.Println("ERROR: GetListWithoutSubProperties", err)
+		return "", err
+	}
+	defer resp.Body.Close()
+	byteArray, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Println("ERROR:", err)
+		return "", err
+	}
+	return string(byteArray), nil
+}
+
+func (this *Database) GetSubject(s string, rdftype string) (rdfxml string, err error) {
+	query := ""
+	queryform := "construct"
+	switch rdftype {
+	case model.SES_ONTOLOGY_DEVICE_CLASS:
+		{
+			query = this.getDeviceClassQuery(s, queryform)
+		}
+	case model.SES_ONTOLOGY_ASPECT:
+		{
+			query = this.getAspectQuery(s, queryform)
+		}
+	case model.SES_ONTOLOGY_CONTROLLING_FUNCTION, model.SES_ONTOLOGY_MEASURING_FUNCTION:
+		{
+			query = this.getFunctionQuery(s, queryform)
+		}
+	default:
+		return "", errors.New("ERROR: no matching rdf type")
+	}
+	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
+	if err != nil {
+		log.Println("ERROR: GetSubject", err)
 		return "", err
 	}
 	defer resp.Body.Close()

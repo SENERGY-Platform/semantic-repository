@@ -32,6 +32,7 @@ type Controller interface {
 	GetDeviceClassesFunctions(subject string) (result []model.Function, err error, errCode int)
 	GetDeviceClassesControllingFunctions(subject string) (result []model.Function, err error, errCode int)
 	GetAspects() (result []model.Aspect, err error, errCode int)
+	GetAspect(s string) (result model.Aspect, err error, errCode int)
 	GetAspectsWithMeasuringFunction() (result []model.Aspect, err error, errCode int)
 	GetAspectsMeasuringFunctions(subject string) (result []model.Function, err error, errCode int)
 
@@ -46,4 +47,7 @@ type Controller interface {
 	ValidateAspect(aspect model.Aspect) (err error, code int)
 	ValidateFunction(function model.Function) (err error, code int)
 	ValidateDeviceClass(deviceclass model.DeviceClass) (err error, code int)
+
+	GetDeviceClass(s string) (result model.DeviceClass, err error, errCode int)
+	GetFunction(s string) (result model.Function, err error, errCode int)
 }

@@ -550,12 +550,12 @@ func (*Database) getDeleteCharacteristicQuery(subject string) string {
 			"}")
 }
 
-func (*Database) getDeleteDeviceClassQuery(subject string) string {
+func (*Database) getDeviceClassQuery(subject string, queryForm string) string {
 
 	return url.QueryEscape(
 		model.PREFIX_SES +
 			model.PREFIX_RDF +
-			"delete {" +
+			queryForm + " {" +
 			"<" + subject + "> rdf:type ?type;" +
 			"rdfs:label ?label;" +
 			"} where {" +
@@ -564,12 +564,12 @@ func (*Database) getDeleteDeviceClassQuery(subject string) string {
 			"}")
 }
 
-func (*Database) getDeleteAspectQuery(subject string) string {
+func (*Database) getAspectQuery(subject string, queryForm string) string {
 
 	return url.QueryEscape(
 		model.PREFIX_SES +
 			model.PREFIX_RDF +
-			"delete {" +
+			queryForm + " {" +
 			"<" + subject + "> rdf:type ?type;" +
 			"rdfs:label ?label;" +
 			"} where {" +
@@ -578,7 +578,7 @@ func (*Database) getDeleteAspectQuery(subject string) string {
 			"}")
 }
 
-func (*Database) getDeleteFunctionQuery(subject string) string {
+func (*Database) getFunctionQuery(subject string, queryForm string) string {
 
 	//PREFIX ses: <https://senergy.infai.org/ontology/>
 	//PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -595,7 +595,7 @@ func (*Database) getDeleteFunctionQuery(subject string) string {
 	return url.QueryEscape(
 		model.PREFIX_SES +
 			model.PREFIX_RDF +
-			"delete {" +
+			queryForm + " {" +
 			"<" + subject + "> rdf:type ?type;" +
 			"rdfs:label ?label;" +
 			"ses:hasConcept ?concept;" +

@@ -125,6 +125,12 @@ func (*Controller) RdfXmlFrame(rdfxml string, result interface{}, rootElement st
 		contextDoc = getConceptCharacteristicContext()
 	case *[]model.TotalCount:
 		contextDoc = getTotalCountContext()
+	case *[]model.Aspect:
+		contextDoc = getAspectContext()
+	case *[]model.DeviceClass:
+		contextDoc = getDeviceClassContext()
+	case *[]model.Function:
+		contextDoc = getFunctionContext()
 	default:
 		debug.PrintStack()
 		log.Println("Unknown model type:", reflect.TypeOf(result))
@@ -153,6 +159,18 @@ func (*Controller) RdfXmlFrame(rdfxml string, result interface{}, rootElement st
 	case *[]model.TotalCount:
 		cont["@type"] = model.SES_ONTOLOGY_COUNT
 		cont["@id"] = rootElement
+	case *[]model.Aspect:
+		cont["@type"] = model.SES_ONTOLOGY_ASPECT
+	case *[]model.DeviceClass:
+		cont["@type"] = model.SES_ONTOLOGY_DEVICE_CLASS
+	case *[]model.Function:
+		if strings.HasPrefix(rootElement, model.URN_PREFIX+"controlling-function:") {
+			cont["@type"] = model.SES_ONTOLOGY_CONTROLLING_FUNCTION
+		}
+
+		if strings.HasPrefix(rootElement, model.URN_PREFIX+"measuring-function:") {
+			cont["@type"] = model.SES_ONTOLOGY_MEASURING_FUNCTION
+		}
 	default:
 		debug.PrintStack()
 		log.Println("Unknown model type:", reflect.TypeOf(result))
