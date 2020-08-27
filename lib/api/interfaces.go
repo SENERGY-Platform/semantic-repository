@@ -42,4 +42,8 @@ type Controller interface {
 	GetCharacteristic(subject string) (result model.Characteristic, err error, errCode int)
 	GetLeafCharacteristics() (result []model.Characteristic, err error, errCode int)
 	ValidateCharacteristics(concept model.Characteristic) (err error, code int)
+
+	ValidateAspect(aspect model.Aspect) (err error, code int)
+	ValidateFunction(function model.Function) (err error, code int)
+	ValidateDeviceClass(deviceclass model.DeviceClass) (err error, code int)
 }

@@ -22,6 +22,7 @@ package api
 import (
 	"encoding/json"
 	"github.com/SENERGY-Platform/semantic-repository/lib/config"
+	"github.com/SENERGY-Platform/semantic-repository/lib/controller"
 	"github.com/SENERGY-Platform/semantic-repository/lib/model"
 	"github.com/SmartEnergyPlatform/jwt-http-router"
 	"log"
@@ -99,6 +100,31 @@ func FunctionsEndpoints(config config.Config, control Controller, router *jwt_ht
 			log.Println("ERROR: unable to encode response", err)
 		}
 		return
+	})
+
+	router.PUT(functionsResource, func(writer http.ResponseWriter, request *http.Request, params jwt_http_router.Params, jwt jwt_http_router.Jwt) {
+		dryRun, err := strconv.ParseBool(request.URL.Query().Get("dry-run"))
+		if err != nil {
+			http.Error(writer, err.Error(), http.StatusBadRequest)
+			return
+		}
+		if !dryRun {
+			http.Error(writer, "only with query-parameter 'dry-run=true' allowed", http.StatusNotImplemented)
+			return
+		}
+		function := model.Function{}
+		err = json.NewDecoder(request.Body).Decode(&function)
+		if err != nil {
+			http.Error(writer, err.Error(), http.StatusBadRequest)
+			return
+		}
+		controller.SetFunctionRdfType(&function)
+		err, code := control.ValidateFunction(function)
+		if err != nil {
+			http.Error(writer, err.Error(), code)
+			return
+		}
+		writer.WriteHeader(http.StatusOK)
 	})
 
 }
