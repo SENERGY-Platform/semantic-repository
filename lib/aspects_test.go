@@ -90,12 +90,8 @@ func TestProduceDeviceTypeforAspectTest(t *testing.T) {
 	devicetype := model.DeviceType{}
 	devicetype.Id = "urn:infai:ses:devicetype:1e1e-AspectTest"
 	devicetype.Name = "Philips Hue Color"
-	devicetype.DeviceClass = model.DeviceClass{
-		Id:   "urn:infai:ses:deviceclass:2e2e-AspectTest",
-		Name: "Lamp",
-	}
+	devicetype.DeviceClassId = "urn:infai:ses:deviceclass:2e2e-AspectTest"
 	devicetype.Description = "description"
-	devicetype.Image = "image"
 	devicetype.Services = []model.Service{}
 	devicetype.Services = append(devicetype.Services, model.Service{
 		"urn:infai:ses:service:3e3e-AspectTest",
@@ -103,12 +99,11 @@ func TestProduceDeviceTypeforAspectTest(t *testing.T) {
 		"setBrightness",
 		"",
 		"",
-		[]model.Aspect{{Id: "urn:infai:ses:aspect:4e4e-AspectTest", Name: "Lighting", RdfType: "asasasdsadas"}},
-		"asdasda",
+		[]string{"urn:infai:ses:aspect:4e4e-AspectTest"},
+		"urn:infai:ses:protocol:asdasda",
 		[]model.Content{},
 		[]model.Content{},
-		[]model.Function{{Id: "urn:infai:ses:function:5e5e1-AspectTest", Name: "brightnessAdjustment1", ConceptId: "urn:ses:infai:concept:1a1a1a", RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION},
-			{Id: "urn:infai:ses:function:5e5e2-AspectTest", Name: "brightnessAdjustment2", ConceptId: "urn:ses:infai:concept:1a1a1a", RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION}},
+		[]string{"urn:infai:ses:controlling-function:5e5e1-AspectTest", "urn:infai:ses:controlling-function:5e5e2-AspectTest"},
 		"asdasdsadsadasd",
 	})
 
@@ -118,16 +113,21 @@ func TestProduceDeviceTypeforAspectTest(t *testing.T) {
 		"getBrightness",
 		"",
 		"",
-		[]model.Aspect{{Id: "urn:infai:ses:aspect:4e4e-AspectTest", Name: "Lighting", RdfType: "asasasdsadas"}},
-		"asdasda",
+		[]string{"urn:infai:ses:aspect:4e4e-AspectTest"},
+		"urn:infai:ses:protocol:asdasda",
 		[]model.Content{},
 		[]model.Content{},
-		[]model.Function{{Id: "urn:infai:ses:function:5e5e3-AspectTest", Name: "brightnessFunction4", ConceptId: "urn:ses:infai:concept:1a1a1a", RdfType: model.SES_ONTOLOGY_MEASURING_FUNCTION},
-			{Id: "urn:infai:ses:function:5e5e4-AspectTest", Name: "brightnessFunction2", ConceptId: "urn:ses:infai:concept:1a1a1a", RdfType: model.SES_ONTOLOGY_MEASURING_FUNCTION}},
+		[]string{"urn:infai:ses:measuring-function:5e5e3-AspectTest", "urn:infai:ses:measuring-function:5e5e4-AspectTest"},
 		"asdasdsadsadasd",
 	})
 
 	producer.PublishDeviceType(devicetype, "sdfdsfsf")
+
+	producer.PublishAspect(model.Aspect{Id: "urn:infai:ses:aspect:4e4e-AspectTest", Name: "Lighting", RdfType: "asasasdsadas"}, "sdfsdfdsds")
+	producer.PublishFunction(model.Function{Id: "urn:infai:ses:controlling-function:5e5e1-AspectTest", Name: "brightnessAdjustment1", ConceptId: "urn:infai:ses:concept:1a1a1a", RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION}, "sdfsdfdsds")
+	producer.PublishFunction(model.Function{Id: "urn:infai:ses:controlling-function:5e5e2-AspectTest", Name: "brightnessAdjustment2", ConceptId: "urn:infai:ses:concept:1a1a1a", RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION}, "sdfsdfdsds")
+	producer.PublishFunction(model.Function{Id: "urn:infai:ses:measuring-function:5e5e3-AspectTest", Name: "brightnessFunction4", ConceptId: "urn:infai:ses:concept:1a1a1a", RdfType: model.SES_ONTOLOGY_MEASURING_FUNCTION}, "sdfsdfdsds")
+	producer.PublishFunction(model.Function{Id: "urn:infai:ses:measuring-function:5e5e4-AspectTest", Name: "brightnessFunction2", ConceptId: "urn:infai:ses:concept:1a1a1a", RdfType: model.SES_ONTOLOGY_MEASURING_FUNCTION}, "sdfsdfdsds")
 
 }
 
@@ -140,26 +140,26 @@ func TestReadAspectMeasuringFunctions(t *testing.T) {
 	} else {
 		t.Log(res)
 	}
-	if res[0].Id != "urn:infai:ses:function:5e5e4-AspectTest" {
+	if res[0].Id != "urn:infai:ses:measuring-function:5e5e4-AspectTest" {
 		t.Fatal("error id", res[0].Id)
 	}
 	if res[0].Name != "brightnessFunction2" {
 		t.Fatal("error Name")
 	}
-	if res[0].ConceptId != "urn:ses:infai:concept:1a1a1a" {
-		t.Fatal("error ConceptId")
+	if res[0].ConceptId != "urn:infai:ses:concept:1a1a1a" {
+		t.Fatal("error ConceptId", res[0].ConceptId)
 	}
 	if res[0].RdfType != model.SES_ONTOLOGY_MEASURING_FUNCTION {
 		t.Fatal("wrong RdfType")
 	}
 
-	if res[1].Id != "urn:infai:ses:function:5e5e3-AspectTest" {
+	if res[1].Id != "urn:infai:ses:measuring-function:5e5e3-AspectTest" {
 		t.Fatal("error id", res[1].Id)
 	}
 	if res[1].Name != "brightnessFunction4" {
 		t.Fatal("error Name")
 	}
-	if res[1].ConceptId != "urn:ses:infai:concept:1a1a1a" {
+	if res[1].ConceptId != "urn:infai:ses:concept:1a1a1a" {
 		t.Fatal("error ConceptId")
 	}
 	if res[1].RdfType != model.SES_ONTOLOGY_MEASURING_FUNCTION {
@@ -177,12 +177,8 @@ func Test_2_ProduceDeviceTypeforAspectTest(t *testing.T) {
 	devicetype := model.DeviceType{}
 	devicetype.Id = "urn:infai:ses:devicetype:08-01-20"
 	devicetype.Name = "Philips Hue Color"
-	devicetype.DeviceClass = model.DeviceClass{
-		Id:   "urn:infai:ses:deviceclass:08-01-20",
-		Name: "Lamp",
-	}
+	devicetype.DeviceClassId = "urn:infai:ses:deviceclass:08-01-20"
 	devicetype.Description = "description"
-	devicetype.Image = "image"
 	devicetype.Services = []model.Service{}
 	devicetype.Services = append(devicetype.Services, model.Service{
 		"urn:infai:ses:service:08-01-20_1",
@@ -190,12 +186,11 @@ func Test_2_ProduceDeviceTypeforAspectTest(t *testing.T) {
 		"setBrightness",
 		"",
 		"",
-		[]model.Aspect{{Id: "urn:infai:ses:aspect:08-01-20_1", Name: "aspect1", RdfType: "asasasdsadas"}},
-		"asdasda",
+		[]string{"urn:infai:ses:aspect:08-01-20_1"},
+		"urn:infai:ses:protocol:asdasda",
 		[]model.Content{},
 		[]model.Content{},
-		[]model.Function{{Id: "urn:infai:ses:08-01-20_1", Name: "func1", ConceptId: "urn:ses:infai:concept:08-01-20", RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION},
-			{Id: "urn:infai:ses:function:08-01-20_2", Name: "func1", ConceptId: "urn:ses:infai:concept:08-01-20", RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION}},
+		[]string{"urn:infai:ses:controlling-function:08-01-20_1", "urn:infai:ses:controlling-function:08-01-20_2"},
 		"asdasdsadsadasd",
 	})
 
@@ -205,16 +200,22 @@ func Test_2_ProduceDeviceTypeforAspectTest(t *testing.T) {
 		"getBrightness",
 		"",
 		"",
-		[]model.Aspect{{Id: "urn:infai:ses:aspect:08-01-20_2", Name: "aspect2", RdfType: "asasasdsadas"}},
-		"asdasda",
+		[]string{"urn:infai:ses:aspect:08-01-20_2"},
+		"urn:infai:ses:protocol:asdasda",
 		[]model.Content{},
 		[]model.Content{},
-		[]model.Function{{Id: "urn:infai:ses:function:08-01-20_3", Name: "func3", ConceptId: "urn:ses:infai:concept:08-01-20", RdfType: model.SES_ONTOLOGY_MEASURING_FUNCTION},
-			{Id: "urn:infai:ses:function:08-01-20_4", Name: "func4", ConceptId: "urn:ses:infai:concept:08-01-20", RdfType: model.SES_ONTOLOGY_MEASURING_FUNCTION}},
+		[]string{"urn:infai:ses:measuring-function:08-01-20_3", "urn:infai:ses:measuring-function:08-01-20_4"},
 		"asdasdsadsadasd",
 	})
 
 	producer.PublishDeviceType(devicetype, "sdfdsfsf")
+
+	producer.PublishAspect(model.Aspect{Id: "urn:infai:ses:aspect:08-01-20_1", Name: "aspect1", RdfType: "asasasdsadas"}, "sdfsdfdsds")
+	producer.PublishAspect(model.Aspect{Id: "urn:infai:ses:aspect:08-01-20_2", Name: "aspect2", RdfType: "asasasdsadas"}, "sdfsdfdsds")
+	producer.PublishFunction(model.Function{Id: "urn:infai:ses:controlling-function:08-01-20_1", Name: "func1", ConceptId: "urn:infai:ses:concept:1a1a1a", RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION}, "sdfsdfdsds")
+	producer.PublishFunction(model.Function{Id: "urn:infai:ses:controlling-function:08-01-20_2", Name: "func2", ConceptId: "urn:infai:ses:concept:1a1a1a", RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION}, "sdfsdfdsds")
+	producer.PublishFunction(model.Function{Id: "urn:infai:ses:measuring-function:08-01-20_3", Name: "func3", ConceptId: "urn:infai:ses:concept:1a1a1a", RdfType: model.SES_ONTOLOGY_MEASURING_FUNCTION}, "sdfsdfdsds")
+	producer.PublishFunction(model.Function{Id: "urn:infai:ses:measuring-function:08-01-20_4", Name: "func4", ConceptId: "urn:infai:ses:concept:1a1a1a", RdfType: model.SES_ONTOLOGY_MEASURING_FUNCTION}, "sdfsdfdsds")
 
 }
 

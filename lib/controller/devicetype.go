@@ -94,12 +94,11 @@ func (this *Controller) ValidateDeviceType(dt model.DeviceType) (err error, code
 		return errors.New("wrong device type"), http.StatusBadRequest
 	}
 
-	err, code = this.ValidateService(dt.Services)
-	if err != nil {
-		return err, code
+	if dt.DeviceClassId == "" || !strings.HasPrefix(dt.DeviceClassId, model.URN_PREFIX) {
+		return errors.New("invalid device-class id"), http.StatusBadRequest
 	}
 
-	err, code = this.ValidateDeviceClass(dt.DeviceClass)
+	err, code = this.ValidateService(dt.Services)
 	if err != nil {
 		return err, code
 	}
@@ -118,7 +117,7 @@ func (this *Controller) SetDeviceType(deviceType model.DeviceType, owner string)
 	if err != nil {
 		debug.PrintStack()
 		log.Println("Error Validation:", err, code)
-		return
+		return nil
 	}
 	// delete is required for the update of devicetypes
 	err = this.DeleteDeviceType(deviceType.Id)
@@ -157,12 +156,8 @@ func (this *Controller) SetDeviceType(deviceType model.DeviceType, owner string)
 
 func SetDevicetypeRdfTypes(deviceType *model.DeviceType) {
 	deviceType.RdfType = model.SES_ONTOLOGY_DEVICE_TYPE
-	deviceType.DeviceClass.RdfType = model.SES_ONTOLOGY_DEVICE_CLASS
 	for serviceIndex, _ := range deviceType.Services {
 		deviceType.Services[serviceIndex].RdfType = model.SES_ONTOLOGY_SERVICE
-		for aspectIndex, _ := range deviceType.Services[serviceIndex].Aspects {
-			deviceType.Services[serviceIndex].Aspects[aspectIndex].RdfType = model.SES_ONTOLOGY_ASPECT
-		}
 	}
 }
 

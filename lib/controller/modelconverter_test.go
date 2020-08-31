@@ -161,22 +161,11 @@ func TestDeviceType(t *testing.T) {
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
 	xmlns:fn="http://www.w3.org/2005/xpath-functions#">
 
-<rdf:Description rdf:about="urn:infai:ses:function:5555">
-	<hasConcept xmlns="https://senergy.infai.org/ontology/" rdf:resource="urn:infai:ses:concept:7777"/>
-	<rdf:type rdf:resource="https://senergy.infai.org/ontology/ControllingFunction"/>
-	<rdfs:label>brightnessAdjustment</rdfs:label>
-</rdf:Description>
-
 <rdf:Description rdf:about="urn:infai:ses:service:3333">
 	<exposesFunction xmlns="https://senergy.infai.org/ontology/" rdf:resource="urn:infai:ses:function:5555"/>
 	<refersTo xmlns="https://senergy.infai.org/ontology/" rdf:resource="urn:infai:ses:aspect:4444"/>
 	<rdf:type rdf:resource="https://senergy.infai.org/ontology/Service"/>
 	<rdfs:label>setBrigthness</rdfs:label>
-</rdf:Description>
-
-<rdf:Description rdf:about="urn:infai:ses:deviceclass:2222">
-	<rdf:type rdf:resource="https://senergy.infai.org/ontology/DeviceClass"/>
-	<rdfs:label>Lamp</rdfs:label>
 </rdf:Description>
 
 <rdf:Description rdf:about="urn:infai:ses:devicetype:1111">
@@ -186,10 +175,6 @@ func TestDeviceType(t *testing.T) {
 	<rdfs:label>Philips Hue Color</rdfs:label>
 </rdf:Description>
 
-<rdf:Description rdf:about="urn:infai:ses:aspect:4444">
-	<rdf:type rdf:resource="https://senergy.infai.org/ontology/Aspect"/>
-	<rdfs:label>Lighting</rdfs:label>
-</rdf:Description>
 
 </rdf:RDF>
 `
@@ -206,21 +191,12 @@ func TestDeviceType(t *testing.T) {
 		if deviceType[0].Name != "Philips Hue Color" {
 			t.Fatal("wrong name")
 		}
-		if deviceType[0].Image != "" {
-			t.Fatal("wrong image")
-		}
 		if deviceType[0].Description != "" {
 			t.Fatal("wrong description")
 		}
 		// DeviceClass
-		if deviceType[0].DeviceClass.Id != "urn:infai:ses:deviceclass:2222" {
+		if deviceType[0].DeviceClassId != "urn:infai:ses:deviceclass:2222" {
 			t.Fatal("wrong device class id")
-		}
-		if deviceType[0].DeviceClass.Name != "Lamp" {
-			t.Fatal("wrong device class name")
-		}
-		if deviceType[0].DeviceClass.RdfType != "https://senergy.infai.org/ontology/DeviceClass" {
-			t.Fatal("wrong device class type")
 		}
 		// Service Index 0
 		if deviceType[0].Services[0].Id != "urn:infai:ses:service:3333" {
@@ -241,30 +217,16 @@ func TestDeviceType(t *testing.T) {
 		if deviceType[0].Services[0].LocalId != "" {
 			t.Fatal("wrong service LocalId -> index 0")
 		}
-		if deviceType[0].Services[0].Functions[0].Id != "urn:infai:ses:function:5555" {
-			t.Fatal("wrong functions id -> index 0,0")
+		if deviceType[0].Services[0].FunctionIds[0] != "urn:infai:ses:function:5555" {
+			t.Fatal("wrong functions id -> index 0,0,0")
 		}
-		if deviceType[0].Services[0].Functions[0].RdfType != "https://senergy.infai.org/ontology/ControllingFunction" {
-			t.Fatal("wrong functions type -> index 0,0")
+		if deviceType[0].Services[0].AspectIds[0] != "urn:infai:ses:aspect:4444" {
+			t.Fatal("wrong aspects id -> index 0,0,0")
 		}
-		if deviceType[0].Services[0].Functions[0].Name != "brightnessAdjustment" {
-			t.Fatal("wrong functions name -> index 0,0")
+		if deviceType[0].Services[0].Interaction != "" {
+			t.Fatal("wrong Interaction -> index 0,0")
 		}
-		if deviceType[0].Services[0].Functions[0].ConceptId != "urn:infai:ses:concept:7777" {
-			t.Fatal("wrong functions concept id -> index 0,0,0")
-		}
-		if deviceType[0].Services[0].Aspects[0].Id != "urn:infai:ses:aspect:4444" {
-			t.Fatal("wrong aspects id -> index 0,0")
-		}
-		if deviceType[0].Services[0].Aspects[0].RdfType != "https://senergy.infai.org/ontology/Aspect" {
-			t.Fatal("wrong aspects type -> index 0,0")
-		}
-		if deviceType[0].Services[0].Aspects[0].Name != "Lighting" {
-			t.Fatal("wrong aspects name -> index 0,0")
-		}
-		if deviceType[0].Services[0].Aspects[0].Name != "Lighting" {
-			t.Fatal("wrong aspects name -> index 0,0")
-		}
+
 		t.Log(deviceType)
 	} else {
 		t.Fatal(err)

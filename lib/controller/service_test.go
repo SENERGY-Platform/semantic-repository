@@ -30,10 +30,10 @@ func TestValidService(t *testing.T) {
 	service = append(service, model.Service{
 		Id:      "urn:infai:ses:service:5555",
 		LocalId: "4711", Name: "get",
-		ProtocolId: model.URN_PREFIX + "1111",
-		RdfType:    model.SES_ONTOLOGY_SERVICE,
-		Aspects:    []model.Aspect{{Id: "urn:infai:ses:aspect:1", Name: "aspect", RdfType: model.SES_ONTOLOGY_ASPECT}},
-		Functions:  []model.Function{{Id: "urn:infai:ses:function:1", Name: "function", RdfType: model.SES_ONTOLOGY_MEASURING_FUNCTION, ConceptId: "urn:infai:ses:concept:1"}},
+		ProtocolId:  model.URN_PREFIX + "1111",
+		RdfType:     model.SES_ONTOLOGY_SERVICE,
+		AspectIds:   []string{"urn:infai:ses:aspect:1"},
+		FunctionIds: []string{"urn:infai:ses:function:1"},
 	})
 
 	controller := Controller{}

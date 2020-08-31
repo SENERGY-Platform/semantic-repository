@@ -46,21 +46,31 @@ func (this *Controller) ValidateService(services []model.Service) (error, int) {
 			return errors.New("missing service protocol id"), http.StatusBadRequest
 		}
 		if !strings.HasPrefix(service.ProtocolId, model.URN_PREFIX) {
-			return errors.New("invalid service.protocol_id id"), http.StatusBadRequest
+			return errors.New("invalid service.protocol id"), http.StatusBadRequest
 		}
 
 		if service.RdfType != model.SES_ONTOLOGY_SERVICE {
 			return errors.New("wrong service type"), http.StatusBadRequest
 		}
 
-		err, code := this.ValidateAspects(service.Aspects)
-		if err != nil {
-			return err, code
+		if (len(service.AspectIds)) == 0 {
+			return errors.New("expect at least one aspect id"), http.StatusBadRequest
 		}
 
-		err, code = this.ValidateFunctions(service.Functions)
-		if err != nil {
-			return err, code
+		for _, aspectId := range service.AspectIds {
+			if aspectId == "" || !strings.HasPrefix(aspectId, model.URN_PREFIX) {
+				return errors.New("invalid aspect id"), http.StatusBadRequest
+			}
+		}
+
+		if (len(service.FunctionIds)) == 0 {
+			return errors.New("expect at least one function id"), http.StatusBadRequest
+		}
+
+		for _, functionId := range service.FunctionIds {
+			if functionId == "" || !strings.HasPrefix(functionId, model.URN_PREFIX) {
+				return errors.New("invalid aspect id"), http.StatusBadRequest
+			}
 		}
 	}
 

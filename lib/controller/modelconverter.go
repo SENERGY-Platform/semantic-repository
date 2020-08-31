@@ -229,12 +229,15 @@ func rdfxmlToTurtle(rdfxml string) (result []string, err error) {
 
 func getDeviceTypeContext() map[string]interface{} {
 	contextDoc := map[string]interface{}{
-		"id":           "@id",
-		"rdf_type":     "@type",
-		"name":         model.RDFS_LABEL,
-		"protocol_id":  model.SES_ONTOLOGY_HAS_PROTOCOL,
-		"interaction":  model.SES_ONTOLOGY_HAS_INTERACTION,
-		"device_class": model.SES_ONTOLOGY_HAS_DEVICE_CLASS,
+		"id":          "@id",
+		"rdf_type":    "@type",
+		"name":        model.RDFS_LABEL,
+		"protocol_id": model.SES_ONTOLOGY_HAS_PROTOCOL,
+		"interaction": model.SES_ONTOLOGY_HAS_INTERACTION,
+		"device_class_id": map[string]interface{}{
+			"@id":   model.SES_ONTOLOGY_HAS_DEVICE_CLASS,
+			"@type": "@id",
+		},
 		"concept_id": map[string]interface{}{
 			"@id":   model.SES_ONTOLOGY_HAS_CONCEPT,
 			"@type": "@id",
@@ -243,12 +246,14 @@ func getDeviceTypeContext() map[string]interface{} {
 			"@id":        model.SES_ONTOLOGY_HAS_SERVICE,
 			"@container": "@set",
 		},
-		"aspects": map[string]interface{}{
+		"aspect_ids": map[string]interface{}{
 			"@id":        model.SES_ONTOLOGY_REFERS_TO,
+			"@type":      "@id",
 			"@container": "@set",
 		},
-		"functions": map[string]interface{}{
+		"function_ids": map[string]interface{}{
 			"@id":        model.SES_ONTOLOGY_EXPOSES_FUNCTION,
+			"@type":      "@id",
 			"@container": "@set",
 		},
 	}

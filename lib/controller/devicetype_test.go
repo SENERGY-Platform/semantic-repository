@@ -36,13 +36,8 @@ func TestValidDeviceType(t *testing.T) {
 	devicetype := model.DeviceType{}
 	devicetype.Id = "urn:infai:ses:devicetype:1111"
 	devicetype.Name = "Philips Hue Color"
-	devicetype.DeviceClass = model.DeviceClass{
-		Id:      "urn:infai:ses:deviceclass:2222",
-		Name:    "Lamp",
-		RdfType: model.SES_ONTOLOGY_DEVICE_CLASS,
-	}
+	devicetype.DeviceClassId = "urn:infai:ses:deviceclass:2222"
 	devicetype.Description = "description"
-	devicetype.Image = "image"
 	devicetype.RdfType = model.SES_ONTOLOGY_DEVICE_TYPE
 	devicetype.Services = []model.Service{}
 	devicetype.Services = append(devicetype.Services, model.Service{
@@ -51,11 +46,11 @@ func TestValidDeviceType(t *testing.T) {
 		"setBrigthness",
 		"",
 		"",
-		[]model.Aspect{{Id: "urn:infai:ses:aspect:4444", Name: "Lighting", RdfType: model.SES_ONTOLOGY_ASPECT}},
+		[]string{"urn:infai:ses:aspect:4444"},
 		"urn:infai:ses:protocolId",
 		[]model.Content{},
 		[]model.Content{},
-		[]model.Function{{Id: "urn:infai:ses:function:5555", Name: "brightnessAdjustment", ConceptId: "urn:infai:ses:concept:6666", RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION}},
+		[]string{"urn:infai:ses:function:5555"},
 		model.SES_ONTOLOGY_SERVICE,
 	})
 
@@ -123,7 +118,7 @@ func TestValidationDeviceTypeWrongType(t *testing.T) {
 	}
 }
 
-func TestValidationDeviceTypeNoServiceData(t *testing.T) {
+func TestValidationDeviceTypeNoDeviceClassId(t *testing.T) {
 	devicetype := model.DeviceType{}
 	devicetype.Id = "urn:infai:ses:devicetype:5555"
 	devicetype.Name = "philips hue color"
@@ -138,18 +133,12 @@ func TestValidationDeviceTypeNoServiceData(t *testing.T) {
 	}
 }
 
-func TestValidationDeviceTypeNoDeviceClass(t *testing.T) {
+func TestValidationDeviceTypeNoServiceData(t *testing.T) {
 	devicetype := model.DeviceType{}
 	devicetype.Id = "urn:infai:ses:devicetype:5555"
 	devicetype.Name = "philips hue color"
 	devicetype.RdfType = model.SES_ONTOLOGY_DEVICE_TYPE
-	devicetype.Services = []model.Service{{Id: "urn:infai:ses:service:1",
-		RdfType: model.SES_ONTOLOGY_SERVICE,
-		Name:    "test", LocalId: "2",
-		ProtocolId: "3",
-		Aspects:    []model.Aspect{{Id: "urn:infai:ses:aspect:1", Name: "aspect", RdfType: model.SES_ONTOLOGY_ASPECT}},
-		Functions:  []model.Function{{Id: "urn:infai:ses:function:1", Name: "function", RdfType: model.SES_ONTOLOGY_MEASURING_FUNCTION, ConceptId: "urn:infai:ses:concept:1"}}}}
-	devicetype.DeviceClass = model.DeviceClass{}
+	devicetype.DeviceClassId = "urn:infai:ses:deviceclass:555556498"
 
 	controller := Controller{}
 	err, code := controller.ValidateDeviceType(devicetype)
@@ -162,12 +151,9 @@ func TestValidationDeviceTypeNoDeviceClass(t *testing.T) {
 
 func TestServiceWithInteraction(t *testing.T) {
 	dt := model.DeviceType{
-		Id:   model.URN_PREFIX + "dtid",
-		Name: "dtname",
-		DeviceClass: model.DeviceClass{
-			Id:   model.URN_PREFIX + "dcid",
-			Name: "dcname",
-		},
+		Id:            model.URN_PREFIX + "dtid",
+		Name:          "dtname",
+		DeviceClassId: model.URN_PREFIX + "dcid",
 		Services: []model.Service{
 			{
 				Id:          model.URN_PREFIX + "sid",
@@ -175,15 +161,8 @@ func TestServiceWithInteraction(t *testing.T) {
 				Name:        "sname",
 				Interaction: model.EVENT,
 				ProtocolId:  model.URN_PREFIX + "pid",
-				Aspects: []model.Aspect{
-					{Id: model.URN_PREFIX + "aid", Name: "aname"},
-				},
-				Functions: []model.Function{{
-					Id:        model.URN_PREFIX + "fid",
-					Name:      "fname",
-					ConceptId: model.URN_PREFIX + "cid",
-					RdfType:   model.SES_ONTOLOGY_MEASURING_FUNCTION,
-				}},
+				AspectIds:   []string{model.URN_PREFIX + "aid"},
+				FunctionIds: []string{model.URN_PREFIX + "fid"},
 			},
 		},
 	}
