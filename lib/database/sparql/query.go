@@ -532,9 +532,11 @@ func (*Database) getDeviceClassQuery(subject string, queryForm string) string {
 			queryForm + " {" +
 			"<" + subject + "> rdf:type ?type;" +
 			"rdfs:label ?label;" +
+			"ses:hasImage ?image;" +
 			"} where {" +
 			"<" + subject + "> rdf:type ?type;" +
-			"rdfs:label ?label;" +
+			"rdfs:label ?label." +
+			"OPTIONAL {<" + subject + "> ses:hasImage ?image .}" +
 			"}")
 }
 

@@ -45,6 +45,7 @@ const SES_ONTOLOGY_HAS_PROTOCOL = "https://senergy.infai.org/ontology/hasProtoco
 const SES_ONTOLOGY_REFERS_TO = "https://senergy.infai.org/ontology/refersTo"
 const SES_ONTOLOGY_EXPOSES_FUNCTION = "https://senergy.infai.org/ontology/exposesFunction"
 const SES_ONTOLOGY_TOTAL_COUNT = "https://senergy.infai.org/ontology/totalCount"
+const SES_ONTOLOGY_HAS_IMAGE = "https://senergy.infai.org/ontology/hasImage"
 
 const SES_ONTOLOGY_HAS_INTERACTION = "https://senergy.infai.org/ontology/interaction"
 

@@ -256,6 +256,10 @@ func getDeviceTypeContext() map[string]interface{} {
 			"@type":      "@id",
 			"@container": "@set",
 		},
+		"image": map[string]interface{}{
+			"@id":   model.SES_ONTOLOGY_HAS_IMAGE,
+			"@type": "@id",
+		},
 	}
 	return contextDoc
 }
@@ -280,6 +284,10 @@ func getDeviceClassContext() map[string]interface{} {
 		"id":       "@id",
 		"rdf_type": "@type",
 		"name":     model.RDFS_LABEL,
+		"image": map[string]interface{}{
+			"@id":   model.SES_ONTOLOGY_HAS_IMAGE,
+			"@type": "@id",
+		},
 	}
 	return contextDoc
 }

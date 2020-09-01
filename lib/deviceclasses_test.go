@@ -32,11 +32,9 @@ func TestProduceDeviceType(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	deviceclass := model.DeviceClass{}
-	deviceclass.Id = "urn:infai:ses:device-class:eb4a3337-01a1-4434-9dcc-064b3955eeef"
-	deviceclass.Name = "Lamp"
 
-	producer.PublishDeviceClass(deviceclass, "sdfdsfsf")
+	producer.PublishDeviceClass(model.DeviceClass{Id: "urn:infai:ses:device-class:eb4a3337-01a1-4434-9dcc-064b3955eeef", Name: "Lamp", Image: "https://i.imgur.com/YHc7cbe.png"}, "sdfdsfsf")
+	producer.PublishDeviceClass(model.DeviceClass{Id: "urn:infai:ses:device-class:eb4a3337-01a1-4434-9dcc-123456", Name: "Lamp2"}, "sdfdsfsf")
 
 }
 
@@ -60,6 +58,25 @@ func TestDeviceClassRead(t *testing.T) {
 		t.Fatal("wrong RdfType")
 	}
 
+	if res[0].Image != "https://i.imgur.com/YHc7cbe.png" {
+		t.Fatal("wrong Image")
+	}
+
+	if res[1].Id != "urn:infai:ses:device-class:eb4a3337-01a1-4434-9dcc-123456" {
+		t.Fatal("error id", res[0].Id)
+	}
+	if res[1].Name != "Lamp2" {
+		t.Fatal("error Name")
+	}
+
+	if res[1].RdfType != model.SES_ONTOLOGY_DEVICE_CLASS {
+		t.Fatal("wrong RdfType")
+	}
+
+	if res[1].Image != "" {
+		t.Fatal("wrong Image")
+	}
+
 }
 
 func TestDeviceClassDelete(t *testing.T) {
@@ -72,6 +89,11 @@ func TestDeviceClassDelete(t *testing.T) {
 		t.Fatal(err)
 	}
 	err = producer.PublishDeviceClassDelete("urn:infai:ses:device-class:eb4a3337-01a1-4434-9dcc-064b3955eeef", "sdfdsfsf")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = producer.PublishDeviceClassDelete("urn:infai:ses:device-class:eb4a3337-01a1-4434-9dcc-123456", "sdfdsfsf")
 	if err != nil {
 		t.Fatal(err)
 	}

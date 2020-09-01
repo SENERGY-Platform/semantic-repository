@@ -17,7 +17,7 @@
  *
  */
 
- package controller
+package controller
 
 import (
 	"github.com/SENERGY-Platform/semantic-repository/lib/model"
@@ -25,11 +25,12 @@ import (
 	"testing"
 )
 
-func TestValidDeviceClass (t *testing.T) {
+func TestValidDeviceClass(t *testing.T) {
 	deviceclass := model.DeviceClass{}
 	deviceclass.Id = "urn:infai:ses:deviceclass:1234"
 	deviceclass.Name = "Lamp"
 	deviceclass.RdfType = model.SES_ONTOLOGY_DEVICE_CLASS
+	deviceclass.Image = "image"
 
 	controller := Controller{}
 	err, code := controller.ValidateDeviceClass(deviceclass)
@@ -40,7 +41,7 @@ func TestValidDeviceClass (t *testing.T) {
 	}
 }
 
-func TestDeviceClassMissingId (t *testing.T) {
+func TestDeviceClassMissingId(t *testing.T) {
 	deviceclass := model.DeviceClass{}
 	deviceclass.Id = ""
 
@@ -53,7 +54,7 @@ func TestDeviceClassMissingId (t *testing.T) {
 	}
 }
 
-func TestDeviceClassMissingName (t *testing.T) {
+func TestDeviceClassMissingName(t *testing.T) {
 	deviceclass := model.DeviceClass{}
 	deviceclass.Id = "urn:infai:ses:deviceclass:1234"
 	deviceclass.Name = ""
@@ -67,7 +68,7 @@ func TestDeviceClassMissingName (t *testing.T) {
 	}
 }
 
-func TestDeviceClassWrongType (t *testing.T) {
+func TestDeviceClassWrongType(t *testing.T) {
 	deviceclass := model.DeviceClass{}
 	deviceclass.Id = "urn:infai:ses:deviceclass:1234"
 	deviceclass.Name = "Lamp"
@@ -81,4 +82,3 @@ func TestDeviceClassWrongType (t *testing.T) {
 		t.Fatal(err, code)
 	}
 }
-
