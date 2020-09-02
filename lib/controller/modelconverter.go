@@ -229,10 +229,13 @@ func rdfxmlToTurtle(rdfxml string) (result []string, err error) {
 
 func getDeviceTypeContext() map[string]interface{} {
 	contextDoc := map[string]interface{}{
-		"id":          "@id",
-		"rdf_type":    "@type",
-		"name":        model.RDFS_LABEL,
-		"protocol_id": model.SES_ONTOLOGY_HAS_PROTOCOL,
+		"id":       "@id",
+		"rdf_type": "@type",
+		"name":     model.RDFS_LABEL,
+		"protocol_id": map[string]interface{}{
+			"@id":   model.SES_ONTOLOGY_HAS_PROTOCOL,
+			"@type": "@id",
+		},
 		"interaction": model.SES_ONTOLOGY_HAS_INTERACTION,
 		"device_class_id": map[string]interface{}{
 			"@id":   model.SES_ONTOLOGY_HAS_DEVICE_CLASS,

@@ -35,9 +35,6 @@ func (this *Controller) ValidateService(services []model.Service) (error, int) {
 		if !strings.HasPrefix(service.Id, model.URN_PREFIX) {
 			return errors.New("invalid service id"), http.StatusBadRequest
 		}
-		if service.LocalId == "" {
-			return errors.New("missing service local id"), http.StatusBadRequest
-		}
 		if service.Name == "" {
 			return errors.New("missing service name"), http.StatusBadRequest
 		}

@@ -203,6 +203,76 @@ func TestServiceWithInteraction(t *testing.T) {
 	t.Run("check device-type", testCheckDeviceType(ctrl, dt.Id, dt))
 }
 
+func TestProtocolIdChange(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	wg := sync.WaitGroup{}
+	defer wg.Wait()
+	defer cancel()
+	conf, err := testutil.GetDockerEnv(ctx, &wg)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	db, err := database.New(conf)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	ctrl, err := New(conf, db)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	dt := model.DeviceType{
+		Id:            model.URN_PREFIX + "dtid",
+		Name:          "dtname",
+		DeviceClassId: model.URN_PREFIX + "dcid",
+		Services: []model.Service{
+			{
+				Id:          model.URN_PREFIX + "sid",
+				LocalId:     "lsid",
+				Name:        "sname",
+				Interaction: model.EVENT,
+				ProtocolId:  model.URN_PREFIX + "pid",
+				AspectIds:   []string{model.URN_PREFIX + "aid"},
+				FunctionIds: []string{model.URN_PREFIX + "fid"},
+			},
+		},
+	}
+	SetDevicetypeRdfTypes(&dt)
+
+	//tstr := triples.(string)
+	//t.Log(tstr)
+	tstr := `<urn:infai:ses:dtid> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://senergy.infai.org/ontology/DeviceType> .
+        <urn:infai:ses:dtid> <http://www.w3.org/2000/01/rdf-schema#label> "dtname" .
+        <urn:infai:ses:dtid> <https://senergy.infai.org/ontology/hasDeviceClass> <urn:infai:ses:dcid> .
+        <urn:infai:ses:dtid> <https://senergy.infai.org/ontology/hasService> <urn:infai:ses:sid> .
+        <urn:infai:ses:sid> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://senergy.infai.org/ontology/Service> .
+        <urn:infai:ses:sid> <http://www.w3.org/2000/01/rdf-schema#label> "sname" .
+        <urn:infai:ses:sid> <https://senergy.infai.org/ontology/exposesFunction> <urn:infai:ses:fid> .
+        <urn:infai:ses:sid> <https://senergy.infai.org/ontology/hasProtocol> "urn:infai:ses:pid" .
+        <urn:infai:ses:sid> <https://senergy.infai.org/ontology/interaction> "event" .
+        <urn:infai:ses:sid> <https://senergy.infai.org/ontology/refersTo> <urn:infai:ses:aid> .`
+
+	err = db.InsertData(tstr)
+
+	//cleanup unsaved properties
+	dt.Services[0].LocalId = ""
+
+	//protocol id as id fix removes protocol ids
+	protocolId := dt.Services[0].ProtocolId
+	dt.Services[0].ProtocolId = ""
+
+	t.Run("check device-type without protocol", testCheckDeviceType(ctrl, dt.Id, dt))
+
+	dt.Services[0].ProtocolId = protocolId
+	t.Run("update device-type with new protocol", testCreateDeviceType(ctrl, dt))
+
+	t.Run("check device-type with protocol", testCheckDeviceType(ctrl, dt.Id, dt))
+}
+
 func testCheckDeviceType(ctrl *Controller, id string, expected model.DeviceType) func(t *testing.T) {
 	return func(t *testing.T) {
 		actualDt, err, _ := ctrl.GetDeviceType(id)
