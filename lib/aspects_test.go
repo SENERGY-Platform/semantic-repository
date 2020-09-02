@@ -68,6 +68,40 @@ func TestAspects(t *testing.T) {
 	t.Run("delete aspect", testAspectDelete(prod))
 	t.Run("produce device-type with aspect", testProduceDeviceTypeForAspectTest(prod))
 	t.Run("read aspect measuring-functions", testReadAspectMeasuringFunctions(ctrl))
+}
+
+func TestAspects2(t *testing.T) {
+	conf, err := config.Load("../config.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	ctx, cancel := context.WithCancel(context.Background())
+	wg := sync.WaitGroup{}
+	defer wg.Wait()
+	defer cancel()
+	err = testutil.GetDockerEnv(ctx, &wg, &conf)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	db, err := database.New(conf)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	ctrl, err := controller.New(conf, db)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	prod, err := testutil.StartSourceMock(conf, ctrl)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
 	t.Run("test_2_ProduceDeviceTypeforAspectTest", test_2_ProduceDeviceTypeforAspectTest(prod))
 	t.Run("test_2_ReadAspectsWithMeasuringFunctions", test_2_ReadAspectsWithMeasuringFunctions(ctrl))
 }
