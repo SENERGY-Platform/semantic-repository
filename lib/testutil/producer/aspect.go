@@ -20,45 +20,31 @@
 package producer
 
 import (
-	"context"
 	"encoding/json"
 	"github.com/SENERGY-Platform/semantic-repository/lib/model"
 	"github.com/SENERGY-Platform/semantic-repository/lib/source/consumer/listener"
-	"github.com/segmentio/kafka-go"
 	"log"
 	"runtime/debug"
-	"time"
 )
 
-func (this *Producer) PublishDeviceClass(deviceclass model.DeviceClass, userId string) (err error) {
-	cmd := listener.DeviceClassCommand{Command: "PUT", DeviceClass: deviceclass, Owner: userId}
-	return this.PublishDeviceClassCommand(cmd)
+func (this *Producer) PublishAspect(aspect model.Aspect, userId string) (err error) {
+	cmd := listener.AspectCommand{Command: "PUT", Aspect: aspect, Owner: userId}
+	return this.PublishAspectCommand(cmd)
 }
 
-func (this *Producer) PublishDeviceClassDelete(id string, userId string) error {
-	cmd := listener.DeviceClassCommand{Command: "DELETE", Id: id, Owner: userId}
-	return this.PublishDeviceClassCommand(cmd)
+func (this *Producer) PublishAspectDelete(id string, userId string) error {
+	cmd := listener.AspectCommand{Command: "DELETE", Id: id, Owner: userId}
+	return this.PublishAspectCommand(cmd)
 }
 
-func (this *Producer) PublishDeviceClassCommand(cmd listener.DeviceClassCommand) error {
+func (this *Producer) PublishAspectCommand(cmd listener.AspectCommand) error {
 	if this.config.LogLevel == "DEBUG" {
-		log.Println("DEBUG: produce deviceclass", cmd)
+		log.Println("DEBUG: produce aspect", cmd)
 	}
 	message, err := json.Marshal(cmd)
 	if err != nil {
 		debug.PrintStack()
 		return err
 	}
-	err = this.deviceclass.WriteMessages(
-		context.Background(),
-		kafka.Message{
-			Key:   []byte(cmd.Id),
-			Value: message,
-			Time:  time.Now(),
-		},
-	)
-	if err != nil {
-		debug.PrintStack()
-	}
-	return err
+	return this.callListener(this.config.AspectTopic, message)
 }

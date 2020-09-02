@@ -11,6 +11,9 @@ import (
 
 func RyaContainer(ctx context.Context, wg *sync.WaitGroup, mongoinstance string) (hostPort string, ipAddress string, err error) {
 	pool, err := dockertest.NewPool("")
+	if err != nil {
+		return "", "", err
+	}
 	container, err := pool.RunWithOptions(&dockertest.RunOptions{
 		Repository: "fgseitsrancher.wifa.intern.uni-leipzig.de:5000/rya",
 		Tag:        "dev",

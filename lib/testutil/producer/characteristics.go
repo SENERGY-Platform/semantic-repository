@@ -17,45 +17,31 @@
 package producer
 
 import (
-	"context"
 	"encoding/json"
 	"github.com/SENERGY-Platform/semantic-repository/lib/model"
 	"github.com/SENERGY-Platform/semantic-repository/lib/source/consumer/listener"
-	"github.com/segmentio/kafka-go"
 	"log"
 	"runtime/debug"
-	"time"
 )
 
-func (this *Producer) PublishConcept(concept model.Concept, userId string) (err error) {
-	cmd := listener.ConceptCommand{Command: "PUT", Id: concept.Id, Concept: concept, Owner: userId}
-	return this.PublishConceptCommand(cmd)
+func (this *Producer) PublishCharacteristic(conceptId string, characteristic model.Characteristic, userId string) (err error) {
+	cmd := listener.CharacteristicCommand{Command: "PUT", ConceptId: conceptId, Id: characteristic.Id, Characteristic: characteristic, Owner: userId}
+	return this.PublishCharacteristicCommand(cmd)
 }
 
-func (this *Producer) PublishConceptDelete(id string, userId string) error {
-	cmd := listener.ConceptCommand{Command: "DELETE", Id: id, Owner: userId}
-	return this.PublishConceptCommand(cmd)
+func (this *Producer) PublishCharacteristicDelete(id string, userId string) error {
+	cmd := listener.CharacteristicCommand{Command: "DELETE", Id: id, Owner: userId}
+	return this.PublishCharacteristicCommand(cmd)
 }
 
-func (this *Producer) PublishConceptCommand(cmd listener.ConceptCommand) error {
+func (this *Producer) PublishCharacteristicCommand(cmd listener.CharacteristicCommand) error {
 	if this.config.LogLevel == "DEBUG" {
-		log.Println("DEBUG: produce concept", cmd)
+		log.Println("DEBUG: produce characteristic", cmd)
 	}
 	message, err := json.Marshal(cmd)
 	if err != nil {
 		debug.PrintStack()
 		return err
 	}
-	err = this.concepts.WriteMessages(
-		context.Background(),
-		kafka.Message{
-			Key:   []byte(cmd.Id),
-			Value: message,
-			Time:  time.Now(),
-		},
-	)
-	if err != nil {
-		debug.PrintStack()
-	}
-	return err
+	return this.callListener(this.config.CharacteristicTopic, message)
 }

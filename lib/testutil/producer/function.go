@@ -20,14 +20,11 @@
 package producer
 
 import (
-	"context"
 	"encoding/json"
 	"github.com/SENERGY-Platform/semantic-repository/lib/model"
 	"github.com/SENERGY-Platform/semantic-repository/lib/source/consumer/listener"
-	"github.com/segmentio/kafka-go"
 	"log"
 	"runtime/debug"
-	"time"
 )
 
 func (this *Producer) PublishFunction(function model.Function, userId string) (err error) {
@@ -49,16 +46,5 @@ func (this *Producer) PublishFunctionCommand(cmd listener.FunctionCommand) error
 		debug.PrintStack()
 		return err
 	}
-	err = this.function.WriteMessages(
-		context.Background(),
-		kafka.Message{
-			Key:   []byte(cmd.Id),
-			Value: message,
-			Time:  time.Now(),
-		},
-	)
-	if err != nil {
-		debug.PrintStack()
-	}
-	return err
+	return this.callListener(this.config.FunctionTopic, message)
 }

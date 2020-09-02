@@ -22,6 +22,7 @@ package controller
 import (
 	"context"
 	"encoding/json"
+	"github.com/SENERGY-Platform/semantic-repository/lib/config"
 	"github.com/SENERGY-Platform/semantic-repository/lib/database"
 	"github.com/SENERGY-Platform/semantic-repository/lib/model"
 	"github.com/SENERGY-Platform/semantic-repository/lib/testutil"
@@ -178,7 +179,9 @@ func TestServiceWithInteraction(t *testing.T) {
 	wg := sync.WaitGroup{}
 	defer wg.Wait()
 	defer cancel()
-	conf, err := testutil.GetDockerEnv(ctx, &wg)
+
+	conf := config.Config{}
+	err = testutil.GetDockerEnv(ctx, &wg, &conf)
 	if err != nil {
 		t.Error(err)
 		return
@@ -208,7 +211,8 @@ func TestProtocolIdChange(t *testing.T) {
 	wg := sync.WaitGroup{}
 	defer wg.Wait()
 	defer cancel()
-	conf, err := testutil.GetDockerEnv(ctx, &wg)
+	conf := config.Config{}
+	err := testutil.GetDockerEnv(ctx, &wg, &conf)
 	if err != nil {
 		t.Error(err)
 		return

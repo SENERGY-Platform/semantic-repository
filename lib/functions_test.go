@@ -20,279 +20,306 @@
 package lib
 
 import (
+	"context"
 	"github.com/SENERGY-Platform/semantic-repository/lib/config"
+	"github.com/SENERGY-Platform/semantic-repository/lib/controller"
+	"github.com/SENERGY-Platform/semantic-repository/lib/database"
 	"github.com/SENERGY-Platform/semantic-repository/lib/model"
-	"github.com/SENERGY-Platform/semantic-repository/lib/source/producer"
+	"github.com/SENERGY-Platform/semantic-repository/lib/testutil"
+	"github.com/SENERGY-Platform/semantic-repository/lib/testutil/producer"
+	"sync"
 	"testing"
 )
 
-func TestProduceFunctions(t *testing.T) {
+func TestFunction(t *testing.T) {
 	conf, err := config.Load("../config.json")
 	if err != nil {
 		t.Fatal(err)
 	}
-	producer, err := producer.New(conf)
+	ctx, cancel := context.WithCancel(context.Background())
+	wg := sync.WaitGroup{}
+	defer wg.Wait()
+	defer cancel()
+	err = testutil.GetDockerEnv(ctx, &wg, &conf)
 	if err != nil {
-		t.Fatal(err)
+		t.Error(err)
+		return
 	}
-	confunction1 := model.Function{}
-	confunction1.Id = "urn:infai:ses:controlling-function:333"
-	confunction1.Name = "setOnFunction"
 
-	producer.PublishFunction(confunction1, "sdfdsfsf")
+	db, err := database.New(conf)
+	if err != nil {
+		t.Error(err)
+		return
+	}
 
-	confunction2 := model.Function{}
-	confunction2.Id = "urn:infai:ses:controlling-function:2222"
-	confunction2.Name = "setOffFunction"
-	confunction2.ConceptId = ""
+	ctrl, err := controller.New(conf, db)
+	if err != nil {
+		t.Error(err)
+		return
+	}
 
-	producer.PublishFunction(confunction2, "sdfdsfsf")
+	prod, err := testutil.StartSourceMock(conf, ctrl)
+	if err != nil {
+		t.Error(err)
+		return
+	}
 
-	confunction3 := model.Function{}
-	confunction3.Id = "urn:infai:ses:controlling-function:5467567"
-	confunction3.Name = "setColorFunction"
-	confunction3.ConceptId = "urn:infai:ses:concept:efffsdfd-01a1-4434-9dcc-064b3955000f"
-
-	producer.PublishFunction(confunction3, "sdfdsfsf")
-
-	measfunction1 := model.Function{}
-	measfunction1.Id = "urn:infai:ses:measuring-function:23"
-	measfunction1.Name = "getOnOffFunction"
-
-	producer.PublishFunction(measfunction1, "sdfdsfsf")
-
-	measfunction2 := model.Function{}
-	measfunction2.Id = "urn:infai:ses:measuring-function:321"
-	measfunction2.Name = "getTemperatureFunction"
-	measfunction2.ConceptId = "urn:infai:ses:concept:efffsdfd-aaaa-bbbb-ccc-0000"
-
-	producer.PublishFunction(measfunction2, "sdfdsfsf")
-
-	measfunction3 := model.Function{}
-	measfunction3.Id = "urn:infai:ses:measuring-function:467"
-	measfunction3.Name = "getHumidityFunction"
-
-	producer.PublishFunction(measfunction3, "sdfdsfsf")
+	t.Run("testProduceFunctions", testProduceFunctions(prod))
+	t.Run("testReadControllingFunction", testReadControllingFunction(ctrl))
+	t.Run("testReadMeasuringFunction", testReadMeasuringFunction(ctrl))
+	t.Run("testReadFunctions", testReadFunctions(ctrl))
+	t.Run("testFunctionDelete", testFunctionDelete(prod))
 }
 
-func TestReadControllingFunction(t *testing.T) {
-	err, con, _ := StartUpScript(t)
+func testProduceFunctions(producer *producer.Producer) func(t *testing.T) {
+	return func(t *testing.T) {
+		confunction1 := model.Function{}
+		confunction1.Id = "urn:infai:ses:controlling-function:333"
+		confunction1.Name = "setOnFunction"
 
-	res, err, code := con.GetFunctionsByType(model.SES_ONTOLOGY_CONTROLLING_FUNCTION)
-	if err != nil {
-		t.Fatal(res, err, code)
-	} else {
-		t.Log(res)
-	}
+		producer.PublishFunction(confunction1, "sdfdsfsf")
 
-	if res[0].Id != "urn:infai:ses:controlling-function:5467567" {
-		t.Fatal("error id")
-	}
-	if res[0].Name != "setColorFunction" {
-		t.Fatal("error Name")
-	}
-	if res[0].ConceptId != "urn:infai:ses:concept:efffsdfd-01a1-4434-9dcc-064b3955000f" {
-		t.Fatal("error ConceptId")
-	}
+		confunction2 := model.Function{}
+		confunction2.Id = "urn:infai:ses:controlling-function:2222"
+		confunction2.Name = "setOffFunction"
+		confunction2.ConceptId = ""
 
-	if res[1].Id != "urn:infai:ses:controlling-function:2222" {
-		t.Fatal("error id")
-	}
-	if res[1].Name != "setOffFunction" {
-		t.Fatal("error Name")
-	}
-	if res[1].ConceptId != "" {
-		t.Fatal("error ConceptId")
-	}
+		producer.PublishFunction(confunction2, "sdfdsfsf")
 
-	if res[2].Id != "urn:infai:ses:controlling-function:333" {
-		t.Fatal("error id")
-	}
-	if res[2].Name != "setOnFunction" {
-		t.Fatal("error Name")
-	}
-	if res[2].ConceptId != "" {
-		t.Fatal("error ConceptId")
+		confunction3 := model.Function{}
+		confunction3.Id = "urn:infai:ses:controlling-function:5467567"
+		confunction3.Name = "setColorFunction"
+		confunction3.ConceptId = "urn:infai:ses:concept:efffsdfd-01a1-4434-9dcc-064b3955000f"
+
+		producer.PublishFunction(confunction3, "sdfdsfsf")
+
+		measfunction1 := model.Function{}
+		measfunction1.Id = "urn:infai:ses:measuring-function:23"
+		measfunction1.Name = "getOnOffFunction"
+
+		producer.PublishFunction(measfunction1, "sdfdsfsf")
+
+		measfunction2 := model.Function{}
+		measfunction2.Id = "urn:infai:ses:measuring-function:321"
+		measfunction2.Name = "getTemperatureFunction"
+		measfunction2.ConceptId = "urn:infai:ses:concept:efffsdfd-aaaa-bbbb-ccc-0000"
+
+		producer.PublishFunction(measfunction2, "sdfdsfsf")
+
+		measfunction3 := model.Function{}
+		measfunction3.Id = "urn:infai:ses:measuring-function:467"
+		measfunction3.Name = "getHumidityFunction"
+
+		producer.PublishFunction(measfunction3, "sdfdsfsf")
 	}
 }
 
-func TestReadMeasuringFunction(t *testing.T) {
-	err, con, _ := StartUpScript(t)
-
-	res, err, code := con.GetFunctionsByType(model.SES_ONTOLOGY_MEASURING_FUNCTION)
-	if err != nil {
-		t.Fatal(res, err, code)
-	} else {
-		t.Log(res)
-	}
-
-	if res[0].Id != "urn:infai:ses:measuring-function:467" {
-		t.Fatal("error id")
-	}
-	if res[0].Name != "getHumidityFunction" {
-		t.Fatal("error Name")
-	}
-	if res[0].ConceptId != "" {
-		t.Fatal("error ConceptId")
-	}
-
-	if res[1].Id != "urn:infai:ses:measuring-function:23" {
-		t.Fatal("error id")
-	}
-	if res[1].Name != "getOnOffFunction" {
-		t.Fatal("error Name")
-	}
-	if res[1].ConceptId != "" {
-		t.Fatal("error ConceptId")
-	}
-
-	if res[2].Id != "urn:infai:ses:measuring-function:321" {
-		t.Fatal("error id")
-	}
-	if res[2].Name != "getTemperatureFunction" {
-		t.Fatal("error Name")
-	}
-	if res[2].ConceptId != "urn:infai:ses:concept:efffsdfd-aaaa-bbbb-ccc-0000" {
-		t.Fatal("error ConceptId")
-	}
-}
-
-func TestReadFunctions(t *testing.T) {
-	err, con, _ := StartUpScript(t)
-
-	if err != nil {
-		t.Fatal(err)
-	}
-	// test limit offset
-	res, err, code := con.GetFunctions(1, 0, "", "")
-	if err != nil {
-		t.Fatal(res, err, code)
-	} else {
-		t.Log(res)
-	}
-
-	if res.Functions[0].Id != "urn:infai:ses:measuring-function:467" ||
-		res.Functions[0].Name != "getHumidityFunction" ||
-		res.Functions[0].ConceptId != "" ||
-		res.Functions[0].RdfType != model.SES_ONTOLOGY_MEASURING_FUNCTION ||
-		res.TotalCount != 6 {
-		t.Fatal("error ")
-	}
-
-	res, err, code = con.GetFunctions(1, 1, "", "")
-	if err != nil {
-		t.Fatal(res, err, code)
-	} else {
-		t.Log(res)
-	}
-
-	if res.Functions[0].Id != "urn:infai:ses:measuring-function:23" ||
-		res.Functions[0].Name != "getOnOffFunction" ||
-		res.Functions[0].ConceptId != "" ||
-		res.Functions[0].RdfType != model.SES_ONTOLOGY_MEASURING_FUNCTION ||
-		res.TotalCount != 6 {
-		t.Fatal("error ")
-	}
-
-	res, err, code = con.GetFunctions(1, 2, "", "")
-	if err != nil {
-		t.Fatal(res, err, code)
-	} else {
-		t.Log(res)
-	}
-
-	if res.Functions[0].Id != "urn:infai:ses:measuring-function:321" ||
-		res.Functions[0].Name != "getTemperatureFunction" ||
-		res.Functions[0].ConceptId != "urn:infai:ses:concept:efffsdfd-aaaa-bbbb-ccc-0000" ||
-		res.Functions[0].RdfType != model.SES_ONTOLOGY_MEASURING_FUNCTION ||
-		res.TotalCount != 6 {
-		t.Fatal("error ")
-	}
-
-	// test direction
-	res, err, code = con.GetFunctions(1, 0, "", "asc")
-	if err != nil {
-		t.Fatal(res, err, code)
-	} else {
-		t.Log(res)
-	}
-
-	if res.Functions[0].Id != "urn:infai:ses:measuring-function:467" ||
-		res.Functions[0].Name != "getHumidityFunction" ||
-		res.Functions[0].ConceptId != "" ||
-		res.Functions[0].RdfType != model.SES_ONTOLOGY_MEASURING_FUNCTION ||
-		res.TotalCount != 6 {
-		t.Fatal("error ")
-	}
-
-	res, err, code = con.GetFunctions(1, 0, "", "desc")
-	if err != nil {
-		t.Fatal(res, err, code)
-	} else {
-		t.Log(res)
-	}
-
-	if res.Functions[0].Id != "urn:infai:ses:controlling-function:333" ||
-		res.Functions[0].Name != "setOnFunction" ||
-		res.Functions[0].ConceptId != "" ||
-		res.Functions[0].RdfType != model.SES_ONTOLOGY_CONTROLLING_FUNCTION ||
-		res.TotalCount != 6 {
-		t.Fatal("error ")
-	}
-
-	// test search
-	res, err, code = con.GetFunctions(1, 0, "Off", "asc")
-	if err != nil {
-		t.Fatal(res, err, code)
-	} else {
-		t.Log(res)
-	}
-
-	if res.Functions[0].Id != "urn:infai:ses:measuring-function:23" ||
-		res.Functions[0].Name != "getOnOffFunction" ||
-		res.Functions[0].ConceptId != "" ||
-		res.Functions[0].RdfType != model.SES_ONTOLOGY_MEASURING_FUNCTION ||
-		res.TotalCount != 2 {
-		t.Fatal("error ")
-	}
-
-	res, err, code = con.GetFunctions(10, 0, "unc", "desc")
-	if err != nil {
-		t.Fatal(res, err, code)
-	} else {
-		t.Log(res)
-	}
-
-	if len(res.Functions) != 6 ||
-		res.TotalCount != 6 {
-		t.Fatal("error ")
-	}
-
-}
-
-func TestFunctionDelete(t *testing.T) {
-	conf, err := config.Load("../config.json")
-	if err != nil {
-		t.Fatal(err)
-	}
-	producer, err := producer.New(conf)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	funcids := [6]string{
-		"urn:infai:ses:controlling-function:333",
-		"urn:infai:ses:controlling-function:2222",
-		"urn:infai:ses:controlling-function:5467567",
-		"urn:infai:ses:measuring-function:23",
-		"urn:infai:ses:measuring-function:321",
-		"urn:infai:ses:measuring-function:467"}
-
-	for _, funcid := range funcids {
-		err = producer.PublishFunctionDelete(funcid, "sdfdsfsf")
+func testReadControllingFunction(con *controller.Controller) func(t *testing.T) {
+	return func(t *testing.T) {
+		res, err, code := con.GetFunctionsByType(model.SES_ONTOLOGY_CONTROLLING_FUNCTION)
 		if err != nil {
-			t.Fatal(err)
+			t.Fatal(res, err, code)
+		} else {
+			t.Log(res)
+		}
+
+		if res[0].Id != "urn:infai:ses:controlling-function:5467567" {
+			t.Fatal("error id")
+		}
+		if res[0].Name != "setColorFunction" {
+			t.Fatal("error Name")
+		}
+		if res[0].ConceptId != "urn:infai:ses:concept:efffsdfd-01a1-4434-9dcc-064b3955000f" {
+			t.Fatal("error ConceptId")
+		}
+
+		if res[1].Id != "urn:infai:ses:controlling-function:2222" {
+			t.Fatal("error id")
+		}
+		if res[1].Name != "setOffFunction" {
+			t.Fatal("error Name")
+		}
+		if res[1].ConceptId != "" {
+			t.Fatal("error ConceptId")
+		}
+
+		if res[2].Id != "urn:infai:ses:controlling-function:333" {
+			t.Fatal("error id")
+		}
+		if res[2].Name != "setOnFunction" {
+			t.Fatal("error Name")
+		}
+		if res[2].ConceptId != "" {
+			t.Fatal("error ConceptId")
 		}
 	}
+}
 
+func testReadMeasuringFunction(con *controller.Controller) func(t *testing.T) {
+	return func(t *testing.T) {
+		res, err, code := con.GetFunctionsByType(model.SES_ONTOLOGY_MEASURING_FUNCTION)
+		if err != nil {
+			t.Fatal(res, err, code)
+		} else {
+			t.Log(res)
+		}
+
+		if res[0].Id != "urn:infai:ses:measuring-function:467" {
+			t.Fatal("error id")
+		}
+		if res[0].Name != "getHumidityFunction" {
+			t.Fatal("error Name")
+		}
+		if res[0].ConceptId != "" {
+			t.Fatal("error ConceptId")
+		}
+
+		if res[1].Id != "urn:infai:ses:measuring-function:23" {
+			t.Fatal("error id")
+		}
+		if res[1].Name != "getOnOffFunction" {
+			t.Fatal("error Name")
+		}
+		if res[1].ConceptId != "" {
+			t.Fatal("error ConceptId")
+		}
+
+		if res[2].Id != "urn:infai:ses:measuring-function:321" {
+			t.Fatal("error id")
+		}
+		if res[2].Name != "getTemperatureFunction" {
+			t.Fatal("error Name")
+		}
+		if res[2].ConceptId != "urn:infai:ses:concept:efffsdfd-aaaa-bbbb-ccc-0000" {
+			t.Fatal("error ConceptId")
+		}
+	}
+}
+
+func testReadFunctions(con *controller.Controller) func(t *testing.T) {
+	return func(t *testing.T) {
+		// test limit offset
+		res, err, code := con.GetFunctions(1, 0, "", "")
+		if err != nil {
+			t.Fatal(res, err, code)
+		} else {
+			t.Log(res)
+		}
+
+		if res.Functions[0].Id != "urn:infai:ses:measuring-function:467" ||
+			res.Functions[0].Name != "getHumidityFunction" ||
+			res.Functions[0].ConceptId != "" ||
+			res.Functions[0].RdfType != model.SES_ONTOLOGY_MEASURING_FUNCTION ||
+			res.TotalCount != 6 {
+			t.Fatal("error ")
+		}
+
+		res, err, code = con.GetFunctions(1, 1, "", "")
+		if err != nil {
+			t.Fatal(res, err, code)
+		} else {
+			t.Log(res)
+		}
+
+		if res.Functions[0].Id != "urn:infai:ses:measuring-function:23" ||
+			res.Functions[0].Name != "getOnOffFunction" ||
+			res.Functions[0].ConceptId != "" ||
+			res.Functions[0].RdfType != model.SES_ONTOLOGY_MEASURING_FUNCTION ||
+			res.TotalCount != 6 {
+			t.Fatal("error ")
+		}
+
+		res, err, code = con.GetFunctions(1, 2, "", "")
+		if err != nil {
+			t.Fatal(res, err, code)
+		} else {
+			t.Log(res)
+		}
+
+		if res.Functions[0].Id != "urn:infai:ses:measuring-function:321" ||
+			res.Functions[0].Name != "getTemperatureFunction" ||
+			res.Functions[0].ConceptId != "urn:infai:ses:concept:efffsdfd-aaaa-bbbb-ccc-0000" ||
+			res.Functions[0].RdfType != model.SES_ONTOLOGY_MEASURING_FUNCTION ||
+			res.TotalCount != 6 {
+			t.Fatal("error ")
+		}
+
+		// test direction
+		res, err, code = con.GetFunctions(1, 0, "", "asc")
+		if err != nil {
+			t.Fatal(res, err, code)
+		} else {
+			t.Log(res)
+		}
+
+		if res.Functions[0].Id != "urn:infai:ses:measuring-function:467" ||
+			res.Functions[0].Name != "getHumidityFunction" ||
+			res.Functions[0].ConceptId != "" ||
+			res.Functions[0].RdfType != model.SES_ONTOLOGY_MEASURING_FUNCTION ||
+			res.TotalCount != 6 {
+			t.Fatal("error ")
+		}
+
+		res, err, code = con.GetFunctions(1, 0, "", "desc")
+		if err != nil {
+			t.Fatal(res, err, code)
+		} else {
+			t.Log(res)
+		}
+
+		if res.Functions[0].Id != "urn:infai:ses:controlling-function:333" ||
+			res.Functions[0].Name != "setOnFunction" ||
+			res.Functions[0].ConceptId != "" ||
+			res.Functions[0].RdfType != model.SES_ONTOLOGY_CONTROLLING_FUNCTION ||
+			res.TotalCount != 6 {
+			t.Fatal("error ")
+		}
+
+		// test search
+		res, err, code = con.GetFunctions(1, 0, "Off", "asc")
+		if err != nil {
+			t.Fatal(res, err, code)
+		} else {
+			t.Log(res)
+		}
+
+		if res.Functions[0].Id != "urn:infai:ses:measuring-function:23" ||
+			res.Functions[0].Name != "getOnOffFunction" ||
+			res.Functions[0].ConceptId != "" ||
+			res.Functions[0].RdfType != model.SES_ONTOLOGY_MEASURING_FUNCTION ||
+			res.TotalCount != 2 {
+			t.Fatal("error ")
+		}
+
+		res, err, code = con.GetFunctions(10, 0, "unc", "desc")
+		if err != nil {
+			t.Fatal(res, err, code)
+		} else {
+			t.Log(res)
+		}
+
+		if len(res.Functions) != 6 ||
+			res.TotalCount != 6 {
+			t.Fatal("error ")
+		}
+	}
+}
+
+func testFunctionDelete(producer *producer.Producer) func(t *testing.T) {
+	return func(t *testing.T) {
+		funcids := [6]string{
+			"urn:infai:ses:controlling-function:333",
+			"urn:infai:ses:controlling-function:2222",
+			"urn:infai:ses:controlling-function:5467567",
+			"urn:infai:ses:measuring-function:23",
+			"urn:infai:ses:measuring-function:321",
+			"urn:infai:ses:measuring-function:467"}
+
+		for _, funcid := range funcids {
+			err := producer.PublishFunctionDelete(funcid, "sdfdsfsf")
+			if err != nil {
+				t.Fatal(err)
+			}
+		}
+	}
 }

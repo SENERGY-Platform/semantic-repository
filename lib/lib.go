@@ -22,7 +22,6 @@ import (
 	"github.com/SENERGY-Platform/semantic-repository/lib/controller"
 	"github.com/SENERGY-Platform/semantic-repository/lib/database"
 	"github.com/SENERGY-Platform/semantic-repository/lib/source/consumer"
-	"github.com/SENERGY-Platform/semantic-repository/lib/source/producer"
 	"log"
 )
 
@@ -30,12 +29,6 @@ func Start(conf config.Config) (stop func(), err error) {
 	db, err := database.New(conf)
 	if err != nil {
 		log.Println("ERROR: unable to connect to database", err)
-		return stop, err
-	}
-
-	_, err = producer.New(conf)
-	if err != nil {
-		log.Println("ERROR: unable to create producer", err)
 		return stop, err
 	}
 
