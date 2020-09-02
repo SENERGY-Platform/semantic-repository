@@ -77,7 +77,10 @@ func testProduceValidConcept1withCharIdAndBaseCharId(producer *producer.Producer
 		concept.RdfType = "xxx"
 		concept.BaseCharacteristicId = "urn:ses:infai:characteristic:544433333"
 		concept.CharacteristicIds = []string{"urn:ses:infai:characteristic:544433333"}
-		producer.PublishConcept(concept, "sdfdsfsf")
+		err := producer.PublishConcept(concept, "sdfdsfsf")
+		if err != nil {
+			t.Fatal(err)
+		}
 	}
 }
 
@@ -88,7 +91,10 @@ func testProduceValidConcept1withNoCharId(producer *producer.Producer) func(t *t
 		concept.Name = "color1"
 		concept.RdfType = "xxx"
 		concept.CharacteristicIds = nil
-		producer.PublishConcept(concept, "sdfdsfsf")
+		err := producer.PublishConcept(concept, "sdfdsfsf")
+		if err != nil {
+			t.Fatal(err)
+		}
 	}
 }
 
@@ -100,7 +106,10 @@ func testProduceValidConcept1withCharId(producer *producer.Producer) func(t *tes
 		concept.RdfType = "xxx"
 		concept.CharacteristicIds = []string{"urn:ses:infai:characteristic:544433333"}
 		concept.BaseCharacteristicId = "urn:ses:infai:characteristic:544433333"
-		producer.PublishConcept(concept, "sdfdsfsf")
+		err := producer.PublishConcept(concept, "sdfdsfsf")
+		if err != nil {
+			t.Fatal(err)
+		}
 	}
 }
 
@@ -121,7 +130,10 @@ func testProduceValidCharacteristicDependencie(producer *producer.Producer) func
 			Name:               "charFloat",
 			SubCharacteristics: nil,
 		}}
-		producer.PublishCharacteristic("urn:ses:infai:concept:1a1a1a", characteristic, "sdfdsfsf")
+		err := producer.PublishCharacteristic("urn:ses:infai:concept:1a1a1a", characteristic, "sdfdsfsf")
+		if err != nil {
+			t.Fatal(err)
+		}
 	}
 }
 

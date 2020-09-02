@@ -250,14 +250,35 @@ func test_2_ProduceDeviceTypeforAspectTest(producer *producer.Producer) func(t *
 			"asdasdsadsadasd",
 		})
 
-		producer.PublishDeviceType(devicetype, "sdfdsfsf")
+		err := producer.PublishDeviceType(devicetype, "sdfdsfsf")
 
-		producer.PublishAspect(model.Aspect{Id: "urn:infai:ses:aspect:08-01-20_1", Name: "aspect1", RdfType: "asasasdsadas"}, "sdfsdfdsds")
-		producer.PublishAspect(model.Aspect{Id: "urn:infai:ses:aspect:08-01-20_2", Name: "aspect2", RdfType: "asasasdsadas"}, "sdfsdfdsds")
-		producer.PublishFunction(model.Function{Id: "urn:infai:ses:controlling-function:08-01-20_1", Name: "func1", ConceptId: "urn:infai:ses:concept:1a1a1a", RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION}, "sdfsdfdsds")
-		producer.PublishFunction(model.Function{Id: "urn:infai:ses:controlling-function:08-01-20_2", Name: "func2", ConceptId: "urn:infai:ses:concept:1a1a1a", RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION}, "sdfsdfdsds")
-		producer.PublishFunction(model.Function{Id: "urn:infai:ses:measuring-function:08-01-20_3", Name: "func3", ConceptId: "urn:infai:ses:concept:1a1a1a", RdfType: model.SES_ONTOLOGY_MEASURING_FUNCTION}, "sdfsdfdsds")
-		producer.PublishFunction(model.Function{Id: "urn:infai:ses:measuring-function:08-01-20_4", Name: "func4", ConceptId: "urn:infai:ses:concept:1a1a1a", RdfType: model.SES_ONTOLOGY_MEASURING_FUNCTION}, "sdfsdfdsds")
+		if err != nil {
+			t.Fatal(err)
+		}
+		err = producer.PublishAspect(model.Aspect{Id: "urn:infai:ses:aspect:08-01-20_1", Name: "aspect1", RdfType: "asasasdsadas"}, "sdfsdfdsds")
+		if err != nil {
+			t.Fatal(err)
+		}
+		err = producer.PublishAspect(model.Aspect{Id: "urn:infai:ses:aspect:08-01-20_2", Name: "aspect2", RdfType: "asasasdsadas"}, "sdfsdfdsds")
+		if err != nil {
+			t.Fatal(err)
+		}
+		err = producer.PublishFunction(model.Function{Id: "urn:infai:ses:controlling-function:08-01-20_1", Name: "func1", ConceptId: "urn:infai:ses:concept:1a1a1a", RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION}, "sdfsdfdsds")
+		if err != nil {
+			t.Fatal(err)
+		}
+		err = producer.PublishFunction(model.Function{Id: "urn:infai:ses:controlling-function:08-01-20_2", Name: "func2", ConceptId: "urn:infai:ses:concept:1a1a1a", RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION}, "sdfsdfdsds")
+		if err != nil {
+			t.Fatal(err)
+		}
+		err = producer.PublishFunction(model.Function{Id: "urn:infai:ses:measuring-function:08-01-20_3", Name: "func3", ConceptId: "urn:infai:ses:concept:1a1a1a", RdfType: model.SES_ONTOLOGY_MEASURING_FUNCTION}, "sdfsdfdsds")
+		if err != nil {
+			t.Fatal(err)
+		}
+		err = producer.PublishFunction(model.Function{Id: "urn:infai:ses:measuring-function:08-01-20_4", Name: "func4", ConceptId: "urn:infai:ses:concept:1a1a1a", RdfType: model.SES_ONTOLOGY_MEASURING_FUNCTION}, "sdfsdfdsds")
+		if err != nil {
+			t.Fatal(err)
+		}
 	}
 }
 

@@ -77,40 +77,58 @@ func testProduceFunctions(producer *producer.Producer) func(t *testing.T) {
 		confunction1.Id = "urn:infai:ses:controlling-function:333"
 		confunction1.Name = "setOnFunction"
 
-		producer.PublishFunction(confunction1, "sdfdsfsf")
+		err := producer.PublishFunction(confunction1, "sdfdsfsf")
+		if err != nil {
+			t.Fatal(err)
+		}
 
 		confunction2 := model.Function{}
 		confunction2.Id = "urn:infai:ses:controlling-function:2222"
 		confunction2.Name = "setOffFunction"
 		confunction2.ConceptId = ""
 
-		producer.PublishFunction(confunction2, "sdfdsfsf")
+		err = producer.PublishFunction(confunction2, "sdfdsfsf")
+		if err != nil {
+			t.Fatal(err)
+		}
 
 		confunction3 := model.Function{}
 		confunction3.Id = "urn:infai:ses:controlling-function:5467567"
 		confunction3.Name = "setColorFunction"
 		confunction3.ConceptId = "urn:infai:ses:concept:efffsdfd-01a1-4434-9dcc-064b3955000f"
 
-		producer.PublishFunction(confunction3, "sdfdsfsf")
+		err = producer.PublishFunction(confunction3, "sdfdsfsf")
+		if err != nil {
+			t.Fatal(err)
+		}
 
 		measfunction1 := model.Function{}
 		measfunction1.Id = "urn:infai:ses:measuring-function:23"
 		measfunction1.Name = "getOnOffFunction"
 
-		producer.PublishFunction(measfunction1, "sdfdsfsf")
+		err = producer.PublishFunction(measfunction1, "sdfdsfsf")
+		if err != nil {
+			t.Fatal(err)
+		}
 
 		measfunction2 := model.Function{}
 		measfunction2.Id = "urn:infai:ses:measuring-function:321"
 		measfunction2.Name = "getTemperatureFunction"
 		measfunction2.ConceptId = "urn:infai:ses:concept:efffsdfd-aaaa-bbbb-ccc-0000"
 
-		producer.PublishFunction(measfunction2, "sdfdsfsf")
+		err = producer.PublishFunction(measfunction2, "sdfdsfsf")
+		if err != nil {
+			t.Fatal(err)
+		}
 
 		measfunction3 := model.Function{}
 		measfunction3.Id = "urn:infai:ses:measuring-function:467"
 		measfunction3.Name = "getHumidityFunction"
 
-		producer.PublishFunction(measfunction3, "sdfdsfsf")
+		err = producer.PublishFunction(measfunction3, "sdfdsfsf")
+		if err != nil {
+			t.Fatal(err)
+		}
 	}
 }
 

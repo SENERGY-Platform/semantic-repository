@@ -102,7 +102,10 @@ func testProduceValidCharacteristic1(producer *producer.Producer) func(t *testin
 					Name:               "charBoolean",
 					SubCharacteristics: nil}},
 		}}
-		producer.PublishCharacteristic("urn:ses:infai:concept:1a1a1a", characteristic, "sdfdsfsf")
+		err := producer.PublishCharacteristic("urn:ses:infai:concept:1a1a1a", characteristic, "sdfdsfsf")
+		if err != nil {
+			t.Fatal(err)
+		}
 	}
 }
 
@@ -113,7 +116,10 @@ func testProduceValidCharacteristic2(producer *producer.Producer) func(t *testin
 		characteristic.Name = "bool"
 		characteristic.RdfType = "xxx"
 		characteristic.Type = model.Boolean
-		producer.PublishCharacteristic("urn:ses:infai:concept:1a1a1a", characteristic, "sdfdsfsf")
+		err := producer.PublishCharacteristic("urn:ses:infai:concept:1a1a1a", characteristic, "sdfdsfsf")
+		if err != nil {
+			t.Fatal(err)
+		}
 	}
 }
 

@@ -96,7 +96,10 @@ func testProduceValidDeviceTypes(producer *producer.Producer) func(t *testing.T)
 			"asdasdsadsadasd",
 		})
 
-		producer.PublishDeviceType(devicetype, "sdfdsfsf")
+		err := producer.PublishDeviceType(devicetype, "sdfdsfsf")
+		if err != nil {
+			t.Fatal(err)
+		}
 
 		////////////////////////////////
 		/// DANFOSS THERMOSTAT       ///
@@ -136,8 +139,10 @@ func testProduceValidDeviceTypes(producer *producer.Producer) func(t *testing.T)
 			"asdasdsadsadasd",
 		})
 
-		producer.PublishDeviceType(devicetype, "sdfdsfsf")
-
+		err = producer.PublishDeviceType(devicetype, "sdfdsfsf")
+		if err != nil {
+			t.Fatal(err)
+		}
 		////////////////////////////////
 		/// CYRUS MULTISENSOR        ///
 		////////////////////////////////
@@ -162,8 +167,10 @@ func testProduceValidDeviceTypes(producer *producer.Producer) func(t *testing.T)
 			"asdasdsadsadasd",
 		})
 
-		producer.PublishDeviceType(devicetype, "sdfdsfsf")
-
+		err = producer.PublishDeviceType(devicetype, "sdfdsfsf")
+		if err != nil {
+			t.Fatal(err)
+		}
 		////////////////////////////////
 		/// BLEBOX                   ///
 		////////////////////////////////
@@ -202,7 +209,10 @@ func testProduceValidDeviceTypes(producer *producer.Producer) func(t *testing.T)
 			"asdasdsadsadasd",
 		})
 
-		producer.PublishDeviceType(devicetype, "sdfdsfsf")
+		err = producer.PublishDeviceType(devicetype, "sdfdsfsf")
+		if err != nil {
+			t.Fatal(err)
+		}
 	}
 }
 
