@@ -70,7 +70,7 @@ func (this *Database) InsertData(triples string) (err error) {
 	if resp.StatusCode == 200 {
 		return nil
 	} else {
-		return errors.New("ERROR: Statuscode " + string(resp.StatusCode))
+		return errors.New("ERROR: Statuscode " + resp.Status)
 	}
 }
 
@@ -220,7 +220,7 @@ func (this *Database) DeleteConcept(s string, deleteNested bool) (err error) {
 	if resp.StatusCode == 200 {
 		return nil
 	} else {
-		return errors.New("ERROR: Statuscode " + string(resp.StatusCode))
+		return errors.New("ERROR: Statuscode " + resp.Status)
 	}
 }
 
@@ -235,7 +235,7 @@ func (this *Database) DeleteCharacteristic(s string) (err error) {
 	if resp.StatusCode == 200 {
 		return nil
 	} else {
-		return errors.New("ERROR: Statuscode " + string(resp.StatusCode))
+		return errors.New("ERROR: Statuscode " + resp.Status)
 	}
 }
 
@@ -267,7 +267,7 @@ func (this *Database) DeleteSubject(s string, rdftype string) (err error) {
 	if resp.StatusCode == 200 {
 		return nil
 	} else {
-		return errors.New("ERROR: Statuscode " + string(resp.StatusCode))
+		return errors.New("ERROR: Statuscode " + resp.Status)
 	}
 }
 
