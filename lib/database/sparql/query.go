@@ -70,12 +70,13 @@ func (*Database) getFunctionsWithoutSubPropertiesLimitOffsetSearch(limit int, of
 	//LIMIT 6
 	//OFFSET 0
 
-	numberOfFields := 3
+	numberOfFields := 4
 	query := "PREFIX ses: <https://senergy.infai.org/ontology/> " +
 		"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
 
 		"CONSTRUCT {" +
 		"?s rdfs:label ?label;" +
+		"rdfs:comment ?comment;" +
 		"rdf:type ?type;" +
 		"ses:hasConcept ?concept ." +
 		"}" +
@@ -84,6 +85,7 @@ func (*Database) getFunctionsWithoutSubPropertiesLimitOffsetSearch(limit int, of
 		"?s rdfs:label ?label;" +
 		"rdf:type ?type." +
 		"OPTIONAL {?s ses:hasConcept ?concept .}" +
+		"OPTIONAL {?s rdfs:comment ?comment .}" +
 
 		"VALUES ?type { <" + model.SES_ONTOLOGY_CONTROLLING_FUNCTION + "> <" + model.SES_ONTOLOGY_MEASURING_FUNCTION + "> }"
 

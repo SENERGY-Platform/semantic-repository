@@ -51,6 +51,7 @@ const SES_ONTOLOGY_HAS_INTERACTION = "https://senergy.infai.org/ontology/interac
 
 const RDFS_LABEL = "http://www.w3.org/2000/01/rdf-schema#label"
 const RDF_TYPE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+const RDFS_COMMENT = "http://www.w3.org/2000/01/rdf-schema#comment"
 
 // PREFIXES
 const PREFIX_SES = "PREFIX ses: <https://senergy.infai.org/ontology/> "

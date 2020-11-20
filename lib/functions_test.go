@@ -76,6 +76,7 @@ func testProduceFunctions(producer *producer.Producer) func(t *testing.T) {
 		confunction1 := model.Function{}
 		confunction1.Id = "urn:infai:ses:controlling-function:333"
 		confunction1.Name = "setOnFunction"
+		confunction1.Description = "Turn the device on"
 
 		err := producer.PublishFunction(confunction1, "sdfdsfsf")
 		if err != nil {
@@ -170,6 +171,9 @@ func testReadControllingFunction(con *controller.Controller) func(t *testing.T) 
 		if res[2].ConceptId != "" {
 			t.Fatal("error ConceptId")
 		}
+		if res[2].Description != "Turn the device on" {
+			t.Fatal("error Description")
+		}
 	}
 }
 
@@ -242,7 +246,7 @@ func testReadFunctions(con *controller.Controller) func(t *testing.T) {
 		if res.Functions[0].Id != "urn:infai:ses:measuring-function:23" ||
 			res.Functions[0].Name != "getOnOffFunction" ||
 			res.Functions[0].ConceptId != "" ||
-			res.Functions[0].RdfType != model.SES_ONTOLOGY_MEASURING_FUNCTION ||
+			//res.Functions[0].RdfType != model.SES_ONTOLOGY_MEASURING_FUNCTION ||
 			res.TotalCount != 6 {
 			t.Fatal("error ")
 		}
@@ -287,6 +291,7 @@ func testReadFunctions(con *controller.Controller) func(t *testing.T) {
 
 		if res.Functions[0].Id != "urn:infai:ses:controlling-function:333" ||
 			res.Functions[0].Name != "setOnFunction" ||
+			res.Functions[0].Description != "Turn the device on" ||
 			res.Functions[0].ConceptId != "" ||
 			res.Functions[0].RdfType != model.SES_ONTOLOGY_CONTROLLING_FUNCTION ||
 			res.TotalCount != 6 {
