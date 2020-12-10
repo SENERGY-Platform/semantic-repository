@@ -225,10 +225,29 @@ func (this *Database) DeleteConcept(s string, deleteNested bool) (err error) {
 }
 
 func (this *Database) DeleteCharacteristic(s string) (err error) {
+	err = this.DeleteCharacteristicRelationToConcept(s)
+	if err != nil {
+		return err
+	}
 	query := this.getDeleteCharacteristicQuery(s)
 	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
 	if err != nil {
 		log.Println("ERROR: DeleteCharacteristic", err)
+		return err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode == 200 {
+		return nil
+	} else {
+		return errors.New("ERROR: Statuscode " + resp.Status)
+	}
+}
+
+func (this *Database) DeleteCharacteristicRelationToConcept(s string) (err error) {
+	query := this.getDeleteCharacteristicConceptRelationQuery(s)
+	resp, err := http.Get(this.conf.RyaUrl + "/web.rya/queryrdf?query=" + query)
+	if err != nil {
+		log.Println("ERROR: DeleteCharacteristic relation", err)
 		return err
 	}
 	defer resp.Body.Close()

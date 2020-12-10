@@ -61,6 +61,10 @@ func (this *Controller) GetConceptWithoutCharacteristics(subject string) (result
 		return result, err, http.StatusInternalServerError
 	}
 
+	if len(res) == 0 {
+		return result, errors.New("not found"), http.StatusNotFound
+	}
+
 	return res[0], nil, http.StatusOK
 }
 

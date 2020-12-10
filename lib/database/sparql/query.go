@@ -510,7 +510,6 @@ func (*Database) getDeleteConceptWithouthNestedQuery(subject string) string {
 }
 
 func (*Database) getDeleteCharacteristicQuery(subject string) string {
-
 	return url.QueryEscape(
 		"prefix x: <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>" +
 			"delete {?s ?p ?o .} where {" +
@@ -526,8 +525,11 @@ func (*Database) getDeleteCharacteristicQuery(subject string) string {
 			"}")
 }
 
-func (*Database) getDeviceClassQuery(subject string, queryForm string) string {
+func (*Database) getDeleteCharacteristicConceptRelationQuery(characteristicId string) string {
+	return url.QueryEscape(`delete where { ?s <` + model.SES_ONTOLOGY_HAS_CHARACTERISTIC + "> <" + characteristicId + `>}`)
+}
 
+func (*Database) getDeviceClassQuery(subject string, queryForm string) string {
 	return url.QueryEscape(
 		model.PREFIX_SES +
 			model.PREFIX_RDF +

@@ -95,7 +95,6 @@ func TestConceptCharacteristic(t *testing.T) {
 		return
 	}
 	t.Run("check after reset characteristic", checkConcept(ctrl, "urn:ses:infai:concept:c", expectedConcept))
-
 }
 
 func checkConcept(ctrl *controller.Controller, id string, expected model.Concept) func(t *testing.T) {
