@@ -42,6 +42,7 @@ type Config struct {
 	AspectTopic         string `json:"aspect_topic"`
 	FunctionTopic       string `json:"function_topic"`
 	DeviceClassTopic    string `json:"device_class_topic"`
+	LocationTopic       string `json:"location_topic"`
 	Debug               bool   `json:"debug"`
 	RyaUrl              string `json:"rya_url"`
 }

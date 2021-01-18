@@ -274,6 +274,10 @@ func (this *Database) DeleteSubject(s string, rdftype string) (err error) {
 		{
 			query = this.getFunctionQuery(s, queryform)
 		}
+	case model.SES_ONTOLOGY_LOCATION:
+		{
+			query = this.getLocationQuery(s, queryform)
+		}
 	default:
 		return errors.New("ERROR: no matching rdf type")
 	}
@@ -321,6 +325,10 @@ func (this *Database) GetSubject(s string, rdftype string) (rdfxml string, err e
 	case model.SES_ONTOLOGY_CONTROLLING_FUNCTION, model.SES_ONTOLOGY_MEASURING_FUNCTION:
 		{
 			query = this.getFunctionQuery(s, queryform)
+		}
+	case model.SES_ONTOLOGY_LOCATION:
+		{
+			query = this.getLocationQuery(s, queryform)
 		}
 	default:
 		return "", errors.New("ERROR: no matching rdf type")

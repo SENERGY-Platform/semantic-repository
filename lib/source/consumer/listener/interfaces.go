@@ -36,4 +36,7 @@ type Controller interface {
 
 	SetFunction(function model.Function, owner string) error
 	DeleteFunction(id string) error
+
+	SetLocation(location model.Location, owner string) error
+	DeleteLocation(id string) error
 }

@@ -50,4 +50,7 @@ type Controller interface {
 
 	GetDeviceClass(s string) (result model.DeviceClass, err error, errCode int)
 	GetFunction(s string) (result model.Function, err error, errCode int)
+
+	GetLocation(subject string) (location model.Location, err error, errCode int)
+	ValidateLocation(location model.Location) (err error, code int)
 }

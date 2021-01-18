@@ -67,3 +67,10 @@ type FunctionCommand struct {
 	Owner    string         `json:"owner"`
 	Function model.Function `json:"function"`
 }
+
+type LocationCommand struct {
+	Command  string         `json:"command"`
+	Id       string         `json:"id"`
+	Owner    string         `json:"owner"`
+	Location model.Location `json:"location"`
+}

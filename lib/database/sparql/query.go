@@ -544,6 +544,25 @@ func (*Database) getDeviceClassQuery(subject string, queryForm string) string {
 			"}")
 }
 
+func (*Database) getLocationQuery(subject string, queryForm string) string {
+	return url.QueryEscape(
+		model.PREFIX_SES +
+			model.PREFIX_RDF +
+			queryForm + " {" +
+			"<" + subject + "> rdf:type ?type;" +
+			"rdfs:label ?label;" +
+			"rdfs:comment ?comment;" +
+			"ses:hasImage ?image;" +
+			"} where {" +
+			"<" + subject + "> rdf:type ?type;" +
+			"rdfs:label ?label." +
+			"OPTIONAL {" +
+			"<" + subject + "> ses:hasImage ?image ." +
+			"<" + subject + "> rdfs:comment ?comment ." +
+			"}" +
+			"}")
+}
+
 func (*Database) getAspectQuery(subject string, queryForm string) string {
 
 	return url.QueryEscape(

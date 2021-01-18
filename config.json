@@ -11,6 +11,7 @@
     "aspect_topic": "aspects",
     "function_topic": "functions",
     "device_class_topic": "device-classes",
+    "location_topic": "locations",
     "zookeeper_url": "localhost:2181",
     "group_id": "semantic-repository",
     "rya_url": "http://0.0.0.0:8080",

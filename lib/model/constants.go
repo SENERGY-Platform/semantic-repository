@@ -29,6 +29,7 @@ const SES_ONTOLOGY_SERVICE = "https://senergy.infai.org/ontology/Service"
 const SES_ONTOLOGY_CONCEPT = "https://senergy.infai.org/ontology/Concept"
 const SES_ONTOLOGY_CHARACTERISTIC = "https://senergy.infai.org/ontology/Characteristic"
 const SES_ONTOLOGY_COUNT = "https://senergy.infai.org/ontology/Count"
+const SES_ONTOLOGY_LOCATION = "https://senergy.infai.org/ontology/Location"
 
 // Properties
 const SES_ONTOLOGY_HAS_CONCEPT = "https://senergy.infai.org/ontology/hasConcept"

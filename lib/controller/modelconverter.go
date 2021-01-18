@@ -31,7 +31,12 @@ import (
 	"strings"
 )
 
-func (*Controller) RdfXmlToModel(rdfxml string, result interface{}) (err error) {
+//deprecated
+func (this *Controller) RdfXmlToModel(rdfxml string, result interface{}) (err error) {
+	return this.RdfXmlToModelWithContext(rdfxml, result, getDeviceTypeContext())
+}
+
+func (*Controller) RdfXmlToModelWithContext(rdfxml string, result interface{}, contextDoc map[string]interface{}) (err error) {
 	turtle, err := rdfxmlToTurtle(rdfxml)
 	if len(turtle) == 0 {
 		return nil
@@ -51,7 +56,6 @@ func (*Controller) RdfXmlToModel(rdfxml string, result interface{}) (err error) 
 		log.Println("Error: FromRDF()", err)
 		return err
 	}
-	contextDoc := getDeviceTypeContext()
 	graph := map[string]interface{}{}
 	graph["@context"] = contextDoc
 	graph["@graph"] = doc
@@ -288,6 +292,20 @@ func getDeviceClassContext() map[string]interface{} {
 		"id":       "@id",
 		"rdf_type": "@type",
 		"name":     model.RDFS_LABEL,
+		"image": map[string]interface{}{
+			"@id":   model.SES_ONTOLOGY_HAS_IMAGE,
+			"@type": "@id",
+		},
+	}
+	return contextDoc
+}
+
+func getLocationContext() map[string]interface{} {
+	contextDoc := map[string]interface{}{
+		"id":          "@id",
+		"rdf_type":    "@type",
+		"name":        model.RDFS_LABEL,
+		"description": model.RDFS_COMMENT,
 		"image": map[string]interface{}{
 			"@id":   model.SES_ONTOLOGY_HAS_IMAGE,
 			"@type": "@id",
