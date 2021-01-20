@@ -553,12 +553,22 @@ func (*Database) getLocationQuery(subject string, queryForm string) string {
 			"rdfs:label ?label;" +
 			"rdfs:comment ?comment;" +
 			"ses:hasImage ?image;" +
+			"ses:isLocationOfDevice ?device;" +
+			"ses:isLocationOfDeviceGroup ?deviceGroup;" +
 			"} where {" +
 			"<" + subject + "> rdf:type ?type;" +
 			"rdfs:label ?label." +
 			"OPTIONAL {" +
 			"<" + subject + "> ses:hasImage ?image ." +
+			"}" +
+			"OPTIONAL {" +
 			"<" + subject + "> rdfs:comment ?comment ." +
+			"}" +
+			"OPTIONAL {" +
+			"<" + subject + "> ses:isLocationOfDevice ?device ." +
+			"}" +
+			"OPTIONAL {" +
+			"<" + subject + "> ses:isLocationOfDeviceGroup ?deviceGroup ." +
 			"}" +
 			"}")
 }

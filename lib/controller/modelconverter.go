@@ -306,6 +306,16 @@ func getLocationContext() map[string]interface{} {
 		"rdf_type":    "@type",
 		"name":        model.RDFS_LABEL,
 		"description": model.RDFS_COMMENT,
+		"device_ids": map[string]interface{}{
+			"@id":        model.SES_ONTOLOGY_LOCATION_OF_DEVICE,
+			"@type":      "@id",
+			"@container": "@set",
+		},
+		"device_group_ids": map[string]interface{}{
+			"@id":        model.SES_ONTOLOGY_LOCATION_OF_DEVICE_GROUP,
+			"@type":      "@id",
+			"@container": "@set",
+		},
 		"image": map[string]interface{}{
 			"@id":   model.SES_ONTOLOGY_HAS_IMAGE,
 			"@type": "@id",

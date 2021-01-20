@@ -70,6 +70,16 @@ func (this *Controller) ValidateLocation(location model.Location) (error, int) {
 			return fmt.Errorf("image is not valid URL: %w", err), http.StatusBadRequest
 		}
 	}
+	for _, did := range location.DeviceIds {
+		if _, err := url.Parse(did); err != nil {
+			return fmt.Errorf("device is not valid URI: %w", err), http.StatusBadRequest
+		}
+	}
+	for _, dgid := range location.DeviceGroupIds {
+		if _, err := url.Parse(dgid); err != nil {
+			return fmt.Errorf("device-group is not valid URI: %w", err), http.StatusBadRequest
+		}
+	}
 	if location.RdfType != model.SES_ONTOLOGY_LOCATION {
 		return errors.New("wrong device class type"), http.StatusBadRequest
 	}
@@ -111,6 +121,7 @@ func (this *Controller) SetLocation(location model.Location, owner string) (err 
 		log.Println("Error when transforming JSON-LD document to RDF:", err)
 		return err
 	}
+
 	err = this.db.InsertData(triples.(string))
 	if err != nil {
 		debug.PrintStack()

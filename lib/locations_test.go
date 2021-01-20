@@ -10,6 +10,7 @@ import (
 	"github.com/SENERGY-Platform/semantic-repository/lib/testutil"
 	"github.com/SENERGY-Platform/semantic-repository/lib/testutil/producer"
 	"reflect"
+	"sort"
 	"sync"
 	"testing"
 	"time"
@@ -48,8 +49,8 @@ func TestLocation(t *testing.T) {
 		return
 	}
 
-	bath := model.Location{Id: "urn:infai:ses:location:bath", Name: "Bath", Description: "bath description", Image: "https://i.imgur.com/YHc7cbe.png"}
-	floor := model.Location{Id: "urn:infai:ses:location:floor", Name: "Floor", Description: "floor description", Image: "https://i.imgur.com/YHc7cbe.png"}
+	bath := model.Location{Id: "urn:infai:ses:location:bath", Name: "Bath", Description: "bath description", Image: "https://i.imgur.com/YHc7cbe.png", DeviceIds: []string{"urn:infai:ses:device:d1", "urn:infai:ses:device:d2"}}
+	floor := model.Location{Id: "urn:infai:ses:location:floor", Name: "Floor", Description: "floor description", Image: "https://i.imgur.com/YHc7cbe.png", DeviceGroupIds: []string{"urn:infai:ses:device-group:dg1", "urn:infai:ses:device-group:dg2"}}
 
 	t.Run("testProduceLocation bath", testProduceLocation(prod, bath))
 	t.Run("testProduceLocation floor", testProduceLocation(prod, floor))
@@ -59,12 +60,6 @@ func TestLocation(t *testing.T) {
 	t.Run("testLocationDelete bath", testLocationDelete(prod, bath.Id))
 	t.Run("testLocationRead bath after delete", testLocationRead(ctrl, bath.Id, nil))
 	t.Run("testLocationRead floor after delete", testLocationRead(ctrl, floor.Id, &floor))
-
-	/*
-		shutdown := make(chan os.Signal, 1)
-		signal.Notify(shutdown, syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL)
-		<-shutdown
-	*/
 }
 
 func testProduceLocation(producer *producer.Producer, location model.Location) func(t *testing.T) {
@@ -99,6 +94,10 @@ func testLocationRead(con *controller.Controller, id string, expectedLocation *m
 		}
 		expected := *expectedLocation //copy -> no side effects
 		expected.RdfType = model.SES_ONTOLOGY_LOCATION
+		sort.Strings(expected.DeviceGroupIds)
+		sort.Strings(expected.DeviceIds)
+		sort.Strings(result.DeviceGroupIds)
+		sort.Strings(result.DeviceIds)
 		if !reflect.DeepEqual(result, expected) {
 			resultJson, _ := json.Marshal(result)
 			expectedJson, _ := json.Marshal(expected)
