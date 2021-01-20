@@ -45,6 +45,7 @@ type Config struct {
 	LocationTopic       string `json:"location_topic"`
 	Debug               bool   `json:"debug"`
 	RyaUrl              string `json:"rya_url"`
+	PermissionsUrl      string `json:"permissions_url"`
 }
 
 //loads config from json in location and used environment variables (e.g ZookeeperUrl --> ZOOKEEPER_URL)

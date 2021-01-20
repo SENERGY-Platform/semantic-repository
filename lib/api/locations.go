@@ -39,6 +39,11 @@ func LocationEndpoints(config config.Config, control Controller, router *jwt_htt
 
 	router.GET(resource+"/:id", func(writer http.ResponseWriter, request *http.Request, params jwt_http_router.Params, jwt jwt_http_router.Jwt) {
 		id := params.ByName("id")
+		err, errCode := control.PermissionCheckForLocation(jwt, id, "r")
+		if err != nil {
+			http.Error(writer, err.Error(), errCode)
+			return
+		}
 		result, err, errCode := control.GetLocation(id)
 		if err != nil {
 			http.Error(writer, err.Error(), errCode)

@@ -15,5 +15,6 @@
     "zookeeper_url": "localhost:2181",
     "group_id": "semantic-repository",
     "rya_url": "http://0.0.0.0:8080",
-    "debug": true
+    "debug": true,
+    "permissions_url": ""
 }
