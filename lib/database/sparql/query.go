@@ -613,6 +613,6 @@ func (*Database) getFunctionQuery(subject string, queryForm string) string {
 			"<" + subject + "> rdf:type ?type;" +
 			"rdfs:label ?label;" +
 			"OPTIONAL {<" + subject + "> ses:hasConcept ?concept .}" +
-			"OPTIONAL {?s rdfs:comment ?comment .}" +
+			"OPTIONAL {<" + subject + "> rdfs:comment ?comment .}" +
 			"}")
 }
