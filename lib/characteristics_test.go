@@ -67,6 +67,42 @@ func TestCharacteristics(t *testing.T) {
 	t.Run("testDeleteCharacteristic1", testDeleteCharacteristic1(prod))
 }
 
+func TestSpecialCaseCharacteristics(t *testing.T) {
+	conf, err := config.Load("../config.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	ctx, cancel := context.WithCancel(context.Background())
+	wg := sync.WaitGroup{}
+	defer wg.Wait()
+	defer cancel()
+	err = testutil.GetDockerEnv(ctx, &wg, &conf)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	db, err := database.New(conf)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	ctrl, err := controller.New(conf, db)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	prod, err := testutil.StartSourceMock(conf, ctrl)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	t.Run("produce characteristic with special characters", testProduceValidCharacteristic3(prod))
+	t.Run("read characteristic with special characters", testReadCharacteristic3(ctrl))
+}
+
 func testProduceValidCharacteristic1(producer *producer.Producer) func(t *testing.T) {
 	return func(t *testing.T) {
 		characteristic := model.Characteristic{}
@@ -114,6 +150,20 @@ func testProduceValidCharacteristic2(producer *producer.Producer) func(t *testin
 		characteristic := model.Characteristic{}
 		characteristic.Id = "urn:ses:infai:characteristic:4711111-20.03.2020"
 		characteristic.Name = "bool"
+		characteristic.RdfType = "xxx"
+		characteristic.Type = model.Boolean
+		err := producer.PublishCharacteristic("urn:ses:infai:concept:1a1a1a", characteristic, "sdfdsfsf")
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+}
+
+func testProduceValidCharacteristic3(producer *producer.Producer) func(t *testing.T) {
+	return func(t *testing.T) {
+		characteristic := model.Characteristic{}
+		characteristic.Id = "urn:ses:infai:characteristic:1111111-30.03.2021"
+		characteristic.Name = "µg/m³"
 		characteristic.RdfType = "xxx"
 		characteristic.Type = model.Boolean
 		err := producer.PublishCharacteristic("urn:ses:infai:concept:1a1a1a", characteristic, "sdfdsfsf")
@@ -218,6 +268,22 @@ func testReadCharacteristic1(con *controller.Controller) func(t *testing.T) {
 				t.Fatal("wrong MinValue")
 			}
 			t.Log(characteristic)
+		} else {
+			t.Fatal(err)
+		}
+	}
+}
+
+func testReadCharacteristic3(con *controller.Controller) func(t *testing.T) {
+	return func(t *testing.T) {
+		characteristic, err, _ := con.GetCharacteristic("urn:ses:infai:characteristic:1111111-30.03.2021")
+		if err == nil {
+			if characteristic.Id != "urn:ses:infai:characteristic:1111111-30.03.2021" {
+				t.Fatal("wrong id", characteristic.Id)
+			}
+			if characteristic.Name != "µg/m³" {
+				t.Fatal("wrong name", characteristic.Name)
+			}
 		} else {
 			t.Fatal(err)
 		}
