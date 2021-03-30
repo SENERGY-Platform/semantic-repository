@@ -61,7 +61,7 @@ func (*Database) RemoveDeviceType(ctx context.Context, id string) error {
 
 func (this *Database) InsertData(triples string) (err error) {
 	requestBody := []byte(triples)
-	resp, err := http.Post(this.conf.RyaUrl+"/web.rya/loadrdf?format=N-Triples", "text/plain", bytes.NewBuffer(requestBody))
+	resp, err := http.Post(this.conf.RyaUrl+"/web.rya/loadrdf?format=N-Triples", "text/plain; charset=utf-8", bytes.NewBuffer(requestBody))
 	if err != nil {
 		log.Println("ERROR: InsertData ", err)
 		return err
