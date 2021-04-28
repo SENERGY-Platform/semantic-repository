@@ -60,6 +60,7 @@ func (this *Consumer) start() error {
 	err = util.InitTopic(this.zkUrl, this.topic)
 	if err != nil {
 		log.Println("WARNING: unable to create topic", err)
+		err = nil
 	}
 	r := kafka.NewReader(kafka.ReaderConfig{
 		CommitInterval: 0, //synchronous commits
