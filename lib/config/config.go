@@ -33,7 +33,7 @@ type Config struct {
 	ForceUser           bool   `json:"force_user"`
 	LogLevel            string `json:"log_level"` //DEBUG | CALL | NONE
 	ServerPort          string `json:"server_port"`
-	ZookeeperUrl        string `json:"zookeeper_url"`
+	KafkaUrl            string `json:"kafka_url"`
 	GroupId             string `json:"group_id"`
 	DeviceTopic         string `json:"device_topic"`
 	DeviceTypeTopic     string `json:"device_type_topic"`
@@ -48,7 +48,7 @@ type Config struct {
 	PermissionsUrl      string `json:"permissions_url"`
 }
 
-//loads config from json in location and used environment variables (e.g ZookeeperUrl --> ZOOKEEPER_URL)
+//loads config from json in location and used environment variables (e.g KafkaUrl --> KAFKA_URL)
 func Load(location string) (config Config, err error) {
 	file, error := os.Open(location)
 	if error != nil {

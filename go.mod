@@ -20,9 +20,7 @@ require (
 	github.com/ory/dockertest v3.3.4+incompatible
 	github.com/piprate/json-gold v0.2.0
 	github.com/pkg/errors v0.9.1
-	github.com/samuel/go-zookeeper v0.0.0-20180130194729-c4fab1ac1bec // indirect
 	github.com/segmentio/kafka-go v0.2.5
-	github.com/wvanbergen/kazoo-go v0.0.0-20180202103751-f72d8611297a
 	go.mongodb.org/mongo-driver v1.4.0
 	gotest.tools v2.2.0+incompatible // indirect
 )

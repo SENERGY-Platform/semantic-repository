@@ -12,7 +12,7 @@
     "function_topic": "functions",
     "device_class_topic": "device-classes",
     "location_topic": "locations",
-    "zookeeper_url": "localhost:2181",
+    "kafka_url": "kafka-broker-url:9092",
     "group_id": "semantic-repository",
     "rya_url": "http://0.0.0.0:8080",
     "debug": true,
