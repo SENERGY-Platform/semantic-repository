@@ -28,24 +28,26 @@ import (
 )
 
 type Config struct {
-	JwtPubRsa           string `json:"jwt_pub_rsa"`
-	ForceAuth           bool   `json:"force_auth"`
-	ForceUser           bool   `json:"force_user"`
-	LogLevel            string `json:"log_level"` //DEBUG | CALL | NONE
-	ServerPort          string `json:"server_port"`
-	KafkaUrl            string `json:"kafka_url"`
-	GroupId             string `json:"group_id"`
-	DeviceTopic         string `json:"device_topic"`
-	DeviceTypeTopic     string `json:"device_type_topic"`
-	ConceptTopic        string `json:"concept_topic"`
-	CharacteristicTopic string `json:"characteristic_topic"`
-	AspectTopic         string `json:"aspect_topic"`
-	FunctionTopic       string `json:"function_topic"`
-	DeviceClassTopic    string `json:"device_class_topic"`
-	LocationTopic       string `json:"location_topic"`
-	Debug               bool   `json:"debug"`
-	RyaUrl              string `json:"rya_url"`
-	PermissionsUrl      string `json:"permissions_url"`
+	JwtPubRsa            string `json:"jwt_pub_rsa"`
+	ForceAuth            bool   `json:"force_auth"`
+	ForceUser            bool   `json:"force_user"`
+	LogLevel             string `json:"log_level"` //DEBUG | CALL | NONE
+	ServerPort           string `json:"server_port"`
+	KafkaUrl             string `json:"kafka_url"`
+	GroupId              string `json:"group_id"`
+	DeviceTopic          string `json:"device_topic"`
+	DeviceTypeTopic      string `json:"device_type_topic"`
+	ConceptTopic         string `json:"concept_topic"`
+	CharacteristicTopic  string `json:"characteristic_topic"`
+	AspectTopic          string `json:"aspect_topic"`
+	FunctionTopic        string `json:"function_topic"`
+	DeviceClassTopic     string `json:"device_class_topic"`
+	LocationTopic        string `json:"location_topic"`
+	Debug                bool   `json:"debug"`
+	RyaUrl               string `json:"rya_url"`
+	PermissionsUrl       string `json:"permissions_url"`
+	DisableKafkaConsumer bool   `json:"disable_kafka_consumer"`
+	DisableHttpApi       bool   `json:"disable_http_api"`
 }
 
 //loads config from json in location and used environment variables (e.g KafkaUrl --> KAFKA_URL)

@@ -16,5 +16,7 @@
     "group_id": "semantic-repository",
     "rya_url": "http://0.0.0.0:8080",
     "debug": true,
-    "permissions_url": ""
+    "permissions_url": "",
+    "disable_kafka_consumer": false,
+    "disable_http_api": false
 }

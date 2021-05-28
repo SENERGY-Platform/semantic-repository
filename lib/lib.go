@@ -17,6 +17,7 @@
 package lib
 
 import (
+	"context"
 	"github.com/SENERGY-Platform/semantic-repository/lib/api"
 	"github.com/SENERGY-Platform/semantic-repository/lib/config"
 	"github.com/SENERGY-Platform/semantic-repository/lib/controller"
@@ -25,33 +26,40 @@ import (
 	"log"
 )
 
-func Start(conf config.Config) (stop func(), err error) {
+func Start(baseCtx context.Context, conf config.Config) (err error) {
+	ctx, cancel := context.WithCancel(baseCtx)
+	defer func() {
+		if err != nil {
+			cancel()
+		}
+	}()
 	db, err := database.New(conf)
 	if err != nil {
 		log.Println("ERROR: unable to connect to database", err)
-		return stop, err
+		return err
 	}
 
 	ctrl, err := controller.New(conf, db)
 	if err != nil {
 		log.Println("ERROR: unable to start control", err)
-		return stop, err
+		return err
 	}
 
-	sourceStop, err := consumer.Start(conf, ctrl)
-	if err != nil {
-		log.Println("ERROR: unable to start source", err)
-		return stop, err
+	if !conf.DisableKafkaConsumer {
+		err = consumer.Start(ctx, conf, ctrl)
+		if err != nil {
+			log.Println("ERROR: unable to start source", err)
+			return err
+		}
 	}
 
-	err = api.Start(conf, ctrl)
-	if err != nil {
-		sourceStop()
-		log.Println("ERROR: unable to start api", err)
-		return stop, err
+	if !conf.DisableHttpApi {
+		err = api.Start(conf, ctrl)
+		if err != nil {
+			log.Println("ERROR: unable to start api", err)
+			return err
+		}
 	}
 
-	return func() {
-		sourceStop()
-	}, err
+	return err
 }

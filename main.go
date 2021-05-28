@@ -17,6 +17,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"github.com/SENERGY-Platform/semantic-repository/lib"
 	"github.com/SENERGY-Platform/semantic-repository/lib/config"
@@ -24,6 +25,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 )
 
 func main() {
@@ -35,14 +37,16 @@ func main() {
 		log.Fatal("ERROR: unable to load config", err)
 	}
 
-	stop, err := lib.Start(conf)
+	ctx, cancel := context.WithCancel(context.Background())
+	err = lib.Start(ctx, conf)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer stop()
 
 	shutdown := make(chan os.Signal, 1)
 	signal.Notify(shutdown, syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL)
 	sig := <-shutdown
 	log.Println("received shutdown signal", sig)
+	cancel()
+	time.Sleep(1 * time.Second) //wait for clean disconnects
 }
