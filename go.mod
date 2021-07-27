@@ -25,8 +25,7 @@ require (
 	github.com/piprate/json-gold v0.2.0
 	github.com/pkg/errors v0.9.1
 	github.com/segmentio/kafka-go v0.2.5
-	github.com/stretchr/testify v1.6.1 // indirect
-	go.mongodb.org/mongo-driver v1.4.0
+	go.mongodb.org/mongo-driver v1.7.0
 	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a // indirect
 	golang.org/x/net v0.0.0-20200904194848-62affa334b73 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
