@@ -21,10 +21,11 @@ package api
 
 import (
 	"encoding/json"
+	"github.com/SENERGY-Platform/semantic-repository/lib/api/util"
 	"github.com/SENERGY-Platform/semantic-repository/lib/config"
 	"github.com/SENERGY-Platform/semantic-repository/lib/controller"
 	"github.com/SENERGY-Platform/semantic-repository/lib/model"
-	"github.com/SmartEnergyPlatform/jwt-http-router"
+	"github.com/julienschmidt/httprouter"
 	"log"
 	"net/http"
 	"strconv"
@@ -34,12 +35,12 @@ func init() {
 	endpoints = append(endpoints, LocationEndpoints)
 }
 
-func LocationEndpoints(config config.Config, control Controller, router *jwt_http_router.Router) {
+func LocationEndpoints(config config.Config, control Controller, router *httprouter.Router) {
 	resource := "/locations"
 
-	router.GET(resource+"/:id", func(writer http.ResponseWriter, request *http.Request, params jwt_http_router.Params, jwt jwt_http_router.Jwt) {
+	router.GET(resource+"/:id", func(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
 		id := params.ByName("id")
-		err, errCode := control.PermissionCheckForLocation(jwt, id, "r")
+		err, errCode := control.PermissionCheckForLocation(util.GetAuthToken(request), id, "r")
 		if err != nil {
 			http.Error(writer, err.Error(), errCode)
 			return
@@ -57,7 +58,7 @@ func LocationEndpoints(config config.Config, control Controller, router *jwt_htt
 		return
 	})
 
-	router.PUT(resource, func(writer http.ResponseWriter, request *http.Request, params jwt_http_router.Params, jwt jwt_http_router.Jwt) {
+	router.PUT(resource, func(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
 		dryRun, err := strconv.ParseBool(request.URL.Query().Get("dry-run"))
 		if err != nil {
 			http.Error(writer, err.Error(), http.StatusBadRequest)

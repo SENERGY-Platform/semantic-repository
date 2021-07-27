@@ -21,7 +21,7 @@ import (
 	"github.com/SENERGY-Platform/semantic-repository/lib/config"
 	"github.com/SENERGY-Platform/semantic-repository/lib/controller"
 	"github.com/SENERGY-Platform/semantic-repository/lib/model"
-	jwt_http_router "github.com/SmartEnergyPlatform/jwt-http-router"
+	"github.com/julienschmidt/httprouter"
 	"log"
 	"net/http"
 	"strconv"
@@ -31,10 +31,10 @@ func init() {
 	endpoints = append(endpoints, DeviceTypeEndpoints)
 }
 
-func DeviceTypeEndpoints(config config.Config, control Controller, router *jwt_http_router.Router) {
+func DeviceTypeEndpoints(config config.Config, control Controller, router *httprouter.Router) {
 	resource := "/device-types"
 
-	router.GET(resource+"/:id", func(writer http.ResponseWriter, request *http.Request, params jwt_http_router.Params, jwt jwt_http_router.Jwt) {
+	router.GET(resource+"/:id", func(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
 		id := params.ByName("id")
 		result, err, errCode := control.GetDeviceType(id)
 		if err != nil {
@@ -49,7 +49,7 @@ func DeviceTypeEndpoints(config config.Config, control Controller, router *jwt_h
 		return
 	})
 
-	router.GET(resource, func(writer http.ResponseWriter, request *http.Request, params jwt_http_router.Params, jwt jwt_http_router.Jwt) {
+	router.GET(resource, func(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
 		filter := request.URL.Query().Get("filter")
 		deviceTypesFilter := []model.DeviceTypesFilter{}
 		err := json.Unmarshal([]byte(filter), &deviceTypesFilter)
@@ -71,7 +71,7 @@ func DeviceTypeEndpoints(config config.Config, control Controller, router *jwt_h
 		return
 	})
 
-	router.PUT(resource, func(writer http.ResponseWriter, request *http.Request, params jwt_http_router.Params, jwt jwt_http_router.Jwt) {
+	router.PUT(resource, func(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
 		dryRun, err := strconv.ParseBool(request.URL.Query().Get("dry-run"))
 		if err != nil {
 			http.Error(writer, err.Error(), http.StatusBadRequest)

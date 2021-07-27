@@ -38,7 +38,7 @@ func (this *Producer) PublishLocationDelete(id string, userId string) error {
 }
 
 func (this *Producer) PublishLocationCommand(cmd listener.LocationCommand) error {
-	if this.config.LogLevel == "DEBUG" {
+	if this.config.Debug {
 		log.Println("DEBUG: produce location", cmd)
 	}
 	message, err := json.Marshal(cmd)

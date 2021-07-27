@@ -1,9 +1,5 @@
 {
     "server_port": "8090",
-    "jwt_pub_rsa": "",
-    "force_auth": true,
-    "force_user": true,
-    "log_level": "CALL",
     "device_topic": "devices",
     "device_type_topic": "device-types",
     "concept_topic": "concepts",
@@ -15,7 +11,7 @@
     "kafka_url": "kafka-broker-url:9092",
     "group_id": "semantic-repository",
     "rya_url": "http://0.0.0.0:8080",
-    "debug": true,
+    "debug": false,
     "permissions_url": "",
     "disable_kafka_consumer": false,
     "disable_http_api": false

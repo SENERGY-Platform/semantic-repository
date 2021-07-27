@@ -38,7 +38,7 @@ func (this *Producer) PublishDeviceClassDelete(id string, userId string) error {
 }
 
 func (this *Producer) PublishDeviceClassCommand(cmd listener.DeviceClassCommand) error {
-	if this.config.LogLevel == "DEBUG" {
+	if this.config.Debug {
 		log.Println("DEBUG: produce deviceclass", cmd)
 	}
 	message, err := json.Marshal(cmd)

@@ -38,7 +38,7 @@ func (this *Producer) PublishFunctionDelete(id string, userId string) error {
 }
 
 func (this *Producer) PublishFunctionCommand(cmd listener.FunctionCommand) error {
-	if this.config.LogLevel == "DEBUG" {
+	if this.config.Debug {
 		log.Println("DEBUG: produce function", cmd)
 	}
 	message, err := json.Marshal(cmd)

@@ -24,7 +24,7 @@ import (
 	"github.com/SENERGY-Platform/semantic-repository/lib/config"
 	"github.com/SENERGY-Platform/semantic-repository/lib/controller"
 	"github.com/SENERGY-Platform/semantic-repository/lib/model"
-	"github.com/SmartEnergyPlatform/jwt-http-router"
+	"github.com/julienschmidt/httprouter"
 	"log"
 	"net/http"
 	"strconv"
@@ -34,10 +34,10 @@ func init() {
 	endpoints = append(endpoints, DeviceClassEndpoints)
 }
 
-func DeviceClassEndpoints(config config.Config, control Controller, router *jwt_http_router.Router) {
+func DeviceClassEndpoints(config config.Config, control Controller, router *httprouter.Router) {
 	resource := "/device-classes"
 
-	router.GET(resource, func(writer http.ResponseWriter, request *http.Request, params jwt_http_router.Params, jwt jwt_http_router.Jwt) {
+	router.GET(resource, func(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
 		var result []model.DeviceClass
 		var err error
 		var errCode int
@@ -68,7 +68,7 @@ func DeviceClassEndpoints(config config.Config, control Controller, router *jwt_
 		return
 	})
 
-	router.GET(resource+"/:id/functions", func(writer http.ResponseWriter, request *http.Request, params jwt_http_router.Params, jwt jwt_http_router.Jwt) {
+	router.GET(resource+"/:id/functions", func(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
 		id := params.ByName("id")
 		result, err, errCode := control.GetDeviceClassesFunctions(id)
 		if err != nil {
@@ -83,7 +83,7 @@ func DeviceClassEndpoints(config config.Config, control Controller, router *jwt_
 		return
 	})
 
-	router.GET(resource+"/:id", func(writer http.ResponseWriter, request *http.Request, params jwt_http_router.Params, jwt jwt_http_router.Jwt) {
+	router.GET(resource+"/:id", func(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
 		id := params.ByName("id")
 		result, err, errCode := control.GetDeviceClass(id)
 		if err != nil {
@@ -98,7 +98,7 @@ func DeviceClassEndpoints(config config.Config, control Controller, router *jwt_
 		return
 	})
 
-	router.GET(resource+"/:id/controlling-functions", func(writer http.ResponseWriter, request *http.Request, params jwt_http_router.Params, jwt jwt_http_router.Jwt) {
+	router.GET(resource+"/:id/controlling-functions", func(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
 		id := params.ByName("id")
 		result, err, errCode := control.GetDeviceClassesControllingFunctions(id)
 		if err != nil {
@@ -113,7 +113,7 @@ func DeviceClassEndpoints(config config.Config, control Controller, router *jwt_
 		return
 	})
 
-	router.PUT(resource, func(writer http.ResponseWriter, request *http.Request, params jwt_http_router.Params, jwt jwt_http_router.Jwt) {
+	router.PUT(resource, func(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
 		dryRun, err := strconv.ParseBool(request.URL.Query().Get("dry-run"))
 		if err != nil {
 			http.Error(writer, err.Error(), http.StatusBadRequest)

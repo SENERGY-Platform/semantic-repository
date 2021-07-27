@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 InfAI (CC SES)
+ * Copyright 2021 InfAI (CC SES)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,30 +16,8 @@
 
 package util
 
-import (
-	"log"
-	"net/http"
-)
+import "net/http"
 
-func NewLogger(handler http.Handler) *LoggerMiddleWare {
-	return &LoggerMiddleWare{handler: handler}
-}
-
-type LoggerMiddleWare struct {
-	handler http.Handler
-}
-
-func (this *LoggerMiddleWare) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	this.log(r)
-	if this.handler != nil {
-		this.handler.ServeHTTP(w, r)
-	} else {
-		http.Error(w, "Forbidden", 403)
-	}
-}
-
-func (this *LoggerMiddleWare) log(request *http.Request) {
-	method := request.Method
-	path := request.URL
-	log.Printf("[%v] %v \n", method, path)
+func GetAuthToken(req *http.Request) string {
+	return req.Header.Get("Authorization")
 }

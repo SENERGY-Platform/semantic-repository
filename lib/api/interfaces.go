@@ -18,7 +18,6 @@ package api
 
 import (
 	"github.com/SENERGY-Platform/semantic-repository/lib/model"
-	jwt_http_router "github.com/SmartEnergyPlatform/jwt-http-router"
 )
 
 type Controller interface {
@@ -54,5 +53,5 @@ type Controller interface {
 
 	GetLocation(subject string) (location model.Location, err error, errCode int)
 	ValidateLocation(location model.Location) (err error, code int)
-	PermissionCheckForLocation(jwt jwt_http_router.Jwt, id string, permission string) (err error, code int)
+	PermissionCheckForLocation(token string, id string, permission string) (err error, code int)
 }

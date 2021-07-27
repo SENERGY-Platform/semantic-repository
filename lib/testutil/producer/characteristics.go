@@ -35,7 +35,7 @@ func (this *Producer) PublishCharacteristicDelete(id string, userId string) erro
 }
 
 func (this *Producer) PublishCharacteristicCommand(cmd listener.CharacteristicCommand) error {
-	if this.config.LogLevel == "DEBUG" {
+	if this.config.Debug {
 		log.Println("DEBUG: produce characteristic", cmd)
 	}
 	message, err := json.Marshal(cmd)

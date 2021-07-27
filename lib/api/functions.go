@@ -24,7 +24,7 @@ import (
 	"github.com/SENERGY-Platform/semantic-repository/lib/config"
 	"github.com/SENERGY-Platform/semantic-repository/lib/controller"
 	"github.com/SENERGY-Platform/semantic-repository/lib/model"
-	"github.com/SmartEnergyPlatform/jwt-http-router"
+	"github.com/julienschmidt/httprouter"
 	"log"
 	"net/http"
 	"strconv"
@@ -34,12 +34,12 @@ func init() {
 	endpoints = append(endpoints, FunctionsEndpoints)
 }
 
-func FunctionsEndpoints(config config.Config, control Controller, router *jwt_http_router.Router) {
+func FunctionsEndpoints(config config.Config, control Controller, router *httprouter.Router) {
 	controllingResource := "/controlling-functions"
 	measuringResource := "/measuring-functions"
 	functionsResource := "/functions"
 
-	router.GET(controllingResource, func(writer http.ResponseWriter, request *http.Request, params jwt_http_router.Params, jwt jwt_http_router.Jwt) {
+	router.GET(controllingResource, func(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
 		result, err, errCode := control.GetFunctionsByType(model.SES_ONTOLOGY_CONTROLLING_FUNCTION)
 		if err != nil {
 			http.Error(writer, err.Error(), errCode)
@@ -53,7 +53,7 @@ func FunctionsEndpoints(config config.Config, control Controller, router *jwt_ht
 		return
 	})
 
-	router.GET(measuringResource, func(writer http.ResponseWriter, request *http.Request, params jwt_http_router.Params, jwt jwt_http_router.Jwt) {
+	router.GET(measuringResource, func(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
 		result, err, errCode := control.GetFunctionsByType(model.SES_ONTOLOGY_MEASURING_FUNCTION)
 		if err != nil {
 			http.Error(writer, err.Error(), errCode)
@@ -67,7 +67,7 @@ func FunctionsEndpoints(config config.Config, control Controller, router *jwt_ht
 		return
 	})
 
-	router.GET(functionsResource, func(writer http.ResponseWriter, request *http.Request, params jwt_http_router.Params, jwt jwt_http_router.Jwt) {
+	router.GET(functionsResource, func(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
 		limitStr := request.URL.Query().Get("limit")
 		offsetStr := request.URL.Query().Get("offset")
 		if limitStr == "" {
@@ -102,7 +102,7 @@ func FunctionsEndpoints(config config.Config, control Controller, router *jwt_ht
 		return
 	})
 
-	router.GET(functionsResource+"/:id", func(writer http.ResponseWriter, request *http.Request, params jwt_http_router.Params, jwt jwt_http_router.Jwt) {
+	router.GET(functionsResource+"/:id", func(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
 		id := params.ByName("id")
 		result, err, errCode := control.GetFunction(id)
 		if err != nil {
@@ -117,7 +117,7 @@ func FunctionsEndpoints(config config.Config, control Controller, router *jwt_ht
 		return
 	})
 
-	router.PUT(functionsResource, func(writer http.ResponseWriter, request *http.Request, params jwt_http_router.Params, jwt jwt_http_router.Jwt) {
+	router.PUT(functionsResource, func(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
 		dryRun, err := strconv.ParseBool(request.URL.Query().Get("dry-run"))
 		if err != nil {
 			http.Error(writer, err.Error(), http.StatusBadRequest)

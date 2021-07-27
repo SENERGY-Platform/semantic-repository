@@ -35,7 +35,7 @@ func (this *Producer) PublishConceptDelete(id string, userId string) error {
 }
 
 func (this *Producer) PublishConceptCommand(cmd listener.ConceptCommand) error {
-	if this.config.LogLevel == "DEBUG" {
+	if this.config.Debug {
 		log.Println("DEBUG: produce concept", cmd)
 	}
 	message, err := json.Marshal(cmd)
