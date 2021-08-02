@@ -22,7 +22,7 @@ package testutil
 import (
 	"context"
 	"errors"
-	"github.com/ory/dockertest"
+	"github.com/ory/dockertest/v3"
 	"log"
 	"net/http"
 	"sync"
