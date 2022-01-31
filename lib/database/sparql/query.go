@@ -70,23 +70,22 @@ func (*Database) getFunctionsWithoutSubPropertiesLimitOffsetSearch(limit int, of
 	//LIMIT 6
 	//OFFSET 0
 
-	numberOfFields := 4
+	numberOfFields := 5
 	query := "PREFIX ses: <https://senergy.infai.org/ontology/> " +
 		"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
-
 		"CONSTRUCT {" +
 		"?s rdfs:label ?label;" +
 		"rdfs:comment ?comment;" +
+		"ses:displayName ?displayName;" +
 		"rdf:type ?type;" +
 		"ses:hasConcept ?concept ." +
 		"}" +
-
 		"WHERE {" +
 		"?s rdfs:label ?label;" +
 		"rdf:type ?type." +
 		"OPTIONAL {?s ses:hasConcept ?concept .}" +
 		"OPTIONAL {?s rdfs:comment ?comment .}" +
-
+		"OPTIONAL {?s ses:displayName ?displayName .}" +
 		"VALUES ?type { <" + model.SES_ONTOLOGY_CONTROLLING_FUNCTION + "> <" + model.SES_ONTOLOGY_MEASURING_FUNCTION + "> }"
 
 	if search != "" {
@@ -131,11 +130,9 @@ func (*Database) getFunctionsCount(search string) string {
 
 	query := "PREFIX ses: <https://senergy.infai.org/ontology/> " +
 		"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
-
 		"CONSTRUCT { " +
 		"ses:Count ses:totalCount ?cnt ." +
 		"}" +
-
 		"WHERE" +
 		"{" +
 		"Select (count(*) as ?cnt) " +
@@ -143,7 +140,6 @@ func (*Database) getFunctionsCount(search string) string {
 		"?s rdfs:label ?label;" +
 		"rdf:type ?type." +
 		"OPTIONAL {?s ses:hasConcept ?concept .}" +
-
 		"VALUES ?type { <" + model.SES_ONTOLOGY_CONTROLLING_FUNCTION + "> <" + model.SES_ONTOLOGY_MEASURING_FUNCTION + "> }"
 
 	if search != "" {

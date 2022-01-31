@@ -335,10 +335,11 @@ func getAspectContext() map[string]interface{} {
 
 func getFunctionContext() map[string]interface{} {
 	contextDoc := map[string]interface{}{
-		"id":          "@id",
-		"rdf_type":    "@type",
-		"name":        model.RDFS_LABEL,
-		"description": model.RDFS_COMMENT,
+		"id":           "@id",
+		"rdf_type":     "@type",
+		"name":         model.RDFS_LABEL,
+		"display_name": model.SES_ONTOLOGY_DISPLAY_NAME,
+		"description":  model.RDFS_COMMENT,
 		"concept_id": map[string]interface{}{
 			"@id":   model.SES_ONTOLOGY_HAS_CONCEPT,
 			"@type": "@id",
@@ -383,9 +384,10 @@ func getTotalCountContext() map[string]interface{} {
 
 func getCharacteristicsContext() map[string]interface{} {
 	contextDoc := map[string]interface{}{
-		"id":       "@id",
-		"rdf_type": "@type",
-		"name":     model.RDFS_LABEL,
+		"id":           "@id",
+		"rdf_type":     "@type",
+		"name":         model.RDFS_LABEL,
+		"display_unit": model.SES_ONTOLOGY_DISPLAY_UNIT,
 		"type": map[string]interface{}{
 			"@id":   model.SES_ONTOLOGY_HAS_VALUE_TYPE,
 			"@type": "@id",

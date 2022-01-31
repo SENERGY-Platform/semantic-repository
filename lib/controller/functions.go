@@ -39,7 +39,7 @@ func (this *Controller) GetFunctionsByType(funcType string) (result []model.Func
 		return result, err, http.StatusInternalServerError
 	}
 
-	err = this.RdfXmlToModel(functions, &result)
+	err = this.RdfXmlToModelWithContext(functions, &result, getFunctionContext())
 	if err != nil {
 		log.Println("GetFunctionsByType ERROR: RdfXmlToModel", err)
 		return result, err, http.StatusInternalServerError
@@ -60,7 +60,7 @@ func (this *Controller) GetFunctions(limit int, offset int, search string, direc
 		return result, err, http.StatusInternalServerError
 	}
 
-	err = this.RdfXmlToModel(functions, &result.Functions)
+	err = this.RdfXmlToModelWithContext(functions, &result.Functions, getFunctionContext())
 	if err != nil {
 		log.Println("GetFunctions ERROR: RdfXmlToModel", err)
 		return result, err, http.StatusInternalServerError
@@ -102,7 +102,7 @@ func (this *Controller) GetFunction(id string) (result model.Function, err error
 	}
 
 	res := []model.Function{}
-	err = this.RdfXmlToModel(function, &res)
+	err = this.RdfXmlToModelWithContext(function, &res, getFunctionContext())
 	if err != nil {
 		log.Println("GetFunction ERROR: RdfXmlToModel", err)
 		return result, err, http.StatusInternalServerError

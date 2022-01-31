@@ -26,6 +26,7 @@ type DeviceClass struct {
 type Function struct {
 	Id          string `json:"id"`
 	Name        string `json:"name"`
+	DisplayName string `json:"display_name"`
 	Description string `json:"description"`
 	ConceptId   string `json:"concept_id"`
 	RdfType     string `json:"rdf_type"`
@@ -57,6 +58,7 @@ type Concept struct {
 type Characteristic struct {
 	Id                 string           `json:"id"`
 	Name               string           `json:"name"`
+	DisplayUnit        string           `json:"display_unit"`
 	Type               Type             `json:"type"`
 	MinValue           interface{}      `json:"min_value,omitempty"`
 	MaxValue           interface{}      `json:"max_value,omitempty"`

@@ -50,6 +50,9 @@ const SES_ONTOLOGY_HAS_IMAGE = "https://senergy.infai.org/ontology/hasImage"
 const SES_ONTOLOGY_LOCATION_OF_DEVICE = "https://senergy.infai.org/ontology/isLocationOfDevice"
 const SES_ONTOLOGY_LOCATION_OF_DEVICE_GROUP = "https://senergy.infai.org/ontology/isLocationOfDeviceGroup"
 
+const SES_ONTOLOGY_DISPLAY_NAME = "https://senergy.infai.org/ontology/displayName"
+const SES_ONTOLOGY_DISPLAY_UNIT = "https://senergy.infai.org/ontology/displayUnit"
+
 const SES_ONTOLOGY_HAS_INTERACTION = "https://senergy.infai.org/ontology/interaction"
 
 const RDFS_LABEL = "http://www.w3.org/2000/01/rdf-schema#label"

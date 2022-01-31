@@ -86,6 +86,7 @@ func testProduceFunctions(producer *producer.Producer) func(t *testing.T) {
 		confunction2 := model.Function{}
 		confunction2.Id = "urn:infai:ses:controlling-function:2222"
 		confunction2.Name = "setOffFunction"
+		confunction2.DisplayName = "off-function"
 		confunction2.ConceptId = ""
 
 		err = producer.PublishFunction(confunction2, "sdfdsfsf")
@@ -125,6 +126,7 @@ func testProduceFunctions(producer *producer.Producer) func(t *testing.T) {
 		measfunction3 := model.Function{}
 		measfunction3.Id = "urn:infai:ses:measuring-function:467"
 		measfunction3.Name = "getHumidityFunction"
+		measfunction3.DisplayName = "hum_display"
 
 		err = producer.PublishFunction(measfunction3, "sdfdsfsf")
 		if err != nil {
@@ -157,6 +159,9 @@ func testReadControllingFunction(con *controller.Controller) func(t *testing.T) 
 		}
 		if res[1].Name != "setOffFunction" {
 			t.Fatal("error Name")
+		}
+		if res[1].DisplayName != "off-function" {
+			t.Fatal("error Display Name", res[1])
 		}
 		if res[1].ConceptId != "" {
 			t.Fatal("error ConceptId")
@@ -236,6 +241,10 @@ func testReadFunctions(con *controller.Controller) func(t *testing.T) {
 			t.Fatal("error ")
 		}
 
+		if res.Functions[0].DisplayName != "hum_display" {
+			t.Fatal("unexpected display name:", res.Functions[0].DisplayName)
+		}
+
 		res, err, code = con.GetFunctions(1, 1, "", "")
 		if err != nil {
 			t.Fatal(res, err, code)
@@ -263,7 +272,7 @@ func testReadFunctions(con *controller.Controller) func(t *testing.T) {
 			res.Functions[0].ConceptId != "urn:infai:ses:concept:efffsdfd-aaaa-bbbb-ccc-0000" ||
 			res.Functions[0].RdfType != model.SES_ONTOLOGY_MEASURING_FUNCTION ||
 			res.TotalCount != 6 {
-			t.Fatal("error ")
+			t.Fatal("error ", res)
 		}
 
 		// test direction

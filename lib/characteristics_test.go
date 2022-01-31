@@ -109,6 +109,7 @@ func testProduceValidCharacteristic1(producer *producer.Producer) func(t *testin
 		characteristic.Id = "urn:ses:infai:characteristic:1d1e1f"
 		characteristic.Name = "struct1"
 		characteristic.RdfType = "xxx"
+		characteristic.DisplayUnit = "°C"
 		characteristic.Type = model.Structure
 		characteristic.SubCharacteristics = []model.Characteristic{{
 			Id:                 "urn:infai:ses:characteristic:2r2r2r",
@@ -150,6 +151,7 @@ func testProduceValidCharacteristic2(producer *producer.Producer) func(t *testin
 		characteristic := model.Characteristic{}
 		characteristic.Id = "urn:ses:infai:characteristic:4711111-20.03.2020"
 		characteristic.Name = "bool"
+		characteristic.DisplayUnit = "°F"
 		characteristic.RdfType = "xxx"
 		characteristic.Type = model.Boolean
 		err := producer.PublishCharacteristic("urn:ses:infai:concept:1a1a1a", characteristic, "sdfdsfsf")
@@ -182,6 +184,9 @@ func testReadCharacteristic1(con *controller.Controller) func(t *testing.T) {
 			}
 			if characteristic.Name != "struct1" {
 				t.Fatal("wrong name")
+			}
+			if characteristic.DisplayUnit != "°C" {
+				t.Fatal("wrong display unit:", characteristic.DisplayUnit)
 			}
 			if characteristic.RdfType != model.SES_ONTOLOGY_CHARACTERISTIC {
 				t.Fatal("wrong rdf_type")
