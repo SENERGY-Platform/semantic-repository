@@ -76,6 +76,7 @@ func testProduceFunctions(producer *producer.Producer) func(t *testing.T) {
 		confunction1 := model.Function{}
 		confunction1.Id = "urn:infai:ses:controlling-function:333"
 		confunction1.Name = "setOnFunction"
+		confunction1.DisplayName = "foo"
 		confunction1.Description = "Turn the device on"
 
 		err := producer.PublishFunction(confunction1, "sdfdsfsf")
@@ -97,6 +98,7 @@ func testProduceFunctions(producer *producer.Producer) func(t *testing.T) {
 		confunction3 := model.Function{}
 		confunction3.Id = "urn:infai:ses:controlling-function:5467567"
 		confunction3.Name = "setColorFunction"
+		confunction3.DisplayName = "ctrl display name"
 		confunction3.ConceptId = "urn:infai:ses:concept:efffsdfd-01a1-4434-9dcc-064b3955000f"
 
 		err = producer.PublishFunction(confunction3, "sdfdsfsf")
@@ -107,6 +109,7 @@ func testProduceFunctions(producer *producer.Producer) func(t *testing.T) {
 		measfunction1 := model.Function{}
 		measfunction1.Id = "urn:infai:ses:measuring-function:23"
 		measfunction1.Name = "getOnOffFunction"
+		measfunction1.DisplayName = "bar"
 
 		err = producer.PublishFunction(measfunction1, "sdfdsfsf")
 		if err != nil {
@@ -117,6 +120,7 @@ func testProduceFunctions(producer *producer.Producer) func(t *testing.T) {
 		measfunction2.Id = "urn:infai:ses:measuring-function:321"
 		measfunction2.Name = "getTemperatureFunction"
 		measfunction2.ConceptId = "urn:infai:ses:concept:efffsdfd-aaaa-bbbb-ccc-0000"
+		measfunction2.DisplayName = "batz"
 
 		err = producer.PublishFunction(measfunction2, "sdfdsfsf")
 		if err != nil {
@@ -149,6 +153,9 @@ func testReadControllingFunction(con *controller.Controller) func(t *testing.T) 
 		}
 		if res[0].Name != "setColorFunction" {
 			t.Fatal("error Name")
+		}
+		if res[0].DisplayName != "ctrl display name" {
+			t.Fatal("error DisplayName", res[0].DisplayName)
 		}
 		if res[0].ConceptId != "urn:infai:ses:concept:efffsdfd-01a1-4434-9dcc-064b3955000f" {
 			t.Fatal("error ConceptId")
@@ -196,6 +203,9 @@ func testReadMeasuringFunction(con *controller.Controller) func(t *testing.T) {
 		}
 		if res[0].Name != "getHumidityFunction" {
 			t.Fatal("error Name")
+		}
+		if res[0].DisplayName != "hum_display" {
+			t.Fatal("error Name", res[0].DisplayName)
 		}
 		if res[0].ConceptId != "" {
 			t.Fatal("error ConceptId")

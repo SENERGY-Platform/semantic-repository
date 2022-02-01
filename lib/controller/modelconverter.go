@@ -91,6 +91,7 @@ func (*Controller) RdfXmlToModelWithContext(rdfxml string, result interface{}, c
 	if err != nil {
 		debug.PrintStack()
 		log.Println("Error: Unmarshal()", err)
+		log.Println(string(b))
 		return err
 	}
 	return nil
