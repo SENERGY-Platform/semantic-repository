@@ -605,10 +605,12 @@ func (*Database) getFunctionQuery(subject string, queryForm string) string {
 			"rdfs:label ?label;" +
 			"rdfs:comment ?comment;" +
 			"ses:hasConcept ?concept;" +
+			"ses:displayName ?displayName;" +
 			"} where {" +
 			"<" + subject + "> rdf:type ?type;" +
 			"rdfs:label ?label;" +
 			"OPTIONAL {<" + subject + "> ses:hasConcept ?concept .}" +
 			"OPTIONAL {<" + subject + "> rdfs:comment ?comment .}" +
+			"OPTIONAL {<" + subject + "> ses:displayName ?displayName .}" +
 			"}")
 }

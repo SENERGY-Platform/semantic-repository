@@ -65,6 +65,7 @@ func TestFunction(t *testing.T) {
 	}
 
 	t.Run("testProduceFunctions", testProduceFunctions(prod))
+	t.Run("testUpdateFunctions", testUpdateFunctionsDisplayName(prod))
 	t.Run("testReadControllingFunction", testReadControllingFunction(ctrl))
 	t.Run("testReadMeasuringFunction", testReadMeasuringFunction(ctrl))
 	t.Run("testReadFunctions", testReadFunctions(ctrl))
@@ -139,6 +140,74 @@ func testProduceFunctions(producer *producer.Producer) func(t *testing.T) {
 	}
 }
 
+func testUpdateFunctionsDisplayName(producer *producer.Producer) func(t *testing.T) {
+	return func(t *testing.T) {
+		confunction1 := model.Function{}
+		confunction1.Id = "urn:infai:ses:controlling-function:333"
+		confunction1.Name = "setOnFunction"
+		confunction1.DisplayName = "foo 2"
+		confunction1.Description = "Turn the device on"
+
+		err := producer.PublishFunction(confunction1, "sdfdsfsf")
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		confunction2 := model.Function{}
+		confunction2.Id = "urn:infai:ses:controlling-function:2222"
+		confunction2.Name = "setOffFunction"
+		confunction2.DisplayName = "off-function 2"
+		confunction2.ConceptId = "2"
+
+		err = producer.PublishFunction(confunction2, "sdfdsfsf")
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		confunction3 := model.Function{}
+		confunction3.Id = "urn:infai:ses:controlling-function:5467567"
+		confunction3.Name = "setColorFunction"
+		confunction3.DisplayName = "ctrl display name 2"
+		confunction3.ConceptId = "urn:infai:ses:concept:efffsdfd-01a1-4434-9dcc-064b3955000f"
+
+		err = producer.PublishFunction(confunction3, "sdfdsfsf")
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		measfunction1 := model.Function{}
+		measfunction1.Id = "urn:infai:ses:measuring-function:23"
+		measfunction1.Name = "getOnOffFunction"
+		measfunction1.DisplayName = "bar 2"
+
+		err = producer.PublishFunction(measfunction1, "sdfdsfsf")
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		measfunction2 := model.Function{}
+		measfunction2.Id = "urn:infai:ses:measuring-function:321"
+		measfunction2.Name = "getTemperatureFunction"
+		measfunction2.ConceptId = "urn:infai:ses:concept:efffsdfd-aaaa-bbbb-ccc-0000"
+		measfunction2.DisplayName = "batz 2"
+
+		err = producer.PublishFunction(measfunction2, "sdfdsfsf")
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		measfunction3 := model.Function{}
+		measfunction3.Id = "urn:infai:ses:measuring-function:467"
+		measfunction3.Name = "getHumidityFunction"
+		measfunction3.DisplayName = "hum_display 2"
+
+		err = producer.PublishFunction(measfunction3, "sdfdsfsf")
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+}
+
 func testReadControllingFunction(con *controller.Controller) func(t *testing.T) {
 	return func(t *testing.T) {
 		res, err, code := con.GetFunctionsByType(model.SES_ONTOLOGY_CONTROLLING_FUNCTION)
@@ -154,7 +223,7 @@ func testReadControllingFunction(con *controller.Controller) func(t *testing.T) 
 		if res[0].Name != "setColorFunction" {
 			t.Fatal("error Name")
 		}
-		if res[0].DisplayName != "ctrl display name" {
+		if res[0].DisplayName != "ctrl display name 2" {
 			t.Fatal("error DisplayName", res[0].DisplayName)
 		}
 		if res[0].ConceptId != "urn:infai:ses:concept:efffsdfd-01a1-4434-9dcc-064b3955000f" {
@@ -167,7 +236,7 @@ func testReadControllingFunction(con *controller.Controller) func(t *testing.T) 
 		if res[1].Name != "setOffFunction" {
 			t.Fatal("error Name")
 		}
-		if res[1].DisplayName != "off-function" {
+		if res[1].DisplayName != "off-function 2" {
 			t.Fatal("error Display Name", res[1])
 		}
 		if res[1].ConceptId != "" {
@@ -204,7 +273,7 @@ func testReadMeasuringFunction(con *controller.Controller) func(t *testing.T) {
 		if res[0].Name != "getHumidityFunction" {
 			t.Fatal("error Name")
 		}
-		if res[0].DisplayName != "hum_display" {
+		if res[0].DisplayName != "hum_display 2" {
 			t.Fatal("error Name", res[0].DisplayName)
 		}
 		if res[0].ConceptId != "" {
@@ -251,7 +320,7 @@ func testReadFunctions(con *controller.Controller) func(t *testing.T) {
 			t.Fatal("error ")
 		}
 
-		if res.Functions[0].DisplayName != "hum_display" {
+		if res.Functions[0].DisplayName != "hum_display 2" {
 			t.Fatal("unexpected display name:", res.Functions[0].DisplayName)
 		}
 
